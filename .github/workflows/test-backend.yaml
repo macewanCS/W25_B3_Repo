@@ -33,6 +33,3 @@ jobs:
           done
           echo "Server did not start in time." >&2
           exit 1
-
-      - name: Stop service
-        run: kill $(cat server_pid) || true
