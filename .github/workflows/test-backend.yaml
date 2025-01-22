@@ -19,6 +19,7 @@ jobs:
 
       - name: Run service
         run: |
+          cd backend
           ./gradlew run
           echo $! > server_pid
           sleep 10
