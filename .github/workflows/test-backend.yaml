@@ -24,7 +24,7 @@ jobs:
           echo $! > server_pid
           
           for i in {1..30}; do
-            if curl -fs http://localhost:3000; then
+            if curl -fs http://localhost:8820; then
               echo "Server is up!"
               exit 0
             fi
