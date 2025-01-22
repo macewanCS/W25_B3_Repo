@@ -1,0 +1,40 @@
+plugins {
+    id "java"
+    id "application"
+}
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+    zip
+}
+
+dependencies {
+    // Code Gen
+    compileOnly 'org.projectlombok:lombok:1.18.36'
+    annotationProcessor 'org.projectlombok:lombok:1.18.36'
+
+    // Libraries
+    zip implementation("io.javalin:javalin:6.4.0")       // API Server
+    zip implementation("com.auth0:java-jwt:4.4.0")       // Authentication
+    zip implementation("org.slf4j:slf4j-simple:2.0.16")  // Console logging
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+    options.release = 21
+}
+
+application {
+    mainClass = 'com.lyrne.backend.Main'
+}
+
+jar {
+    // Package libraries into final jar
+    from {
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        configurations.zip.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
