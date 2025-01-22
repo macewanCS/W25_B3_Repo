@@ -20,15 +20,19 @@ jobs:
       - name: Run service
         run: |
           cd backend
-          ./gradlew run
+          ./gradlew run &
           echo $! > server_pid
-          sleep 10
-
-      - name: Verify service status
-        run: |
-          curl -f http://localhost:8820 || exit 1
+          
+          for i in {1..30}; do
+            if curl -fs http://localhost:3000; then
+              echo "Server is up!"
+              exit 0
+            fi
+            echo "Waiting for server to start..."
+            sleep 2
+          done
+          echo "Server did not start in time." >&2
+          exit 1
 
       - name: Stop service
-        if: always()
-        run: |
-          kill $(cat server_pid) || true
+        run: kill $(cat server_pid) || true
