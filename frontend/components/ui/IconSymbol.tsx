@@ -16,6 +16,8 @@ const MAPPING = {
   'person.fill': 'person',
   'magnifyingglass': 'search',
   'calendar': 'event',
+  'gear': 'settings',
+  'info.circle': 'info-outline',
 } as Partial<
   Record<
     import('expo-symbols').SymbolViewProps['name'],

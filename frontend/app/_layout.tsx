@@ -29,19 +29,10 @@ export default function RootLayout() {
   }
 
   return (
-    // <SessionProvider >
-    //   <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-    //     <Slot>
-    //       <Stack.Navigator initialRouteName="sign-in">
-    //         <Stack.Screen name="sign-in" />
-    //         <Stack.Screen name="+not-found" />
-    //       </Stack.Navigator>
-    //     </Slot>
-    //   </ThemeProvider>
-    // </SessionProvider>
     <SessionProvider>
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <Slot />
+        <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
       </ThemeProvider>
     </SessionProvider>
   );
