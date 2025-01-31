@@ -1,10 +1,10 @@
 import React from 'react';
-// import Login from '@/components/Login';
 import { router } from 'expo-router';
 import { Text, View, StyleSheet } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { IconSymbol } from '@/components/ui/IconSymbol';
+import { useColorScheme } from 'react-native';
 
 import { useSession } from '@/components/Context';
 import { TextInput } from 'react-native';
@@ -12,6 +12,7 @@ import Ripple from 'react-native-material-ripple';
 
 export default function SignIn() {
   const { signIn, session } = useSession();
+  const colorScheme = useColorScheme();
 
     if (session) {
         // If the user is already authenticated, redirect to the home screen.
@@ -19,36 +20,22 @@ export default function SignIn() {
     }
   
 return (
-    <ThemedView style={styles.signinContainer}>
-        <IconSymbol size={60} name="person.fill" color={'white'} />
-        {/* <ThemedText type="defaultSemiBold" style={styles.link}
-            onPress={() => {
-                signIn();
-                // Navigate after signing in. You may want to tweak this to ensure sign-in is
-                // successful before navigating.
-                router.replace('/');
-            }}>
-            Sign In
-        </ThemedText> */}
-        <View style={styles.container}>
-                {/* <IconSymbol size={310} color="#808080" name="person.fill" style={styles.headerImage} /> */}
-                {/* <ThemedText type="title">Login</ThemedText> */}
-                <ThemedText style={{alignItems: 'center'}}>Lyrne: User Login Portal</ThemedText>
-                <View style={styles.inputContainer}>
-                    <TextInput
-                        style={styles.inputField}
-                        placeholder="Username"
-                        placeholderTextColor="#808080"
-                    />
-                    <TextInput
-                        style={styles.inputField}
-                        placeholder="Password"
-                        placeholderTextColor="#808080"
-                        secureTextEntry={true}
-                    />
-                </View>
-                </View>
-
+    <ThemedView style={[styles.signinContainer, {paddingTop: 250}]}>
+        <IconSymbol size={60} name="person.fill" color={colorScheme} />
+        <ThemedText type="defaultSemiBold" style={styles.inputContainer}>Lyrne: User Login Portal</ThemedText>
+        <View style={styles.inputContainer}>
+            <TextInput
+                style={styles.inputField}
+                placeholder="Username"
+                placeholderTextColor="#808080"
+            />
+            <TextInput
+                style={styles.inputField}
+                placeholder="Password"
+                placeholderTextColor="#808080"
+                secureTextEntry={true}
+            />
+        </View>
         <Ripple style={styles.loginButton}
             rippleColor="white"
             rippleOpacity={0.05}
@@ -56,44 +43,53 @@ return (
             rippleCentered={true}
             rippleContainerBorderRadius={10}
             rippleFades={false}
-            
             onPress={() => {
                 signIn();
+                // When Authentication is implemented,
+                // Check if user sign in is successful before redirecting
                 router.replace('/');
             }}>
             <Text>Sign In</Text>
         </Ripple>
+        <ThemedText style={styles.link}
+            onPress={() => {
+                router.replace('/register');
+            }}>
+            Click here to create an account.
+        </ThemedText>
     </ThemedView>
-    
 );
 }
 
 const styles = StyleSheet.create({
-signinContainer: {
-    flexDirection: 'column',
-    alignItems: 'center',
-    flex: 1, 
-    justifyContent: 'center',
-},
-inputField: {
-    backgroundColor: 'white',
-    borderRadius: 10,
-    height: 40,
-    margin: 12,
-    padding: 10,
-    width: 250,
-},
-link: {
-    marginTop: 15,
-    paddingVertical: 15,
-    color: '#03b6fc',
-},
-loginButton: {
-    alignItems: 'center',
-    backgroundColor: '#03b6fc',
-    borderRadius: 10,
-    color: 'white',
-    padding: 10,
-    width: 250,
-}
+    signinContainer: {
+        flexDirection: 'column',
+        alignItems: 'center',
+        flex: 1, 
+    },
+    inputField: {
+        backgroundColor: '#dbdbdb',
+        borderRadius: 10,
+        height: 40,
+        marginTop: 12,
+        padding: 10,
+        width: 250,
+    },
+    link: {
+        marginTop: 15,
+        paddingVertical: 15,
+        color: '#4595e6',
+        textDecorationLine: 'underline',
+    },
+    loginButton: {
+        alignItems: 'center',
+        backgroundColor: '#03b6fc',
+        borderRadius: 10,
+        color: 'white',
+        justifyContent: 'center',
+        marginTop: 12,
+        padding: 10,
+        width: 250,
+        height: 40,
+    },
 });

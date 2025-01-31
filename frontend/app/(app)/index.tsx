@@ -1,9 +1,9 @@
 import { Image, StyleSheet, Platform, ScrollView } from 'react-native';
-
 import { HelloWave } from '@/components/HelloWave';
-// import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+// import ParallaxScrollView from '@/components/ParallaxScrollView';
+// Currently, the ParallaxScrollView component crashes after authentication.
 
 export default function HomeScreen() {
   return (
