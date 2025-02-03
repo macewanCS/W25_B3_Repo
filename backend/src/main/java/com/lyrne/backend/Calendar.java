@@ -1,4 +1,4 @@
-import java.util.Calendar
+import java.util.Calendar // i think this is what calendar is to be used for
 
 public class timeSlot{ // A timeslot object that can be created by a tutor
 
