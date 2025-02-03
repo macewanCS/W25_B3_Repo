@@ -17,11 +17,12 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.36'
 
     // Libraries
-    zip implementation("io.javalin:javalin:6.4.0")       // API Server
-    zip implementation("com.google.code.gson:gson:2.12.0")
-    zip implementation("joda-time:joda-time:2.13.0")
-    zip implementation("com.auth0:java-jwt:4.4.0")       // Authentication
-    zip implementation("org.slf4j:slf4j-simple:2.0.16")  // Console logging
+    zip implementation("io.javalin:javalin:6.4.0")          // API Server
+    zip implementation("com.google.code.gson:gson:2.12.0")  // Json
+    zip implementation("joda-time:joda-time:2.13.0")        // Better time stuff
+    zip implementation("com.auth0:java-jwt:4.4.0")          // Authentication
+    zip implementation("com.auth0:jwks-rsa:0.22.1")         // Authentication
+    zip implementation("org.slf4j:slf4j-simple:2.0.16")     // Console logging
 }
 
 tasks.withType(JavaCompile) {
