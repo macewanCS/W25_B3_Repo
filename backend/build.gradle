@@ -18,6 +18,8 @@ dependencies {
 
     // Libraries
     zip implementation("io.javalin:javalin:6.4.0")       // API Server
+    zip implementation("com.google.code.gson:gson:2.12.0")
+    zip implementation("joda-time:joda-time:2.13.0")
     zip implementation("com.auth0:java-jwt:4.4.0")       // Authentication
     zip implementation("org.slf4j:slf4j-simple:2.0.16")  // Console logging
 }
