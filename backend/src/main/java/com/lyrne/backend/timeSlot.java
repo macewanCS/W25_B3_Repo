@@ -17,6 +17,11 @@ public class timeSlot{ // A timeslot object that can be created by a tutor
     public void setDuration(); // setDuration, setStartTime and setEndTime will all be able to overwrite the time to whatever is most recently written. 
                                // setting a start time and then a duration will result in the end time being automatically determined, and the same goes for any combo of the three methods
     public void setEndTime();
+    
+    public void getStartTime();
+    public void getDuration();
+    public void getEndTime();
+
 
 
 
