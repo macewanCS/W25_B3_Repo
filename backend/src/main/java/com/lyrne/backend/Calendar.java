@@ -1,12 +1,12 @@
-import java.util.Calendar // i think this is what calendar is to be used for
+import org.joda.time.DateTime;
+import org.joda.time.Interval;
 
 public class timeSlot{ // A timeslot object that can be created by a tutor
 
     
     String tutor; // The tutor's name, will be automatically put down 
-    Calendar startTime = Calendar.getInstance(); // a start time for the tutoring session
-    Calendar endTime = Calendar.getInstance(); // and also an end time
-    float duration; // will be created by subtracting the start from end time, not sure if it'd actually be a float but im just putting it down
+     // note: replace start and end times as well as duration with the joda classes
+    
     String[] subjects; // the tutor will likely have multiple teachable subjects
     boolean Booked; // determining if a time slot is booked by a student might be more complicated than a boolean but you get the idea
 
