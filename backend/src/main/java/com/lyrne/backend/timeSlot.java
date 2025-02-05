@@ -11,7 +11,7 @@ public class timeSlot{ // A timeslot object that can be created by a tutor
     String[] subjects; // the tutor will likely have multiple teachable subjects
     boolean Booked; // determining if a time slot is booked by a student might be more complicated than a boolean but you get the idea
     
-    public static void timeSlot(DateTime start, DateTime end, String tutorName, String[] subjects){ 
+    public void timeSlot(DateTime start, DateTime end, String tutorName, String[] subjects){ 
         // note: not sure what type of object the start/end time will be. its a DateTime here but i'll change it accordingly
         
         // this looks ridiculous so im sure there will be a better way to get a time object from the front end
