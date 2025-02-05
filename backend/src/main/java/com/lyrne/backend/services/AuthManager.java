@@ -41,11 +41,11 @@ public class AuthManager {
     @SneakyThrows
     public static void authenticate(Context ctx) {
         String token = ctx.header("Authorization");
-        if (token == null) return;
+        if (token == null) throw new UnauthorizedResponse();
 
         DecodedJWT jwt = JWT.decode(token);
         Optional<JwkProvider> provider = Optional.ofNullable(providers.get(jwt.getIssuer()));
-        if (provider.isEmpty()) return;
+        if (provider.isEmpty()) throw new UnauthorizedResponse();
 
         PublicKey key = provider.get().get(jwt.getKeyId()).getPublicKey();
         Algorithm algorithm = Algorithm.RSA256((RSAPublicKey) key);
