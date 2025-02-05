@@ -1,4 +1,4 @@
-package com.lyrne.backend;
+package com.lyrne.backend.services;
 
 import com.auth0.jwk.JwkProvider;
 import com.auth0.jwk.JwkProviderBuilder;
@@ -6,6 +6,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.lyrne.backend.User;
 import io.javalin.http.Context;
 import io.javalin.http.UnauthorizedResponse;
 import lombok.SneakyThrows;
@@ -56,7 +57,7 @@ public class AuthManager {
             throw new UnauthorizedResponse();
         }
 
-        User user = Database.getUser(jwt.getSubject());
+        User user = DatabaseManager.getUser(jwt.getSubject());
         ctx.sessionAttribute("user", user);
         ctx.sessionAttribute("jwt", jwt);
         ctx.routeRoles().add(user.getRole());

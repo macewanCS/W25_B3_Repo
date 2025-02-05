@@ -5,6 +5,7 @@ plugins {
 
 repositories {
     mavenCentral()
+    maven { url "https://api.modrinth.com/maven" }
 }
 
 configurations {
@@ -23,6 +24,7 @@ dependencies {
     zip implementation("com.auth0:java-jwt:4.4.0")          // Authentication
     zip implementation("com.auth0:jwks-rsa:0.22.1")         // Authentication
     zip implementation("org.slf4j:slf4j-simple:2.0.16")     // Console logging
+    zip implementation("maven.modrinth:sqlib:3.2.6")	    // Database
 }
 
 tasks.withType(JavaCompile) {
