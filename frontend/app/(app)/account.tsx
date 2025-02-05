@@ -6,11 +6,13 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { IconSymbol } from '@/components/ui/IconSymbol';
-import { useSession } from '@/components/Context';
 import Ripple from 'react-native-material-ripple';
+import {fetchUserData} from "@/util/Backend";
 
 export default function TabFourScreen() {
-  const { signOut } = useSession();
+  fetchUserData().then((data) => {
+    console.log(data);
+  });
 
   return (
     <ParallaxScrollView
@@ -50,7 +52,7 @@ export default function TabFourScreen() {
           rippleContainerBorderRadius={10}
           rippleFades={false}
           onPress={() => {
-            signOut();
+
           }}>
           <Text>Sign Out</Text>
         </Ripple>
