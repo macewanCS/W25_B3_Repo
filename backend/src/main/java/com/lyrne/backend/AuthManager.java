@@ -11,6 +11,7 @@ import io.javalin.http.UnauthorizedResponse;
 import lombok.SneakyThrows;
 
 import java.net.URI;
+import java.net.URL;
 import java.security.PublicKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Optional;
@@ -32,7 +33,8 @@ public class AuthManager {
                 .rateLimited(10, 1, TimeUnit.MINUTES)
                 .build();
 
-        providers.put(new URI(url).toURL().getHost(), jwkProvider);
+        URL providerUrl = new URI(url).toURL();
+        providers.put(providerUrl.getProtocol() + "://" + providerUrl.getHost(), jwkProvider);
     }
 
     @SneakyThrows
@@ -45,7 +47,6 @@ public class AuthManager {
         if (provider.isEmpty()) return;
 
         PublicKey key = provider.get().get(jwt.getKeyId()).getPublicKey();
-
         Algorithm algorithm = Algorithm.RSA256((RSAPublicKey) key);
         JWTVerifier verifier = JWT.require(algorithm).build();
 
@@ -57,6 +58,7 @@ public class AuthManager {
 
         User user = Database.getUser(jwt.getSubject());
         ctx.sessionAttribute("user", user);
+        ctx.sessionAttribute("jwt", jwt);
         ctx.routeRoles().add(user.getRole());
     }
 }
