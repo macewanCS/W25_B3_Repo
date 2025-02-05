@@ -9,4 +9,4 @@ RUN mkdir /app
 COPY --from=build /home/lyrne/src/build/libs/*.jar /app/lyrne.jar
 
 EXPOSE 8820
-ENTRYPOINT ["java", "-XX:+UnlockExperimentalVMOptions", "-XX:+UseCGroupMemoryLimitForHeap", "-Djava.security.egd=file:/dev/./urandom","-jar","/app/lyrne.jar"]
+ENTRYPOINT ["java", "-XX:+UnlockExperimentalVMOptions", "-jar","/app/lyrne.jar"]
