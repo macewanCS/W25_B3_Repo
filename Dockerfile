@@ -1,7 +1,7 @@
 FROM amazoncorretto:21-alpine AS build
 COPY --chown=gradle:gradle ./backend /home/lyrne/src
 WORKDIR /home/lyrne/src
-RUN gradle build --no-daemon
+RUN ./gradlew build --no-daemon
 
 FROM amazoncorretto:21-alpine
 
