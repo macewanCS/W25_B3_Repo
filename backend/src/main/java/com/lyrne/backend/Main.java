@@ -3,7 +3,7 @@ package com.lyrne.backend;
 import com.google.gson.Gson;
 import com.lyrne.backend.services.AuthManager;
 import io.javalin.Javalin;
-import me.mrnavastar.sqlib.impl.config.SQLibConfig;
+import me.mrnavastar.sqlib.impl.config.NonMinecraft;
 
 import java.nio.file.Path;
 import java.util.Optional;
@@ -13,8 +13,8 @@ public class Main {
     public static final Gson GSON = new Gson();
 
     public static void main(String[] args) {
-        SQLibConfig.setCustomConfigPath(Path.of("./lyrne/config"));
-        SQLibConfig.setCustomDefaultDirectory(Path.of("./lyrne/db"));
+        NonMinecraft.init(Path.of("./lyrne/config"), Path.of("./lyrne/db"));
+        AuthManager.registerProvider("https://appleid.apple.com/auth/keys");
 
         Javalin.create(config -> {
             config.bundledPlugins.enableRouteOverview("/");
