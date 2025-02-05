@@ -1,6 +1,5 @@
 package com.lyrne.backend;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import io.javalin.security.RouteRole;
 import lombok.Getter;
@@ -9,20 +8,16 @@ import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
 import java.util.ArrayList;
-import java.util.UUID;
 
 @Getter
 @RequiredArgsConstructor
 public class User {
 
-    private static Gson GSON = new Gson();
-
     enum Role implements RouteRole { ANYONE, STUDENT, PARENT, TUTOR, ADMIN }
 
     // All users
-    // TODO: I think uuids are not the play tbh
-    private final UUID id;
-    private Role role;
+    private final String id;
+    private Role role = Role.ANYONE;
     private DateTime created;
     private DateTime lastLogin;
 
@@ -36,7 +31,7 @@ public class User {
     private final ArrayList<Interval> availability = new ArrayList<>();
 
     public JsonObject asJson() {
-        return GSON.toJsonTree(this).getAsJsonObject();
+        return Main.GSON.toJsonTree(this).getAsJsonObject();
     }
 
     @Override
