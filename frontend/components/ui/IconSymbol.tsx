@@ -18,6 +18,7 @@ const MAPPING = {
   'calendar': 'event',
   'gear': 'settings',
   'info.circle': 'info-outline',
+  'text.bubble.fill': 'chat',
 } as Partial<
   Record<
     import('expo-symbols').SymbolViewProps['name'],
