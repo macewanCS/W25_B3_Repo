@@ -1,66 +1,65 @@
 import React from 'react';
 import { router } from 'expo-router';
-import { Text, View, StyleSheet } from 'react-native';
+import { Text, Image, Platform, StyleSheet } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import { IconSymbol } from '@/components/ui/IconSymbol';
 import { useColorScheme } from 'react-native';
-import * as AppleAuthentication from 'expo-apple-authentication';
-import {useSession} from "@/components/Context";
+import { useSession } from "@/components/Context";
+import { AppleSignIn } from "@/components/ui/SignInButtonApple";
+import { GoogleSignIn } from "@/components/ui/SignInButtonGoogle";
+import { WebSignIn } from "@/components/ui/SignInButtonWeb";
+import LyrneLogo from '@/assets/images/lyrne-logo-clear.png';
 
 
 export default function SignIn() {
-    const { signIn, session } = useSession();
+    const { session } = useSession();
     const colorScheme = useColorScheme();
 
-    if (session) {
-        // If the user is already authenticated, redirect to the home screen.
-        return router.replace('/');
-    }
-  
+    React.useEffect(() => {
+        if (session) {
+            // If the user is already authenticated, redirect to the home screen.
+            router.replace('/');
+        }
+    }, [session]);
+
     return (
-        <ThemedView style={[styles.signinContainer, {paddingTop: 250}]}>
-            <IconSymbol size={60} name="person.fill" color={colorScheme} />
-            <ThemedText type="defaultSemiBold">Lyrne: User Login Portal</ThemedText>
-
-            <AppleAuthentication.AppleAuthenticationButton
-                buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
-                buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
-                cornerRadius={5}
-                style={styles.appleButton}
-                onPress={async () => {
-                    try {
-                        const credential = await AppleAuthentication.signInAsync({
-                            requestedScopes: [
-                                AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
-                                AppleAuthentication.AppleAuthenticationScope.EMAIL,
-                            ],
-                        });
-
-                        signIn(credential.identityToken);
-
-                    } catch (e) {
-                        if (e.code === 'ERR_REQUEST_CANCELED') {
-                            // handle that the user canceled the sign-in flow
-                        } else {
-                            // handle other errors
-                        }
-                    }
-                }}
-            />
+        <ThemedView style={styles.signinContainer}>
+            <ThemedView style={styles.topHalf}>
+                <Image source={LyrneLogo} style={styles.logo} />
+            </ThemedView>
+            <ThemedView style={styles.bottomHalf}>
+                {Platform.OS === 'ios' ? (
+                    <AppleSignIn />
+                ) : Platform.OS === 'android' ? (
+                    // Currently using a placeholder
+                    <GoogleSignIn />
+                ) : (
+                    // Currently using a placeholder
+                    <WebSignIn />
+                )}
+            </ThemedView>
         </ThemedView>
     );
 }
 
 const styles = StyleSheet.create({
     signinContainer: {
-        flexDirection: 'column',
-        alignItems: 'center',
-        flex: 1, 
+        flex: 1,
     },
-    appleButton: {
-        marginTop: 15,
-        width: 200,
-        height: 44,
+    topHalf: {
+        flex: 0.5,
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+    },
+    bottomHalf: {
+        flex: 0.5,
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+    },
+    logo: {
+        justifyContent: 'inherit',
+        width: 300, 
+        height: 300,
+        marginBottom: 20,
     },
 });
