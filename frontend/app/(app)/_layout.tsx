@@ -8,20 +8,16 @@ import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { Text } from 'react-native';
 import { Redirect, Stack } from 'expo-router';
-import { useSession } from '../../components/Context';
+import {useSession} from "@/components/Context";
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-  const { session, isLoading } = useSession();
+    const colorScheme = useColorScheme();
+    const { signIn, session } = useSession();
 
-  if (isLoading) {
-    return <Text>Loading...</Text>;
-  }
-
-  if (!session) {
+    if (!session) {
     // If the user is not authenticated, return to sign-in.
     return <Redirect href="/sign-in" />;
-  }
+    }
 
   return (
     <Tabs

@@ -23,12 +23,8 @@ public class AuthManager {
 
     private static final ConcurrentHashMap<String, JwkProvider> providers = new ConcurrentHashMap<>();
 
-    static {
-        registerProvider("https://appleid.apple.com/auth/keys");
-    }
-
     @SneakyThrows
-    private static void registerProvider(String url) {
+    public static void registerProvider(String url) {
         JwkProvider jwkProvider = new JwkProviderBuilder(url)
                 .cached(10, 24, TimeUnit.HOURS)
                 .rateLimited(10, 1, TimeUnit.MINUTES)
@@ -41,11 +37,11 @@ public class AuthManager {
     @SneakyThrows
     public static void authenticate(Context ctx) {
         String token = ctx.header("Authorization");
-        if (token == null) return;
+        if (token == null) throw new UnauthorizedResponse();
 
-        DecodedJWT jwt = JWT.decode(token);
+        DecodedJWT jwt = JWT.decode(token.replace("Bearer ", ""));
         Optional<JwkProvider> provider = Optional.ofNullable(providers.get(jwt.getIssuer()));
-        if (provider.isEmpty()) return;
+        if (provider.isEmpty()) throw new UnauthorizedResponse();
 
         PublicKey key = provider.get().get(jwt.getKeyId()).getPublicKey();
         Algorithm algorithm = Algorithm.RSA256((RSAPublicKey) key);
@@ -60,6 +56,5 @@ public class AuthManager {
         User user = DatabaseManager.getUser(jwt.getSubject());
         ctx.sessionAttribute("user", user);
         ctx.sessionAttribute("jwt", jwt);
-        ctx.routeRoles().add(user.getRole());
     }
 }
