@@ -26,7 +26,6 @@ public class User {
     private String phone;
     private String icon; // this can just be a base64 encoded png or some shit
 
-    // Tutors
     // TODO: idk if this is the best way to store availability, but it seems simple enough??
     private final ArrayList<Interval> availability = new ArrayList<>();
 
