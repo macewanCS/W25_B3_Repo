@@ -27,6 +27,6 @@ public class Main {
                 .get("/api/private/user", ctx -> Optional.ofNullable(ctx.sessionAttribute("user"))
                         .ifPresent(user -> ctx.result(user.toString())), User.Role.ANYONE)
 
-                .start(8820);
+                .start(8820);       
     }
 }

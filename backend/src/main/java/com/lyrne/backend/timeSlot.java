@@ -1,19 +1,23 @@
+package com.lyrne.backend;
+import java.util.Arrays;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
-public class timeSlot{ // A timeslot object that can be created by a tutor
+public class TimeSlot{ // A timeslot object that can be created by a tutor
 
 
-    String tutor; // The tutor's name, will be automatically put down 
+    private String tutor; // The tutor's name, will be automatically put down 
 
-    Interval timeSlotInterval;
+    private Interval timeSlotInterval;
 
-    String[] subjects; // the tutor will likely have multiple teachable subjects
-    boolean booked; // determining if a time slot is booked by a student might be more complicated than a boolean but you get the idea
+    private String[] subjects; // the tutor will likely have multiple teachable subjects
+    private boolean booked = false; // determining if a time slot is booked by a student might be more complicated than a boolean but you get the idea
     
-    String bookedBy; // the student whom booked the timeslot
+    private String bookedBy; // the student whom booked the timeslot
+    private DateTime start;
+    private DateTime end;
 
-    public void timeSlot(DateTime start, DateTime end, String tutorName, String[] subjects){ 
+    public TimeSlot(DateTime start, DateTime end, String tutorName, String[] subjects){ 
         // note: not sure what type of object the start/end time will be. its a DateTime here but i'll change it accordingly
         
  
@@ -50,21 +54,22 @@ public class timeSlot{ // A timeslot object that can be created by a tutor
         booked = false;
     }
 
-
-
-    public static void main(String[] args){ // testing
-     //-------------------
-     DateTime start = new DateTime();
-     DateTime end = new DateTime(2025, 2, 20, 3, 0, 0);
-     String name = new String("Dr Tutor");
-     String[] subjects = new String[] {"Math", "Science"};
-     timeSlot mts = new TimeSlot(start, end, name, subjects);
-
-     System.out.println(mts.getStartTime());
-     System.out.println(mts.getEndTime());
-     System.out.println(mts.getTutorName());
-     System.out.println(mts.getSubjects());
-     //-------------------
-
+    public String getBookedBy() { 
+        return bookedBy;
     }
+    public static void main(String[] args){
+           //------------------- Testing block!
+           DateTime start = new DateTime(2025, 2, 20, 1, 0);
+           DateTime end = new DateTime(2025, 2, 20, 3, 0);
+           String name = new String("Dr Tutor");
+           String[] subjects = new String[] {"Math", "Science"};
+           TimeSlot mts = new TimeSlot(start, end, name, subjects);
+   
+           System.out.println(mts.getStartTime());
+           System.out.println(mts.getEndTime());
+           System.out.println(mts.getTutorName());
+           System.out.println(Arrays.toString(mts.getSubjects()));
+           //-------------------
+    }
+   
 }
