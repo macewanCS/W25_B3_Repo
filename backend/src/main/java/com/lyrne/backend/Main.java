@@ -33,6 +33,7 @@ public class Main {
                 .post("api/private/user", ctx -> Optional.ofNullable(ctx.sessionAttribute("user")).ifPresent(user -> {
                     ((User) user).update(JsonParser.parseString(ctx.body()).getAsJsonObject());
                     DatabaseManager.saveUser(((User) user));
+                    ctx.result(user.toString());
                 }))
 
                 .start(8820);
