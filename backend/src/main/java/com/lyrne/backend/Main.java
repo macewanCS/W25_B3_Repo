@@ -1,7 +1,9 @@
 package com.lyrne.backend;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import com.lyrne.backend.services.AuthManager;
+import com.lyrne.backend.services.DatabaseManager;
 import io.javalin.Javalin;
 import me.mrnavastar.sqlib.impl.config.NonMinecraft;
 
@@ -27,6 +29,13 @@ public class Main {
                 .get("/api/private/user", ctx -> Optional.ofNullable(ctx.sessionAttribute("user"))
                         .ifPresent(user -> ctx.result(user.toString())), User.Role.ANYONE)
 
-                .start(8820);       
+                // Handle updating user data
+                .post("api/private/user", ctx -> Optional.ofNullable(ctx.sessionAttribute("user")).ifPresent(user -> {
+                    ((User) user).update(JsonParser.parseString(ctx.body()).getAsJsonObject());
+                    DatabaseManager.saveUser(((User) user));
+                    ctx.result(user.toString());
+                }))
+
+                .start(8820);
     }
 }
