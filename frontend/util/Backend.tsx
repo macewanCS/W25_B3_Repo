@@ -2,9 +2,9 @@ import {useSession} from "@/components/Context";
 
 const backendUrl = "https://lyrne.mrnavastar.me"
 
-export async function fetchUserData(): Promise<any> {
-    const { session } = useSession();
+//TODO: add some form of caching to this class to reduce lookups and improve the app responsiveness
 
+export async function fetchUserData(session: any): Promise<any> {
     if (!session.jwt) {
         throw new Error(`Invalid token: ${session.jwt}`);
     }
@@ -29,9 +29,7 @@ export async function fetchUserData(): Promise<any> {
     }
 }
 
-export async function updateUserData(data: any) {
-    const { session } = useSession();
-
+export async function updateUserData(data: any, session: any): Promise<any> {
     if (!session.jwt) {
         throw new Error(`Invalid token: ${session.jwt}`);
     }
@@ -43,7 +41,7 @@ export async function updateUserData(data: any) {
                 "Authorization": `${session.jwt}`,
                 "Content-Type": "application/json"
             },
-            body: data
+            body: JSON.stringify(data)
         });
 
         if (!response.ok) {

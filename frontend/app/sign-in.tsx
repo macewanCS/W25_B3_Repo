@@ -8,13 +8,16 @@ import { GoogleSignIn } from "@/components/ui/SignInButtonGoogle";
 import { WebSignIn } from "@/components/ui/SignInButtonWeb";
 import LyrneLogo from '@/assets/images/lyrne-logo-clear.png';
 import {fetchUserData, updateUserData} from "@/util/Backend";
+import {useSession} from "@/components/Context";
 
 export default function SignIn() {
+    const { session } = useSession();
     const [modalVisible, setModalVisible] = useState(false);
     const colorScheme = useColorScheme();
 
     // Create new user or redirect if already logged in
-    fetchUserData().then(data => {
+    fetchUserData(session).then(data => {
+        console.log(data);
         if (data.role == "ANYONE") setModalVisible(true);
         else router.replace('/');
     })
@@ -35,11 +38,6 @@ export default function SignIn() {
                     <WebSignIn />
                 )}
             </ThemedView>
-            <Pressable
-                style={[styles.button, styles.buttonOpen]}
-                onPress={() => setModalVisible(true)}>
-                <Text style={styles.textStyle}>Show Modal</Text>
-            </Pressable>
 
             <Modal
                 animationType="slide"
@@ -57,9 +55,9 @@ export default function SignIn() {
                             <View>
                                 <Pressable
                                     style={[styles.button, styles.buttonClose]}
-                                    onPress={() => {
+                                    onPress={async () => {
                                         setModalVisible(false);
-                                        updateUserData({ role: "STUDENT" });
+                                        await updateUserData({role: "STUDENT"}, session);
                                     }}
                                     >
                                     <Text style={styles.textStyle}>Student</Text>
@@ -68,9 +66,9 @@ export default function SignIn() {
                             <View>
                                 <Pressable
                                     style={[styles.button, styles.buttonClose]}
-                                    onPress={() => {
+                                    onPress={async () => {
                                         setModalVisible(false);
-                                        updateUserData({ role: "TUTOR" });
+                                        await updateUserData({ role: "TUTOR" }, session);
                                     }}
                                 >
                                     <Text style={styles.textStyle}>Tutor</Text>
