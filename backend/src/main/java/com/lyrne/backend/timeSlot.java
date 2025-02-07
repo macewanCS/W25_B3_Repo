@@ -46,13 +46,25 @@ public class timeSlot{ // A timeslot object that can be created by a tutor
         booked = true;
     }
     public void cancelTimeSlot(){
-        this.bookedBy = ""; 
+        this.bookedBy = new String(""); 
         booked = false;
     }
 
 
 
-    public static void main(String[] args){
-        
+    public static void main(String[] args){ // testing
+     //-------------------
+     DateTime start = new DateTime();
+     DateTime end = new DateTime(2025, 2, 20, 3, 0, 0);
+     String name = new String("Dr Tutor");
+     String[] subjects = new String[] {"Math", "Science"};
+     timeSlot mts = new TimeSlot(start, end, name, subjects);
+
+     System.out.println(mts.getStartTime());
+     System.out.println(mts.getEndTime());
+     System.out.println(mts.getTutorName());
+     System.out.println(mts.getSubjects());
+     //-------------------
+
     }
 }
