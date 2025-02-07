@@ -6,11 +6,13 @@ public class timeSlot{ // A timeslot object that can be created by a tutor
 
     String tutor; // The tutor's name, will be automatically put down 
 
-    Interval timeSlotInterval();
+    Interval timeSlotInterval;
 
     String[] subjects; // the tutor will likely have multiple teachable subjects
-    boolean Booked; // determining if a time slot is booked by a student might be more complicated than a boolean but you get the idea
+    boolean booked; // determining if a time slot is booked by a student might be more complicated than a boolean but you get the idea
     
+    String bookedBy; // the student whom booked the timeslot
+
     public void timeSlot(DateTime start, DateTime end, String tutorName, String[] subjects){ 
         // note: not sure what type of object the start/end time will be. its a DateTime here but i'll change it accordingly
         
@@ -36,10 +38,33 @@ public class timeSlot{ // A timeslot object that can be created by a tutor
         return subjects;
     }
     
-    public void book
+    public boolean isBooked(){
+        return booked;
+    }
+    public void bookTimeSlot(String studentName){
+        this.bookedBy = studentName; // later perhaps a user ID so that two people can have the same name
+        booked = true;
+    }
+    public void cancelTimeSlot(){
+        this.bookedBy = new String(""); 
+        booked = false;
+    }
 
 
-    public static void main(String[] args){
-        
+
+    public static void main(String[] args){ // testing
+     //-------------------
+     DateTime start = new DateTime();
+     DateTime end = new DateTime(2025, 2, 20, 3, 0, 0);
+     String name = new String("Dr Tutor");
+     String[] subjects = new String[] {"Math", "Science"};
+     timeSlot mts = new TimeSlot(start, end, name, subjects);
+
+     System.out.println(mts.getStartTime());
+     System.out.println(mts.getEndTime());
+     System.out.println(mts.getTutorName());
+     System.out.println(mts.getSubjects());
+     //-------------------
+
     }
 }
