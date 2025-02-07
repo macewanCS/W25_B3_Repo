@@ -1,19 +1,22 @@
 package com.lyrne.backend;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import io.javalin.security.RouteRole;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
 import java.util.ArrayList;
 
 @Getter
+@Setter
 @RequiredArgsConstructor
 public class User {
 
-    enum Role implements RouteRole { ANYONE, STUDENT, PARENT, TUTOR, ADMIN }
+    enum Role implements RouteRole { ANYONE, STUDENT, PARENT, TUTOR }
 
     // All users
     private final String id;
@@ -31,6 +34,25 @@ public class User {
 
     public JsonObject asJson() {
         return Main.GSON.toJsonTree(this).getAsJsonObject();
+    }
+
+    public static User fromJson(JsonElement json) {
+        return Main.GSON.fromJson(json, User.class);
+    }
+
+    public void update(JsonObject json) {
+        JsonObject original = this.asJson();
+        for (String keys : json.keySet()) {
+            JsonElement element = json.get(keys);
+            if (element != null) original.add(keys, element);
+        }
+
+        User updated = fromJson(original);
+        this.role = updated.role;
+        this.username = updated.username;
+        this.email = updated.email;
+        this.phone = updated.phone;
+        this.icon = updated.icon;
     }
 
     @Override
