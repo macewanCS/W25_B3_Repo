@@ -97,9 +97,7 @@ public class TimeSlot{ // A timeslot object that can be created by a tutor
            String name = new String("Dr Tutor");
            TimeSlot mts = new TimeSlot(start, end, name);
    
-           System.out.println(mts.getStartTime());
-           System.out.println(mts.getEndTime());
-           System.out.println(mts.getTutorName());
+        
 
 
 
