@@ -6,6 +6,7 @@ import me.mrnavastar.sqlib.api.DataStore;
 import me.mrnavastar.sqlib.api.database.Database;
 
 import java.util.ArrayList;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class DatabaseManager {
 
@@ -13,15 +14,20 @@ public class DatabaseManager {
     // This is an example of how to setup a data store
     private static final DataStore someCoolStore = DB.dataStore("lyrne", "someCoolStore");
 
+    // Fake database, remove when setting up real database
+    private static final ConcurrentHashMap<String, User> fakeDb = new ConcurrentHashMap<>();
+
     public static User getUser(String id) {
 
         // get a user by their id, create a new user no user could be found
 
-        return new User(id);
+        return fakeDb.computeIfAbsent(id, k -> new User(id));
     }
 
     public static void saveUser(User user) {
         // Save user to db
+
+        fakeDb.put(user.getId(), user);
     }
 
     public static ArrayList<User> searchUsers(String search) {
