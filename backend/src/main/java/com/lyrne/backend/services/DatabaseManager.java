@@ -11,8 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class DatabaseManager {
 
     private static final Database DB = SQLib.getDatabase();
-    // This is an example of how to setup a data store
-    private static final DataStore someCoolStore = DB.dataStore("lyrne", "someCoolStore");
+    DataStore lyrneStore = DB.dataStore("lyrne", "lyrneStore");
 
     // Fake database, remove when setting up real database
     private static final ConcurrentHashMap<String, User> fakeDb = new ConcurrentHashMap<>();
