@@ -21,6 +21,8 @@ public class TimeSlot{ // A timeslot object that can be created by a tutor
 
     public TimeSlot(DateTime start, DateTime end, String tutorName){ 
         // note: not sure what type of object the start/end time will be. its a DateTime here but i'll change it accordingly
+        this.start = start.toString();
+        this.end = end.toString();
         this.timeSlotInterval = new Interval(start, end); // i think this is how you do it in java tho ngl im copying an example
         
         this.tutor = tutorName; 
@@ -31,6 +33,10 @@ public class TimeSlot{ // A timeslot object that can be created by a tutor
         this.start = start;
         this.end = end;
         this.tutor = tutorName; 
+    }
+    public TimeSlot(DataContainer container){ // create a timeslot from the database 
+        
+        this.load(container);
     }
     
 
@@ -78,15 +84,23 @@ public class TimeSlot{ // A timeslot object that can be created by a tutor
         Optional<Boolean> ib = container.get(JavaTypes.BOOL, "isbooked");
         Optional<String> bb = container.get(JavaTypes.STRING, "bookedby");
         
-        // why do i have to check for schrodinger's cat man 
+        // why do i have to check for schrodinger's cat, man 
 
-        if (st.isPresent()) {this.start = st.get();} // sorry if this is a formatting faux pas
-        if (en.isPresent()) {this.end = en.get();} // i just want to reduce the line count for this function
-        if (tn.isPresent()) {this.tutor = tn.get();}
-        if (ib.isPresent()) {this.booked = ib.get();}
-        if (bb.isPresent()) {this.bookedBy = bb.get();}
+        if (st.isPresent()) this.start = st.get(); // sorry if this is a formatting faux pas
+        if (en.isPresent()) this.end = en.get(); // i just want to reduce the line count for this function
+        if (tn.isPresent()) this.tutor = tn.get();
+        if (ib.isPresent()) this.booked = ib.get();
+        if (bb.isPresent()) this.bookedBy = bb.get();
         this.timeSlotInterval = new Interval(DateTime.parse(this.start), DateTime.parse(this.end));
 
+    }
+
+    public void printInfo(){
+        System.out.println(this.start);
+        System.out.println(this.end);
+        System.out.println(this.tutor);
+        System.out.println(this.booked);
+        System.out.println(this.bookedBy);
     }
 
 
