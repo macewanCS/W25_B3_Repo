@@ -75,7 +75,9 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    padding: 32,
+    paddingTop: 32,
+    paddingBottom: 32,
+    // padding: 32, Commented out to prevent padding from being applied to the left and right of the content
     gap: 16,
     overflow: 'hidden',
   },
