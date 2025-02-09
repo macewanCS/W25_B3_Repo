@@ -18,21 +18,26 @@ public class TimeSlot{ // A timeslot object that can be created by a tutor
 
     private String start;
     private String end;
+    public String id; // the ID will just be a concatenation of the start time & tutor ID for now
 
-    public TimeSlot(DateTime start, DateTime end, String tutorName){ 
+    // to do: prevent overlapping bookings
+
+    public TimeSlot(DateTime start, DateTime end, String tutorID){ 
         
         this.start = start.toString();
         this.end = end.toString();
-        this.timeSlotInterval = new Interval(start, end); // i think this is how you do it in java tho ngl im copying an example
+        this.timeSlotInterval = new Interval(start, end); 
         
-        this.tutor = tutorName; 
+        this.tutor = tutorID; 
+        this.id = this.start.concat(tutorID);
     }
-    public TimeSlot(String start, String end, String tutorName){ 
+    public TimeSlot(String start, String end, String tutorID){ 
         
         this.timeSlotInterval = new Interval(DateTime.parse(start), DateTime.parse(end)); 
         this.start = start;
         this.end = end;
-        this.tutor = tutorName; 
+        this.tutor = tutorID;
+        this.id = this.start.concat(tutorID); 
     }
     public TimeSlot(DataContainer container){ // create a timeslot from the database. forgive me if this is not how we should do it but its how i think this works
         
@@ -48,12 +53,15 @@ public class TimeSlot{ // A timeslot object that can be created by a tutor
     public String getEndTime(){
         return timeSlotInterval.getEnd().toString();
     }
-    public String getTutorName(){
+    public String getTutorID(){
         return tutor;
     }
     
     public String getBookedBy() { 
         return bookedBy;
+    }
+    public String getID(){
+        return id;
     }
 
     public boolean isBooked(){
@@ -72,25 +80,28 @@ public class TimeSlot{ // A timeslot object that can be created by a tutor
     public void store(DataContainer container) {
     container.put(JavaTypes.STRING, "starttime", this.getStartTime());
     container.put(JavaTypes.STRING, "endtime", this.getEndTime());
-    container.put(JavaTypes.STRING, "tutorname", this.getTutorName());
+    container.put(JavaTypes.STRING, "tutorid", this.getTutorID());
     container.put(JavaTypes.BOOL, "isbooked", this.isBooked()); 
     container.put(JavaTypes.STRING, "bookedby", this.getBookedBy());
+    container.put(JavaTypes.STRING, "id", this.getID());
     }
 
     public void load(DataContainer container) {
         Optional<String> st = container.get(JavaTypes.STRING, "starttime");
         Optional<String> en = container.get(JavaTypes.STRING, "endtime");
-        Optional<String> tn = container.get(JavaTypes.STRING, "tutorname");
+        Optional<String> tn = container.get(JavaTypes.STRING, "tutorid");
         Optional<Boolean> ib = container.get(JavaTypes.BOOL, "isbooked");
         Optional<String> bb = container.get(JavaTypes.STRING, "bookedby");
+        Optional<String> id = container.get(JavaTypes.STRING, "id");
         
         // why do i have to check for schrodinger's cat, man 
 
-        if (st.isPresent()) this.start = st.get(); // sorry if this is a formatting faux pas
-        if (en.isPresent()) this.end = en.get(); // i just want to reduce the line count for this function
+        if (st.isPresent()) this.start = st.get(); 
+        if (en.isPresent()) this.end = en.get(); 
         if (tn.isPresent()) this.tutor = tn.get();
         if (ib.isPresent()) this.booked = ib.get();
         if (bb.isPresent()) this.bookedBy = bb.get();
+        if (id.isPresent()) this.id = id.get();
         this.timeSlotInterval = new Interval(DateTime.parse(this.start), DateTime.parse(this.end));
 
     }
@@ -101,6 +112,7 @@ public class TimeSlot{ // A timeslot object that can be created by a tutor
         System.out.println(this.tutor);
         System.out.println(this.booked);
         System.out.println(this.bookedBy);
+        System.out.println(this.id);
     }
 
 

@@ -8,7 +8,9 @@ import me.mrnavastar.sqlib.api.DataStore;
 import me.mrnavastar.sqlib.api.database.Database;
 
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.Optional;
 
 import org.joda.time.DateTime;
 
@@ -19,29 +21,43 @@ public class DatabaseManager {
     public static DataStore userStore = DB.dataStore("lyrne", "UserStore");
 
     // Fake database, remove when setting up real database
-    private static final ConcurrentHashMap<String, User> fakeDb = new ConcurrentHashMap<>();
 
     public static User getUser(String id) {
-
+        User user = new User(id);
         // get a user by their id, create a new user no user could be found
-
-        return fakeDb.computeIfAbsent(id, k -> new User(id));
+        Optional<DataContainer> dc = userStore.getContainer("id", id);
+        DataContainer container;
+        if (dc.isPresent()) container = dc.get();
+        else container = null; // maybe raise error here later
+        if (container != null){
+            
+            user.load(container);  
+        }
+        return user;
+         
     }
 
     public static void saveUser(User user) {
-        // Save user to db
+        DataContainer container = userStore.createContainer();
+        user.store(container);
 
-        fakeDb.put(user.getId(), user);
     }
 
-    public static ArrayList<User> searchUsers(String search) {
+    public static TimeSlot getTimeSlot(String id){ // the timeslot ID is (currently) a concatenation of the DateTime in string format (.toString()) and the tutor user ID 
+        
+        Optional<DataContainer> dc = timeSlotStore.getContainer("id", id);
+        DataContainer container;
+        if (dc.isPresent()) container = dc.get();
+        else container = null; 
+        if (container != null){
+            TimeSlot ts = new TimeSlot(container);
+            return ts; 
+        }
+        else throw new NoSuchElementException("No time slot found for id: " + id);
+        
+    }            
 
-        // search for users by some query? idk lol
-
-        return new ArrayList<>();
     }
-
-    // testing timeslot db store and retrieval
 
      
 
