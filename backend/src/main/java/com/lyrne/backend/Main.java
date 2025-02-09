@@ -5,10 +5,13 @@ import com.google.gson.JsonParser;
 import com.lyrne.backend.services.AuthManager;
 import com.lyrne.backend.services.DatabaseManager;
 import io.javalin.Javalin;
+import me.mrnavastar.sqlib.api.DataContainer;
 import me.mrnavastar.sqlib.impl.config.NonMinecraft;
 
 import java.nio.file.Path;
 import java.util.Optional;
+
+import org.joda.time.DateTime;
 
 public class Main {
 
@@ -37,5 +40,24 @@ public class Main {
                 }))
 
                 .start(8820);
+
+     // --------- testing db stuff
+        DateTime start = new DateTime(2025, 2, 20, 1, 0);
+        DateTime end = new DateTime(2025, 2, 20, 3, 0);
+        String name = new String("Dr Tutor");
+        TimeSlot mts1 = new TimeSlot(start, end, name);
+
+        DataContainer testContainer = DatabaseManager.timeSlotStore.createContainer();
+        
+        mts1.store(testContainer);
+
+        TimeSlot mts2 = new TimeSlot(testContainer);
+        System.out.println("Retrieved Timeslot: ");
+        mts2.printInfo();
+        
+
+
+
+        //-------------------
     }
 }

@@ -105,17 +105,7 @@ public class TimeSlot{ // A timeslot object that can be created by a tutor
 
 
     public static void main(String[] args){
-           //------------------- Testing block!
-           DateTime start = new DateTime(2025, 2, 20, 1, 0);
-           DateTime end = new DateTime(2025, 2, 20, 3, 0);
-           String name = new String("Dr Tutor");
-           TimeSlot mts = new TimeSlot(start, end, name);
-   
         
-
-
-
-           //-------------------
     }
    
 }
