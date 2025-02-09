@@ -55,7 +55,12 @@ public class DatabaseManager {
         }
         else throw new NoSuchElementException("No time slot found for id: " + id);
         
-    }            
+    }    
+    
+    public static void saveTimeSlot(TimeSlot timeslot){
+        DataContainer container = timeSlotStore.createContainer();
+        timeslot.store(container);
+    }
 
     }
 
@@ -63,4 +68,4 @@ public class DatabaseManager {
 
 
 
-}
+
