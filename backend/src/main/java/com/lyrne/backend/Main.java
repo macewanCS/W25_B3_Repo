@@ -41,7 +41,8 @@ public class Main {
 
                 .start(8820);
 
-     // --------- testing db stuff
+     /* --------- testing db stuff, uncomment it if you wanna look
+
         DateTime start = new DateTime(2025, 2, 20, 1, 0);
         DateTime end = new DateTime(2025, 2, 20, 3, 0);
         String name = new String("Dr Tutor");
@@ -54,10 +55,18 @@ public class Main {
         TimeSlot mts2 = new TimeSlot(testContainer);
         System.out.println("Retrieved Timeslot: ");
         mts2.printInfo();
+
+        User user1 = new User("666f72746e697465", "jones5", "jjones@gmail.com", "0702102017");
         
+        DataContainer testContainer2 = DatabaseManager.userStore.createContainer();
+        user1.store(testContainer2);
+
+        User user2 = new User(testContainer2);
+        System.out.println("Retrieved User: ");
+        user2.printInfo();
 
 
 
-        //-------------------
+        //-------------------*/
     }
 }

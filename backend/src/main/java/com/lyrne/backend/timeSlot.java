@@ -20,7 +20,7 @@ public class TimeSlot{ // A timeslot object that can be created by a tutor
     private String end;
 
     public TimeSlot(DateTime start, DateTime end, String tutorName){ 
-        // note: not sure what type of object the start/end time will be. its a DateTime here but i'll change it accordingly
+        
         this.start = start.toString();
         this.end = end.toString();
         this.timeSlotInterval = new Interval(start, end); // i think this is how you do it in java tho ngl im copying an example
@@ -28,13 +28,13 @@ public class TimeSlot{ // A timeslot object that can be created by a tutor
         this.tutor = tutorName; 
     }
     public TimeSlot(String start, String end, String tutorName){ 
-        // note: not sure what type of object the start/end time will be. its a DateTime here but i'll change it accordingly
+        
         this.timeSlotInterval = new Interval(DateTime.parse(start), DateTime.parse(end)); 
         this.start = start;
         this.end = end;
         this.tutor = tutorName; 
     }
-    public TimeSlot(DataContainer container){ // create a timeslot from the database 
+    public TimeSlot(DataContainer container){ // create a timeslot from the database. forgive me if this is not how we should do it but its how i think this works
         
         this.load(container);
     }

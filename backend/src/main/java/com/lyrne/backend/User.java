@@ -37,6 +37,23 @@ public class User {
     // TODO: idk if this is the best way to store availability, but it seems simple enough??
     private final ArrayList<Interval> availability = new ArrayList<>();
 
+    // needed to make a constructor to test
+    public User(String id, String username, String email, String phone){ 
+        this.id = id;
+        this.username = username;
+        this.email = email;
+        this.phone = phone;
+        this.created = new DateTime();
+
+    }
+    public User(DataContainer container){ // create a user from the database. forgive me if this is not how we should do it but its how i think this works
+        Optional<String> id = container.get(JavaTypes.STRING, "id");
+        if (id.isPresent()) this.id = id.get();
+        else this.id = null; 
+
+        this.load(container);
+    }
+
     public JsonObject asJson() {
         return Main.GSON.toJsonTree(this).getAsJsonObject();
     }
@@ -65,21 +82,40 @@ public class User {
         return asJson().toString();
     }
 
-    public void store(DataContainer container) {
+    public void store(DataContainer container) { // lowkey not sure how to best do "subjects" 
+        container.put(JavaTypes.STRING, "id", this.id);
         container.put(JavaTypes.STRING, "username", this.username);
         container.put(JavaTypes.STRING, "email", this.email);
         container.put(JavaTypes.STRING, "phone", this.phone);
         container.put(JavaTypes.STRING, "icon", this.icon);
         container.put(JavaTypes.INT, "role", this.role.ordinal());
+        if (this.lastLogin != null) container.put(JavaTypes.STRING, "lastlogin", this.lastLogin.toString());
+        container.put(JavaTypes.STRING, "created", this.created.toString());
     }
 
     public void load(DataContainer container) {
+        
         Optional<String> un = container.get(JavaTypes.STRING, "username");
         Optional<String> em = container.get(JavaTypes.STRING, "email");
         Optional<String> ph = container.get(JavaTypes.STRING, "phone");
         Optional<String> ic = container.get(JavaTypes.STRING, "icon");
         Optional<Integer> ro = container.get(JavaTypes.INT, "role");
+        Optional<String> ll = container.get(JavaTypes.STRING, "lastlogin");
+        Optional<String> cr = container.get(JavaTypes.STRING, "created");
 
+        if (un.isPresent()) this.username = un.get(); 
+        if (em.isPresent()) this.email = em.get(); 
+        if (ph.isPresent()) this.phone = ph.get();
+        if (ic.isPresent()) this.icon = ic.get();
+        if (ro.isPresent()) this.role = Role.values()[ro.get()];
+        if (ll.isPresent()) this.lastLogin = DateTime.parse(ll.get());
+        if (cr.isPresent()) this.created = DateTime.parse(cr.get());
+    }
+    public void printInfo(){ // just for testin
+        System.out.println(this.username);
+        System.out.println(this.email);
+        System.out.println(this.phone);
+        System.out.println(this.created.toString());
     }
 
 }
