@@ -16,16 +16,16 @@ export default function SignIn() {
     const colorScheme = useColorScheme();
     const bgColor = colorScheme === 'light' ? '#e6e6e6' : undefined;
 
-    // // Create new user or redirect if already logged in
-    // fetchUserData(session).then(data => {
-    //     console.log(data);
-    //     if (data.role == "ANYONE") setModalVisible(true);
-    //     else router.replace('/');
-    // })
-    React.useEffect(() => {
-        // Temporary Override to fetchUserData (for Android & Web testing)
-        if(session) router.replace('/');
-    }, [session]);
+    // Create new user or redirect if already logged in
+    fetchUserData(session).then(data => {
+        console.log(data);
+        if (data.role == "ANYONE") setModalVisible(true);
+        else router.replace('/');
+    })
+    // // Temporary Bypass to fetchUserData (for Android & Web testing)
+    // React.useEffect(() => {
+    //     if(session) router.replace('/');
+    // }, [session]);
 
     return (
         <ThemedView style={styles.signinContainer}>
