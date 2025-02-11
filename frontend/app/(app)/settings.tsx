@@ -25,6 +25,7 @@ export default function TabFourScreen () {
   const Username = "@johndoe";
   const PhoneNumber = "+1 (780) 123-4567";
   const AccountCreated = "January 2025";
+  const Role = "Student";
 
   return (
     <ThemedView style={styles.container}> 
@@ -45,6 +46,7 @@ export default function TabFourScreen () {
         </ThemedView>
         <ThemedView style={styles.content}>
           <ThemedText style={styles.nameInput}>
+            [ {Role} ]{"\n"}
             {Name}
           </ThemedText>
           <ThemedView style={styles.infoContainer}>
@@ -206,7 +208,7 @@ const styles = StyleSheet.create({
     width: "75%"
   },
   buttonText: { 
-    color: "white", 
+    color: "black", 
     fontSize: 16, 
     fontWeight: "bold" 
   }
