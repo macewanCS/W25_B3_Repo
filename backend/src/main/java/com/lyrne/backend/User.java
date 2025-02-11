@@ -93,7 +93,7 @@ public class User {
         container.put(JavaTypes.STRING, "icon", this.icon);
         container.put(JavaTypes.INT, "role", this.role.ordinal());
         if (this.lastLogin != null) container.put(JavaTypes.STRING, "lastlogin", this.lastLogin.toString());
-        container.put(JavaTypes.STRING, "created", this.created.toString());
+        if (this.created != null) container.put(JavaTypes.STRING, "created", this.created.toString());
     }
 
     public void load(DataContainer container) {

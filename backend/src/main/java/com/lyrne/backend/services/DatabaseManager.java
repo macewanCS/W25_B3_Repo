@@ -42,6 +42,11 @@ public class DatabaseManager {
         return user;
          
     }
+    public static ArrayList<User> getTutors(int amount) {
+        // needs to be rewritten for the new database
+        ArrayList<User> query = new ArrayList<>();
+        return query;
+    }
 
     public static void saveUser(User user) {
         if (user.role.ordinal() == 3){
