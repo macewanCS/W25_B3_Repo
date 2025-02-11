@@ -56,6 +56,7 @@ public class DatabaseManager {
 
     }
 
+
     public static TimeSlot getTimeSlot(String id){ // the timeslot ID is (currently) a concatenation of the DateTime in string format (.toString()) and the tutor user ID 
         
         Optional<DataContainer> dc = timeSlotStore.getContainer("id", id);

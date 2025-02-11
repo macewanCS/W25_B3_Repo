@@ -1,86 +1,213 @@
-import { StyleSheet, Image, Platform, Text } from 'react-native';
+import React from "react";
+import { View, Text, TextInput, Image, TouchableOpacity, StyleSheet, useColorScheme } from "react-native";
+import { MaterialIcons } from '@expo/vector-icons';
+import { ThemedText } from "@/components/ThemedText";
+import { ThemedView } from "@/components/ThemedView";
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+import PlaceholderPhoto from "@/assets/images/profile-picture-placeholder.png";
 
-import { Collapsible } from '@/components/Collapsible';
-import { ExternalLink } from '@/components/ExternalLink';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-import { IconSymbol } from '@/components/ui/IconSymbol';
-import Ripple from 'react-native-material-ripple';
 
-export default function TabFourScreen() {
+export default function TabFourScreen () {
+  // const colorScheme = useColorScheme();
+  // const textColor = colorScheme === 'dark' ? 'white' : 'black';
+  // const textColorInverse = colorScheme === 'dark' ? 'black' : 'white';
+  const tabBarHeight = useBottomTabBarHeight();
+
+  const handleSave = () => {
+    // TODO: remove test log
+    console.log(`Saved new info to ${Name}`);
+  };
+
+  // TODO: Replace with actual user data
+  // Currently Hardcoded Data
+  const Name = "John Doe";
+  const Email = "johndoe@email.com";
+  const Username = "@johndoe";
+  const PhoneNumber = "+1 (780) 123-4567";
+  const AccountCreated = "January 2025";
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
-      headerImage={
-        <IconSymbol
-          size={310}
-          color="#808080"
-          name="gear"
-          style={styles.headerImage}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Account Info:</ThemedText>
+    <ThemedView style={styles.container}> 
+      <ThemedView style={[styles.card, { marginBottom: tabBarHeight }]}>
+        <ThemedView style={styles.header} />
+        <ThemedView style={styles.profileContainer}>
+          <ThemedView style={styles.profileWrapper}>
+            <ThemedView style={styles.profileImageContainer}>
+              <Image
+                source={PlaceholderPhoto}
+                style={styles.profileImage}
+              />
+            </ThemedView>
+            <TouchableOpacity style={styles.cameraOverlay}>
+              <MaterialIcons name="photo-camera" size={24} color="white" />
+            </TouchableOpacity>
+          </ThemedView>
+        </ThemedView>
+        <ThemedView style={styles.content}>
+          <ThemedText style={styles.nameInput}>
+            {Name}
+          </ThemedText>
+          <ThemedView style={styles.infoContainer}>
+            <ThemedView style={styles.infoRow}>
+              <MaterialIcons name="mail" size={20} color="gray" />
+              <TextInput
+                defaultValue={Email}
+                style={[styles.infoText]}
+                editable={false}
+              />
+            </ThemedView>
+            <ThemedView style={styles.infoRowEditable}>
+              <MaterialIcons name="alternate-email" size={20} color="gray" />
+              <TextInput
+                defaultValue={Username}
+                style={[styles.infoText]}
+              />
+              <TouchableOpacity>
+                <MaterialIcons name="edit" size={20} color="black" />
+              </TouchableOpacity>
+            </ThemedView>
+            <ThemedView style={styles.infoRowEditable}>
+              <MaterialIcons name="phone" size={20} color="gray" />
+              <TextInput
+                defaultValue={PhoneNumber}
+                style={[styles.infoText]}
+              />
+              <TouchableOpacity>
+                <MaterialIcons name="edit" size={20} color="black" />
+              </TouchableOpacity>
+            </ThemedView>
+          </ThemedView>
+          <ThemedView style={styles.footer}>
+            <MaterialIcons name="calendar-today" size={20} color="gray" />
+            <Text style={[styles.footerText]}>Account Created {AccountCreated}</Text>
+          </ThemedView>
+          {/* 
+          TODO:
+          Correctly center Save Changes Button 
+          */}
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.button} onPress={handleSave}>
+              <Text style={styles.buttonText}>Save Changes</Text>
+            </TouchableOpacity>
+          </View>
+        </ThemedView>
       </ThemedView>
-      <ThemedText>and so on...</ThemedText>
-      <Collapsible title="stuff">
-        <ThemedText>
-          This app has two screens:{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/explore.tsx</ThemedText>
-        </ThemedText>
-        <ThemedText>
-          The layout file in <ThemedText type="defaultSemiBold">app/(tabs)/_layout.tsx</ThemedText>{' '}
-          sets up the tab navigator.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/router/introduction">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <ThemedView style={{ flex: 1, justifyContent: 'flex-end', alignItems: 'center' }}>
-        <Ripple style={styles.logoutButton}
-          rippleColor="white"
-          rippleOpacity={0.05}
-          rippleDuration={300}
-          rippleCentered={true}
-          rippleContainerBorderRadius={10}
-          rippleFades={false}
-          onPress={() => {
-
-          }}>
-          <Text>Sign Out</Text>
-        </Ripple>
-      </ThemedView>
-    </ParallaxScrollView>
+    </ThemedView>
   );
-}
+};
+
 
 const styles = StyleSheet.create({
-  headerImage: {
-    color: '#808080',
-    bottom: -90,
-    left: -35,
-    position: 'absolute',
+  container: { 
+    flex: 1, 
+    alignItems: "center", 
+    justifyContent: "center", 
   },
-  titleContainer: {
-    flexDirection: 'row',
-    gap: 8,
+  card: { 
+    flex: 1, 
+    width: "100%", 
   },
-  link: {
-    marginTop: 15,
-    paddingVertical: 15,
-    color: '#03b6fc',
+  header: { 
+    height: 120, 
+    backgroundColor: "#e9c030", 
+    borderTopLeftRadius: 10, 
+    borderTopRightRadius: 10 
   },
-  logoutButton: {
-    alignItems: 'center',
-    backgroundColor: '#03b6fc',
+  profileContainer: { 
+    alignItems: "center", 
+    marginTop: -50 
+  },
+  profileWrapper: { 
+    position: "relative" 
+  },
+  profileImageContainer: { 
+    width: 96, 
+    height: 96, 
+    borderRadius: 48, 
+    backgroundColor: "#e5e7eb", 
+    overflow: "hidden",
+    marginTop: 16
+  },
+  profileImage: { 
+    width: "100%", 
+    height: "100%" 
+  },
+  cameraOverlay: { 
+    position: "absolute", 
+    top: 16, 
+    left: 0, 
+    right: 0, 
+    bottom: 0, 
+    alignItems: "center", 
+    justifyContent: "center", 
+    backgroundColor: "rgba(0,0,0,0.4)", 
+    borderRadius: 48 
+  },
+  content: { 
+    padding: 16,
+    flex: 1
+  },
+  nameInput: { 
+    fontSize: 20, 
+    fontWeight: "bold", 
+    textAlign: "center", 
+    borderBottomWidth: 1, 
+    borderBottomColor: "transparent", 
+    paddingVertical: 4 
+  },
+  infoContainer: { 
+    marginTop: 16 
+  },
+  infoRow: { 
+    flexDirection: "row", 
+    alignItems: "center", 
+    backgroundColor: "#c7c8c9", 
+    padding: 16, 
     borderRadius: 10,
-    color: 'white',
-    justifyContent: 'center',
-    marginTop: 12,
-    padding: 10,
-    width: 250,
-    height: 40,
+    marginBottom: 10
   },
+  infoRowEditable: { 
+    flexDirection: "row", 
+    alignItems: "center", 
+    backgroundColor: "#c7c8c9", 
+    padding: 16, 
+    borderRadius: 10, 
+    justifyContent: "space-between",
+    marginBottom: 10
+  },
+  infoText: { 
+    flex: 1, 
+    marginLeft: 10, 
+    fontSize: 16 
+  },
+  footer: { 
+    alignItems: "center", 
+    marginTop: 16, 
+    paddingVertical: 16, 
+    borderTopWidth: 1, 
+    borderTopColor: "#e5e7eb" 
+  },
+  footerText: { 
+    color: "gray", 
+    fontSize: 14, 
+  },
+  buttonContainer: {
+    alignItems: "center",
+    position: "absolute",
+    bottom: 0,
+    width: "100%",
+    marginBottom: 16
+  },
+  button: { 
+    backgroundColor: "#a4becf", 
+    paddingVertical: 12, 
+    alignItems: "center", 
+    borderRadius: 10,
+    width: "75%"
+  },
+  buttonText: { 
+    color: "white", 
+    fontSize: 16, 
+    fontWeight: "bold" 
+  }
 });

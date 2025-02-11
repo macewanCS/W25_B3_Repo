@@ -22,6 +22,8 @@ public class User {
 
     public enum Role implements RouteRole { ANYONE, STUDENT, PARENT, TUTOR }
 
+    private transient boolean dirty = false; // Don't save this to database - is used to mark whether this user is out of sync with db
+
     // All users
     private final String id;
     public Role role = Role.ANYONE; // had to make it public to determine which store to put it in, unless there's a better way i don't know about
@@ -75,6 +77,7 @@ public class User {
         this.email = updated.email;
         this.phone = updated.phone;
         this.icon = updated.icon;
+        this.dirty = true;
     }
 
     @Override

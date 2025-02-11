@@ -14,6 +14,7 @@ export default function SignIn() {
     const { session } = useSession();
     const [modalVisible, setModalVisible] = useState(false);
     const colorScheme = useColorScheme();
+    const bgColor = colorScheme === 'light' ? '#e6e6e6' : undefined;
 
     // Create new user or redirect if already logged in
     fetchUserData(session).then(data => {
@@ -21,13 +22,17 @@ export default function SignIn() {
         if (data.role == "ANYONE") setModalVisible(true);
         else router.replace('/');
     })
+    // // Temporary Bypass to fetchUserData (for Android & Web testing)
+    // React.useEffect(() => {
+    //     if(session) router.replace('/');
+    // }, [session]);
 
     return (
         <ThemedView style={styles.signinContainer}>
-            <ThemedView style={styles.topHalf}>
+            <ThemedView style={[styles.topHalf, {backgroundColor: bgColor}]}>
                 <Image source={LyrneLogo} style={styles.logo} />
             </ThemedView>
-            <ThemedView style={styles.bottomHalf}>
+            <ThemedView style={[styles.bottomHalf, {backgroundColor: bgColor}]}>
                 {Platform.OS === 'ios' ? (
                     <AppleSignIn />
                 ) : Platform.OS === 'android' ? (
@@ -54,7 +59,10 @@ export default function SignIn() {
                         <View style={{ flexDirection:"row", gap: 10 }}>
                             <View>
                                 <Pressable
-                                    style={[styles.button, styles.buttonClose]}
+                                    style={({ pressed }) => [
+                                        { backgroundColor: pressed ? '#F194FF' : '#2196F3' },
+                                        styles.button
+                                    ]}
                                     onPress={async () => {
                                         setModalVisible(false);
                                         await updateUserData({role: "STUDENT"}, session);
@@ -65,7 +73,10 @@ export default function SignIn() {
                             </View>
                             <View>
                                 <Pressable
-                                    style={[styles.button, styles.buttonClose]}
+                                    style={({ pressed }) => [
+                                        { backgroundColor: pressed ? '#F194FF' : '#2196F3' },
+                                        styles.button
+                                    ]}
                                     onPress={async () => {
                                         setModalVisible(false);
                                         await updateUserData({ role: "TUTOR" }, session);
