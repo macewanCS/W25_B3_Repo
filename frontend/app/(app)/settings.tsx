@@ -107,7 +107,7 @@ export default function TabFourScreen () {
                     defaultValue={user.phone ? user.phone : PhoneNumber}
                     style={[styles.infoText]}
                     // TODO: validate phone number before submitting
-                    onSubmitEditing={value => updateUserData({number: value.nativeEvent.text}, session)}
+                    onSubmitEditing={value => updateUserData({phone: value.nativeEvent.text}, session)}
                 />
                 <TouchableOpacity>
                   <MaterialIcons name="edit" size={20} color="black" />
@@ -118,15 +118,6 @@ export default function TabFourScreen () {
               <MaterialIcons name="calendar-today" size={20} color="gray" />
               <Text style={[styles.footerText]}>Account Created {created}</Text>
             </ThemedView>
-            {/*
-          TODO:
-          Correctly center Save Changes Button
-          */}
-            <View style={styles.buttonContainer}>
-              <TouchableOpacity style={styles.button} onPress={handleSave}>
-                <Text style={styles.buttonText}>Save Changes</Text>
-              </TouchableOpacity>
-            </View>
           </ThemedView>
         </ThemedView>
       </ThemedView>
@@ -226,25 +217,7 @@ const styles = StyleSheet.create({
   },
   footerText: { 
     color: "gray", 
-    fontSize: 14, 
-  },
-  buttonContainer: {
-    alignItems: "center",
-    position: "absolute",
-    bottom: 0,
-    width: "100%",
-    marginBottom: 16
-  },
-  button: { 
-    backgroundColor: "#a4becf", 
-    paddingVertical: 12, 
-    alignItems: "center", 
-    borderRadius: 10,
-    width: "75%"
-  },
-  buttonText: { 
-    color: "black", 
-    fontSize: 16, 
-    fontWeight: "bold" 
+    fontSize: 14,
+    marginTop: 16
   }
 });
