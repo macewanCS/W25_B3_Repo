@@ -59,7 +59,10 @@ export default function SignIn() {
                         <View style={{ flexDirection:"row", gap: 10 }}>
                             <View>
                                 <Pressable
-                                    style={[styles.button, styles.buttonClose]}
+                                    style={({ pressed }) => [
+                                        { backgroundColor: pressed ? '#F194FF' : '#2196F3' },
+                                        styles.button
+                                    ]}
                                     onPress={async () => {
                                         setModalVisible(false);
                                         await updateUserData({role: "STUDENT"}, session);
@@ -70,7 +73,10 @@ export default function SignIn() {
                             </View>
                             <View>
                                 <Pressable
-                                    style={[styles.button, styles.buttonClose]}
+                                    style={({ pressed }) => [
+                                        { backgroundColor: pressed ? '#F194FF' : '#2196F3' },
+                                        styles.button
+                                    ]}
                                     onPress={async () => {
                                         setModalVisible(false);
                                         await updateUserData({ role: "TUTOR" }, session);

@@ -20,7 +20,6 @@ export default function TabTwoScreen() {
       }>
 
       <StyledCalendar />
-
     </ParallaxScrollView>
   );
 }

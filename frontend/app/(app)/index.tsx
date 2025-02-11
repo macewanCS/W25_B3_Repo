@@ -2,48 +2,27 @@ import { Image, StyleSheet, Platform, ScrollView } from 'react-native';
 import { HelloWave } from '@/components/HelloWave';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import {IconSymbol} from "@/components/ui/IconSymbol";
+import ParallaxScrollView from "@/components/ParallaxScrollView";
 // import ParallaxScrollView from '@/components/ParallaxScrollView';
 // Currently, the ParallaxScrollView component crashes after authentication.
 
 export default function HomeScreen() {
   return (
-    <ScrollView style={{ paddingTop: 100 }}>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome username!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12'
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ScrollView>
+      <ParallaxScrollView
+          headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
+          headerImage={
+            <IconSymbol
+                size={310}
+                color="#808080"
+                name="info.circle"
+                style={styles.headerImage}
+            />
+          }>
+        <ThemedView style={styles.titleContainer}>
+          <ThemedText type="title">Tutor Search</ThemedText>
+        </ThemedView>
+      </ParallaxScrollView>
   );
 }
 
