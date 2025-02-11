@@ -1,67 +1,105 @@
-import { Image, StyleSheet, Platform, ScrollView } from 'react-native';
+import React, { useState } from 'react';
+import { Image, StyleSheet, Platform, ScrollView, View, SafeAreaView, TouchableOpacity, Text } from 'react-native';
 import { HelloWave } from '@/components/HelloWave';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-// import ParallaxScrollView from '@/components/ParallaxScrollView';
+import ParallaxScrollView from '@/components/ParallaxScrollView';
+
 // Currently, the ParallaxScrollView component crashes after authentication.
 
+import { Agenda } from 'react-native-calendars';
+
 export default function HomeScreen() {
+  const today = new Date();
+  const currentDateString = today.toISOString().split('T')[0];
+  const [selectedDate, setSelectedDate] = useState(currentDateString);
+
+  const [items, setItems] = useState({
+    '2025-02-09': [],
+    '2025-02-10': [{name: 'Tutoring Session', data:'Ms. Johnson - 3:00 PM\nCourse: Mathematics\nLocation: Room 101', disabled: false}],
+    '2025-02-11': [],
+    '2025-02-12': [{name: 'Tutoring Session', data:'Mr. Stuart - 10:00 AM\nCourse: Physics\nLocation: Room 202'}],
+    '2025-02-13': [{name: 'Tutoring Session', data:'Mr. Brown - 1:00 PM\nCourse: Chemistry\nLocation: Room 303'}],
+    '2025-02-14': [{name: 'Tutoring Session', data:'Ms. Davis - 11:00 AM\nCourse: Biology\nLocation: Room 404'}],
+    '2025-02-15': [{name: 'Tutoring Session', data:'Mr. Wilson - 2:00 PM\nCourse: English Literature\nLocation: Room 505'}]
+  });
+
   return (
-    <ScrollView style={{ paddingTop: 100 }}>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome username!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12'
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ScrollView>
+    <SafeAreaView style={styles.container}>
+      <Agenda
+        // Agenda Docs https://wix.github.io/react-native-calendars/docs/Components/Agenda
+        items={items}
+
+        markingType={'period'}
+          markedDates={{
+              '2025-02-10': {startingDay: true, color: '#FDFD96', textColor: 'black', endingDay: true},
+              '2025-02-12': {startingDay: true, color: '#FDFD96', textColor: 'black', endingDay: true},
+              '2025-02-13': {startingDay: true, color: '#FDFD96', textColor: 'black', endingDay: true},
+              '2025-02-14': {startingDay: true, color: '#FDFD96', textColor: 'black', endingDay: true},
+              '2025-02-15': {startingDay: true, color: '#FDFD96', textColor: 'black', endingDay: true},
+              // [selected]: { selected: true, disableTouchEvent: true, selectedDotColor: 'orange' }
+        }}
+        
+        showClosingKnob={true}
+        onDayPress={(day) => setSelectedDate(day.dateString)}
+        minDate={'2025-02-09'} // Farthest back date that can be selected
+        onDayChange={(day) => {
+            setSelectedDate(currentDateString); // Always reset back to today
+          }}
+
+          selected={today}
+          renderItem={(item, isFirst) => (
+            <TouchableOpacity style={styles.item}>
+            <Text style={styles.itemText}>{item.name}</Text>
+            <Text style={styles.itemText}>{item.data}</Text>
+            </TouchableOpacity>
+          )}
+          renderEmptyDate={() => (
+            <ThemedView style={styles.item}>
+            <Text style={styles.itemText}> </Text>
+            </ThemedView>
+          )}
+
+          // *Meant to fix issues with elements displaying under bottom tab selector
+          // Issue seen with ios (iPhone 13), possible that its not a problem on other devices.
+          // Along with elements displaying under camera on android (Pixel 9)
+          style={{
+            ...(Platform.OS === 'ios' ? { bottom: 50, marginTop: 50 } : {}),
+            ...(Platform.OS === 'android' ? { marginTop: 50 } : {})
+          }} 
+
+          // TODO: Adapt this to colorScheme (dark and light mode). Currently matches dark.
+          theme={{
+            calendarBackground: '#141414', // #141414
+            monthTextColor: 'lightblue',
+            todayTextColor: '#e9c030', // #e9c030
+            dayTextColor: '#d9e1e8', // #d9e1e8
+            agendaKnobColor: '#e9c030', // #e9c030
+            reservationsBackgroundColor: '#1E1E1E', // #1E1E1E
+            agendaDayTextColor: 'white',
+            agendaDayNumColor: 'white'
+          }}
+      />
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  container: {
+    flex: 1,
+    justifyContent: 'center',
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  item: {
+    backgroundColor: '#a4becf',
+    flex: 1,
+    borderRadius: 5,
+    padding: 10,
+    marginRight: 10,
+    marginTop: 25,
+    paddingBottom:20
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
+  itemText: {
+    color: 'black',
+    fontSize: 16,
+  }
 });

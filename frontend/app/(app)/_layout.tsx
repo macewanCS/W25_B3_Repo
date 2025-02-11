@@ -36,28 +36,28 @@ export default function TabLayout() {
         }),
       }}>
       <Tabs.Screen
-        name="schedule"
+        name="index"
         options={{
-          title: 'Calendar',
+          title: 'Schedule',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="calendar" color={color} />,
         }}
       />
       <Tabs.Screen
-        name="index"
+        name="search"
         options={{
-          title: 'Main',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="person.fill" color={color} />,
+          title: 'Search',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="magnifyingglass" color={color} />,
         }}
       />
       <Tabs.Screen
-        name="search"
+        name="chats"
         options={{
           title: 'Chat',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="text.bubble.fill" color={color} />,
         }}
       />
       <Tabs.Screen
-        name="account"
+        name="settings"
         options={{
           title: 'Settings',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="gear" color={color} />,

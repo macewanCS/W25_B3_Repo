@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import React, { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
@@ -16,7 +16,7 @@ export function StyledCalendar() {
             </ThemedView>
 
             <Calendar
-                // Calendar Docs: https://wix.github.io/react-native-calendars/docs/Components/Calendar#onpressarrowleft
+                // Calendar Docs: https://wix.github.io/react-native-calendars/docs/Components/Calendar
 
                 // TODO: Set minDate to account creation date
                 minDate={'2025-01-01'} // Dates before this date will be disabled
@@ -27,6 +27,18 @@ export function StyledCalendar() {
                     width: '100%',
                     backgroundColor: '#141414',
                     // calendarBackground: 'black',
+                }}
+
+
+                // Hightlight Dates that have events
+                markingType={'period'}
+                markedDates={{
+                    '2025-02-10': {startingDay: true, color: '#FDFD96', textColor: 'black', endingDay: true},
+                    '2025-02-12': {startingDay: true, color: '#FDFD96', textColor: 'black', endingDay: true},
+                    '2025-02-13': {startingDay: true, color: '#FDFD96', textColor: 'black', endingDay: true},
+                    '2025-02-14': {startingDay: true, color: '#FDFD96', textColor: 'black', endingDay: true},
+                    '2025-02-15': {startingDay: true, color: '#FDFD96', textColor: 'black', endingDay: true},
+                    [selected]: { selected: true, disableTouchEvent: true, selectedDotColor: 'orange' }
                 }}
 
                 // Copy of default colors #141414, #b6c1cd, #00adf5, #e5e7eb, #e9c030, #2d4150, #d9e1e8, #a4becf
@@ -60,9 +72,6 @@ export function StyledCalendar() {
                 }}
                 onDayPress={day => {
                     setSelected(day.dateString);
-                }}
-                markedDates={{
-                    [selected]: { selected: true, disableTouchEvent: true, selectedDotColor: 'orange' }
                 }}
 
             />
