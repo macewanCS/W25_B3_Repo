@@ -1,22 +1,28 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import { StyleSheet, Platform, TextInput, FlatList, TouchableOpacity } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { IconSymbol } from '@/components/ui/IconSymbol';
+import {useSession} from "@/components/Context";
+import {fetchTutors} from "@/util/Backend";
+import TutorCard from "@/components/TutorCard";
 
 export default function TabTwoScreen({navigation}) {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredResults, setFilteredResults] = useState([]);
+  const { session } = useSession();
+  const [data, setData] = useState([])
 
-  // Testing data
+  useEffect(() => {
+        const getData = async () => {
+            let tutors = await fetchTutors(session);
+            console.log(tutors);
+            setData(tutors);
+        }
+        getData()
+  }, [])
+
   // TODO: implement search filtering by tutor, availability, etc.
-  const data = [
-    { id: "1", name: "Alice Johnson" },
-    { id: "2", name: "Lisa Davis" },
-    { id: "3", name: "Chuck Brown" },
-    { id: "4", name: "Jack Wilson" },
-  ];
-
   const handleSearch = (query) => {
     setSearchQuery(query);
     if (query.trim() === "") {
@@ -24,7 +30,7 @@ export default function TabTwoScreen({navigation}) {
     } else {
       setFilteredResults(
         data.filter((item) =>
-          item.name.toLowerCase().includes(query.toLowerCase())
+          item.username.toLowerCase().includes(query.toLowerCase())
         )
       );
     }
@@ -67,7 +73,7 @@ export default function TabTwoScreen({navigation}) {
                 // onPress={() => navigation.navigate("Profile", { userId: item.id })} // No navigation is set up right now
               >
                 {/* TODO: Change hardcoding of search results */}
-                <ThemedText style={styles.resultText}>Tutor: {item.name}</ThemedText>
+                <TutorCard user={item} />
               </TouchableOpacity>
             )}
           />
@@ -80,8 +86,6 @@ export default function TabTwoScreen({navigation}) {
     </ThemedView>
   );
 };
-
-
 
 const styles = StyleSheet.create({
   container: {
