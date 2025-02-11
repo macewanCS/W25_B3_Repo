@@ -16,7 +16,9 @@ import java.util.ArrayList;
 @RequiredArgsConstructor
 public class User {
 
-    enum Role implements RouteRole { ANYONE, STUDENT, PARENT, TUTOR }
+    public enum Role implements RouteRole { ANYONE, STUDENT, PARENT, TUTOR }
+
+    private transient boolean dirty = false; // Don't save this to database - is used to mark whether this user is out of sync with db
 
     // All users
     private final String id;
@@ -53,6 +55,7 @@ public class User {
         this.email = updated.email;
         this.phone = updated.phone;
         this.icon = updated.icon;
+        this.dirty = true;
     }
 
     @Override
