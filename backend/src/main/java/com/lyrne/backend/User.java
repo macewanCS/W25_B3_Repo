@@ -20,11 +20,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class User {
 
-    enum Role implements RouteRole { ANYONE, STUDENT, PARENT, TUTOR }
+    public enum Role implements RouteRole { ANYONE, STUDENT, PARENT, TUTOR }
 
     // All users
     private final String id;
-    private Role role = Role.ANYONE;
+    public Role role = Role.ANYONE; // had to make it public to determine which store to put it in, unless there's a better way i don't know about
     private DateTime created;
     private DateTime lastLogin;
 

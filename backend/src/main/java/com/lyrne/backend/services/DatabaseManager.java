@@ -10,6 +10,9 @@ import me.mrnavastar.sqlib.api.database.Database;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentHashMap;
+
+import javax.management.relation.Role;
+
 import java.util.Optional;
 
 import org.joda.time.DateTime;
@@ -18,6 +21,7 @@ public class DatabaseManager {
 
     private static final Database DB = SQLib.getDatabase();
     public static DataStore timeSlotStore = DB.dataStore("lyrne", "TimeSlotStore");
+    public static DataStore tutorStore = DB.dataStore("lyrne", "TutorStore");
     public static DataStore userStore = DB.dataStore("lyrne", "UserStore");
 
     // Fake database, remove when setting up real database
@@ -25,9 +29,11 @@ public class DatabaseManager {
     public static User getUser(String id) {
         User user = new User(id);
         // get a user by their id, create a new user no user could be found
-        Optional<DataContainer> dc = userStore.getContainer("id", id);
+        Optional<DataContainer> dc1 = tutorStore.getContainer("id", id);
+        Optional<DataContainer> dc2 = userStore.getContainer("id", id);
         DataContainer container;
-        if (dc.isPresent()) container = dc.get();
+        if (dc1.isPresent()) container = dc1.get();
+        else if (dc2.isPresent()) container = dc2.get();
         else container = null; // maybe raise error here later
         if (container != null){
             
@@ -38,8 +44,15 @@ public class DatabaseManager {
     }
 
     public static void saveUser(User user) {
-        DataContainer container = userStore.createContainer();
-        user.store(container);
+        if (user.role.ordinal() == 3){
+            DataContainer container = tutorStore.createContainer();
+            user.store(container);
+        }
+        else {
+            DataContainer container = userStore.createContainer();
+            user.store(container);
+        }
+        
 
     }
 

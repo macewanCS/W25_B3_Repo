@@ -2,6 +2,7 @@ package com.lyrne.backend;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonParser;
+import com.lyrne.backend.User.Role;
 import com.lyrne.backend.services.AuthManager;
 import com.lyrne.backend.services.DatabaseManager;
 import io.javalin.Javalin;
@@ -48,22 +49,25 @@ public class Main {
         String name = new String("Dr Tutor");
         TimeSlot mts1 = new TimeSlot(start, end, name);
 
-        DataContainer testContainer = DatabaseManager.timeSlotStore.createContainer();
-        
-        mts1.store(testContainer);
-
-        TimeSlot mts2 = new TimeSlot(testContainer);
+        DatabaseManager.saveTimeSlot(mts1);
+       
+        TimeSlot mts2 = DatabaseManager.getTimeSlot(mts1.getID());
         System.out.println("Retrieved Timeslot: ");
         mts2.printInfo();
 
         User user1 = new User("666f72746e697465", "jones5", "jjones@gmail.com", "0702102017");
+        User user7 = new User("686f7065", "hope5", "hhope@gmail.com", "1200302023");
         
-        DataContainer testContainer2 = DatabaseManager.userStore.createContainer();
-        user1.store(testContainer2);
+        user1.role = Role.TUTOR;
+        user7.role = Role.STUDENT;
+        DatabaseManager.saveUser(user1);
+        DatabaseManager.saveUser(user7);
 
-        User user2 = new User(testContainer2);
+        User user2 = DatabaseManager.getUser("666f72746e697465");
+        User user8 = DatabaseManager.getUser("686f7065");
         System.out.println("Retrieved User: ");
         user2.printInfo();
+        user8.printInfo();
 
 
 
