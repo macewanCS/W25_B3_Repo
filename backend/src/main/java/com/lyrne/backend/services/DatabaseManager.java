@@ -9,13 +9,8 @@ import me.mrnavastar.sqlib.api.database.Database;
 
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
-import java.util.concurrent.ConcurrentHashMap;
-
-import javax.management.relation.Role;
 
 import java.util.Optional;
-
-import org.joda.time.DateTime;
 
 public class DatabaseManager {
 
@@ -24,43 +19,32 @@ public class DatabaseManager {
     public static DataStore tutorStore = DB.dataStore("lyrne", "TutorStore");
     public static DataStore userStore = DB.dataStore("lyrne", "UserStore");
 
-    // Fake database, remove when setting up real database
-
     public static User getUser(String id) {
         User user = new User(id);
-        // get a user by their id, create a new user no user could be found
-        Optional<DataContainer> dc1 = tutorStore.getContainer("id", id);
-        Optional<DataContainer> dc2 = userStore.getContainer("id", id);
-        DataContainer container;
-        if (dc1.isPresent()) container = dc1.get();
-        else if (dc2.isPresent()) container = dc2.get();
-        else container = null; // maybe raise error here later
-        if (container != null){
-            
-            user.load(container);  
-        }
+        Optional<DataContainer> container = tutorStore.getContainer("id", id);
+        if (container.isEmpty()) container = userStore.getContainer("id", id);
+        container.ifPresent(user::load);
         return user;
-         
     }
+
     public static ArrayList<User> getTutors(int amount) {
-        // needs to be rewritten for the new database
         ArrayList<User> query = new ArrayList<>();
+        int count = 0;
+
+        for (DataContainer container : tutorStore.getContainers()) {
+            if (count == amount) break;
+
+            User tutor = new User(container);
+            query.add(tutor);
+            count++;
+        }
         return query;
     }
 
     public static void saveUser(User user) {
-        if (user.role.ordinal() == 3){
-            DataContainer container = tutorStore.createContainer();
-            user.store(container);
-        }
-        else {
-            DataContainer container = userStore.createContainer();
-            user.store(container);
-        }
-        
-
+        DataStore store = User.Role.TUTOR.equals(user.getRole()) ? tutorStore : userStore;
+        user.store(store.getOrCreateContainer("id", user.getId()));
     }
-
 
     public static TimeSlot getTimeSlot(String id){ // the timeslot ID is (currently) a concatenation of the DateTime in string format (.toString()) and the tutor user ID 
         
@@ -80,11 +64,4 @@ public class DatabaseManager {
         DataContainer container = timeSlotStore.createContainer();
         timeslot.store(container);
     }
-
-    }
-
-     
-
-
-
-
+}

@@ -10,6 +10,7 @@ import com.lyrne.backend.User;
 import io.javalin.http.Context;
 import io.javalin.http.UnauthorizedResponse;
 import lombok.SneakyThrows;
+import org.joda.time.DateTime;
 
 import java.net.URI;
 import java.net.URL;
@@ -55,6 +56,7 @@ public class AuthManager {
 
         User user = DatabaseManager.getUser(jwt.getSubject());
         user.setEmail(jwt.getClaim("email").asString());
+        user.setLastLogin(new DateTime());
         ctx.sessionAttribute("user", user);
         ctx.sessionAttribute("jwt", jwt);
     }
