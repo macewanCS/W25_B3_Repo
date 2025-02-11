@@ -16,7 +16,6 @@ export default function TabTwoScreen({navigation}) {
   useEffect(() => {
         const getData = async () => {
             let tutors = await fetchTutors(session);
-            console.log(tutors);
             setData(tutors);
         }
         getData()

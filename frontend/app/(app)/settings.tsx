@@ -1,10 +1,12 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import { View, Text, TextInput, Image, TouchableOpacity, StyleSheet, useColorScheme } from "react-native";
 import { MaterialIcons } from '@expo/vector-icons';
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import PlaceholderPhoto from "@/assets/images/profile-picture-placeholder.png";
+import {useSession} from "@/components/Context";
+import {fetchTutors, fetchUserData, updateUserData} from "@/util/Backend";
 
 
 export default function TabFourScreen () {
@@ -12,20 +14,27 @@ export default function TabFourScreen () {
   // const textColor = colorScheme === 'dark' ? 'white' : 'black';
   // const textColorInverse = colorScheme === 'dark' ? 'black' : 'white';
   const tabBarHeight = useBottomTabBarHeight();
+  const { session } = useSession();
+  const [user, setUserData] = useState([])
 
   const handleSave = () => {
-    // TODO: remove test log
-    console.log(`Saved new info to ${Name}`);
+    updateUserData(user, session).then();
   };
 
   // TODO: Replace with actual user data
   // Currently Hardcoded Data
   const Name = "John Doe";
-  const Email = "johndoe@email.com";
   const Username = "@johndoe";
   const PhoneNumber = "+1 (780) 123-4567";
-  const AccountCreated = "January 2025";
-  const Role = "Student";
+  const AccountCreated = "February 2025";
+
+  useEffect(() => {
+    const getData = async () => {
+      let userData = await fetchUserData(session);
+      setUserData(userData);
+    }
+    getData()
+  }, [])
 
   return (
     <ThemedView style={styles.container}> 
@@ -46,14 +55,14 @@ export default function TabFourScreen () {
         </ThemedView>
         <ThemedView style={styles.content}>
           <ThemedText style={styles.nameInput}>
-            [ {Role} ]{"\n"}
+            [ {user.role} ]{"\n"}
             {Name}
           </ThemedText>
           <ThemedView style={styles.infoContainer}>
             <ThemedView style={styles.infoRow}>
               <MaterialIcons name="mail" size={20} color="gray" />
               <TextInput
-                defaultValue={Email}
+                defaultValue={user.email}
                 style={[styles.infoText]}
                 editable={false}
               />
