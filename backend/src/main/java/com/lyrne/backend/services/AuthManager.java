@@ -56,7 +56,7 @@ public class AuthManager {
 
         User user = DatabaseManager.getUser(jwt.getSubject());
         user.setEmail(jwt.getClaim("email").asString());
-        user.setLastLogin(new DateTime());
+        user.setLastLogin(new DateTime().getMillis());
         ctx.sessionAttribute("user", user);
         ctx.sessionAttribute("jwt", jwt);
     }
