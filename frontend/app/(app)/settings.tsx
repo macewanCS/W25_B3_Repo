@@ -7,6 +7,8 @@ import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import PlaceholderPhoto from "@/assets/images/profile-picture-placeholder.png";
 import {useSession} from "@/components/Context";
 import {fetchTutors, fetchUserData, updateUserData} from "@/util/Backend";
+import * as ImagePicker from 'expo-image-picker';
+import * as FileSystem from 'expo-file-system';
 
 
 export default function TabFourScreen () {
@@ -15,95 +17,119 @@ export default function TabFourScreen () {
   // const textColorInverse = colorScheme === 'dark' ? 'black' : 'white';
   const tabBarHeight = useBottomTabBarHeight();
   const { session } = useSession();
-  const [user, setUserData] = useState([])
+  const [user, setUserData] = useState([]);
+  const [created, setCreated] = useState("");
+  const [image, setImage] = useState<string | null>(null);
 
   const handleSave = () => {
     updateUserData(user, session).then();
   };
 
-  // TODO: Replace with actual user data
-  // Currently Hardcoded Data
+  // TODO: Note that Name and Phone number are just defaults, they can be overwritten by the user and saved properly
   const Name = "John Doe";
-  const Username = "@johndoe";
   const PhoneNumber = "+1 (780) 123-4567";
-  const AccountCreated = "February 2025";
 
   useEffect(() => {
     const getData = async () => {
       let userData = await fetchUserData(session);
       setUserData(userData);
+      if (userData.icon) {
+        setImage({uri: userData.icon});
+      } else {
+        setImage(PlaceholderPhoto)
+      }
+      setCreated(new Date(userData.created).toDateString())
     }
     getData()
   }, [])
 
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      const base64 = await FileSystem.readAsStringAsync(result.assets[0].uri, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+      setImage({uri: result.assets[0].uri});
+      await updateUserData({icon: "data:image/png;base64," + base64}, session);
+    }
+  };
+
   return (
-    <ThemedView style={styles.container}> 
-      <ThemedView style={[styles.card, { marginBottom: tabBarHeight }]}>
-        <ThemedView style={styles.header} />
-        <ThemedView style={styles.profileContainer}>
-          <ThemedView style={styles.profileWrapper}>
-            <ThemedView style={styles.profileImageContainer}>
-              <Image
-                source={PlaceholderPhoto}
-                style={styles.profileImage}
-              />
-            </ThemedView>
-            <TouchableOpacity style={styles.cameraOverlay}>
-              <MaterialIcons name="photo-camera" size={24} color="white" />
-            </TouchableOpacity>
-          </ThemedView>
-        </ThemedView>
-        <ThemedView style={styles.content}>
-          <ThemedText style={styles.nameInput}>
-            [ {user.role} ]{"\n"}
-            {Name}
-          </ThemedText>
-          <ThemedView style={styles.infoContainer}>
-            <ThemedView style={styles.infoRow}>
-              <MaterialIcons name="mail" size={20} color="gray" />
-              <TextInput
-                defaultValue={user.email}
-                style={[styles.infoText]}
-                editable={false}
-              />
-            </ThemedView>
-            <ThemedView style={styles.infoRowEditable}>
-              <MaterialIcons name="alternate-email" size={20} color="gray" />
-              <TextInput
-                defaultValue={Username}
-                style={[styles.infoText]}
-              />
-              <TouchableOpacity>
-                <MaterialIcons name="edit" size={20} color="black" />
-              </TouchableOpacity>
-            </ThemedView>
-            <ThemedView style={styles.infoRowEditable}>
-              <MaterialIcons name="phone" size={20} color="gray" />
-              <TextInput
-                defaultValue={PhoneNumber}
-                style={[styles.infoText]}
-              />
-              <TouchableOpacity>
-                <MaterialIcons name="edit" size={20} color="black" />
+      <ThemedView style={styles.container}>
+        <ThemedView style={[styles.card, { marginBottom: tabBarHeight }]}>
+          <ThemedView style={styles.header} />
+          <ThemedView style={styles.profileContainer}>
+            <ThemedView style={styles.profileWrapper} >
+              <ThemedView style={styles.profileImageContainer} >
+                <Image
+                    source={image}
+                    style={styles.profileImage}
+                />
+              </ThemedView>
+              <TouchableOpacity style={styles.cameraOverlay} onPress={pickImage}>
+                <MaterialIcons name="photo-camera" size={24} color="white" />
               </TouchableOpacity>
             </ThemedView>
           </ThemedView>
-          <ThemedView style={styles.footer}>
-            <MaterialIcons name="calendar-today" size={20} color="gray" />
-            <Text style={[styles.footerText]}>Account Created {AccountCreated}</Text>
-          </ThemedView>
-          {/* 
+          <ThemedView style={styles.content}>
+            <ThemedText style={styles.nameInput}>
+              {user.role} {"\n"}
+            </ThemedText>
+            <ThemedView style={styles.infoContainer}>
+              <ThemedView style={styles.infoRow}>
+                <MaterialIcons name="mail" size={20} color="gray" />
+                <TextInput
+                    defaultValue={user.email}
+                    style={[styles.infoText]}
+                    editable={false}
+                />
+              </ThemedView>
+              <ThemedView style={styles.infoRowEditable}>
+                <MaterialIcons name="alternate-email" size={20} color="gray" />
+                <TextInput
+                    defaultValue={user.username ? user.username : Name}
+                    style={[styles.infoText]}
+                    onSubmitEditing={value => updateUserData({username: value.nativeEvent.text}, session)}
+                />
+                <TouchableOpacity>
+                  <MaterialIcons name="edit" size={20} color="black" />
+                </TouchableOpacity>
+              </ThemedView>
+              <ThemedView style={styles.infoRowEditable}>
+                <MaterialIcons name="phone" size={20} color="gray" />
+                <TextInput
+                    defaultValue={user.phone ? user.phone : PhoneNumber}
+                    style={[styles.infoText]}
+                    // TODO: validate phone number before submitting
+                    onSubmitEditing={value => updateUserData({number: value.nativeEvent.text}, session)}
+                />
+                <TouchableOpacity>
+                  <MaterialIcons name="edit" size={20} color="black" />
+                </TouchableOpacity>
+              </ThemedView>
+            </ThemedView>
+            <ThemedView style={styles.footer}>
+              <MaterialIcons name="calendar-today" size={20} color="gray" />
+              <Text style={[styles.footerText]}>Account Created {created}</Text>
+            </ThemedView>
+            {/*
           TODO:
-          Correctly center Save Changes Button 
+          Correctly center Save Changes Button
           */}
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.button} onPress={handleSave}>
-              <Text style={styles.buttonText}>Save Changes</Text>
-            </TouchableOpacity>
-          </View>
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity style={styles.button} onPress={handleSave}>
+                <Text style={styles.buttonText}>Save Changes</Text>
+              </TouchableOpacity>
+            </View>
+          </ThemedView>
         </ThemedView>
       </ThemedView>
-    </ThemedView>
   );
 };
 
