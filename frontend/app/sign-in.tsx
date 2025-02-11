@@ -18,7 +18,6 @@ export default function SignIn() {
 
     // Create new user or redirect if already logged in
     fetchUserData(session).then(data => {
-        console.log(data);
         if (data.role == "ANYONE") setModalVisible(true);
         else router.replace('/');
     })

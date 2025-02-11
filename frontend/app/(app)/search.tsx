@@ -71,7 +71,7 @@ export default function TabTwoScreen({navigation}) {
         filteredResults.length > 0 ? (
           <FlatList
             data={filteredResults}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item) => item.username}
             renderItem={({ item }) => (
               <TouchableOpacity
                 style={styles.resultItem}
