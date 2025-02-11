@@ -30,6 +30,19 @@ public class DatabaseManager {
         fakeDb.put(user.getId(), user);
     }
 
+    public static ArrayList<User> getTutors(int amount) {
+        ArrayList<User> query = new ArrayList<>();
+        int count = 0;
+
+        for (User user : fakeDb.values()) {
+            if (count == amount) break;
+            if (user.getRole() != User.Role.TUTOR) continue;
+            count++;
+            query.add(user);
+        }
+        return query;
+    }
+
     public static ArrayList<User> searchUsers(String search) {
 
         // search for users by some query? idk lol
