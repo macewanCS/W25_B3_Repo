@@ -74,7 +74,7 @@ export default function HomeScreen() {
             monthTextColor: 'lightblue',
             todayTextColor: '#e9c030', // #e9c030
             dayTextColor: '#d9e1e8', // #d9e1e8
-            agendaKnobColor: '#e9c030', // #e9c030
+            agendaKnobColor: '#a2a6a6', // #a2a6a6
             reservationsBackgroundColor: '#1E1E1E', // #1E1E1E
             agendaDayTextColor: 'white',
             agendaDayNumColor: 'white'
