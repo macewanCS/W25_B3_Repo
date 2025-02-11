@@ -24,8 +24,8 @@ public class User {
     // All users
     private transient String id;
     private Role role = Role.ANYONE;
-    private DateTime created;
-    private DateTime lastLogin;
+    private long created = 0;
+    private long lastLogin = 0;
 
     private String username;
     private String email;
@@ -84,8 +84,8 @@ public class User {
         container.put(JavaTypes.STRING, "phone", this.phone);
         container.put(JavaTypes.STRING, "icon", this.icon);
         container.put(JavaTypes.INT, "role", this.role.ordinal());
-        if (this.lastLogin != null) container.put(JavaTypes.STRING, "lastlogin", this.lastLogin.toString());
-        if (this.created != null) container.put(JavaTypes.STRING, "created", this.created.toString());
+        if (this.lastLogin != 0) container.put(JavaTypes.LONG, "lastlogin", this.lastLogin);
+        if (this.created != 0) container.put(JavaTypes.LONG, "created", this.created);
     }
 
     public void load(DataContainer container) {
@@ -94,7 +94,7 @@ public class User {
         container.get(JavaTypes.STRING, "phone").ifPresent(phone -> this.phone = phone);
         container.get(JavaTypes.STRING, "icon").ifPresent(icon -> this.icon = icon);
         container.get(JavaTypes.INT, "role").ifPresent(role -> this.role = Role.values()[role]);
-        container.get(JavaTypes.STRING, "lastlogin").ifPresent(lastLogin -> this.lastLogin = DateTime.parse(lastLogin));
-        container.get(JavaTypes.STRING, "created").ifPresentOrElse(created -> this.created = DateTime.parse(created), DateTime::new);
+        container.get(JavaTypes.LONG, "lastlogin").ifPresent(lastLogin -> this.lastLogin = lastLogin);
+        container.get(JavaTypes.LONG, "created").ifPresentOrElse(created -> this.created = created, () -> this.created = new DateTime().getMillis());
     }
 }
