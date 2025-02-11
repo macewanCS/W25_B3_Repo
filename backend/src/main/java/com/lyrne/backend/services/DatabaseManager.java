@@ -29,14 +29,9 @@ public class DatabaseManager {
 
     public static ArrayList<User> getTutors(int amount) {
         ArrayList<User> query = new ArrayList<>();
-        int count = 0;
-
         for (DataContainer container : tutorStore.getContainers()) {
-            if (count == amount) break;
-
             User tutor = new User(container);
             query.add(tutor);
-            count++;
         }
         return query;
     }
