@@ -42,35 +42,6 @@ public class Main {
 
                 .start(8820);
 
-     /* --------- testing db stuff, uncomment it if you wanna look
-
-        DateTime start = new DateTime(2025, 2, 20, 1, 0);
-        DateTime end = new DateTime(2025, 2, 20, 3, 0);
-        String name = new String("Dr Tutor");
-        TimeSlot mts1 = new TimeSlot(start, end, name);
-
-        DatabaseManager.saveTimeSlot(mts1);
-       
-        TimeSlot mts2 = DatabaseManager.getTimeSlot(mts1.getID());
-        System.out.println("Retrieved Timeslot: ");
-        mts2.printInfo();
-
-        User user1 = new User("666f72746e697465", "jones5", "jjones@gmail.com", "0702102017");
-        User user7 = new User("686f7065", "hope5", "hhope@gmail.com", "1200302023");
-        
-        user1.role = Role.TUTOR;
-        user7.role = Role.STUDENT;
-        DatabaseManager.saveUser(user1);
-        DatabaseManager.saveUser(user7);
-
-        User user2 = DatabaseManager.getUser("666f72746e697465");
-        User user8 = DatabaseManager.getUser("686f7065");
-        System.out.println("Retrieved User: ");
-        user2.printInfo();
-        user8.printInfo();
-
-
-
-        //-------------------*/
+     
     }
 }
