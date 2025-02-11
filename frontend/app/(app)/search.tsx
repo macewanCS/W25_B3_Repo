@@ -28,9 +28,15 @@ export default function TabTwoScreen({navigation}) {
       setFilteredResults([]);
     } else {
       setFilteredResults(
-        data.filter((item) =>
-          item.username.toLowerCase().includes(query.toLowerCase())
-        )
+        data.filter((item) => {
+            if (item.username) {
+              return item.username.toLowerCase().includes(query.toLowerCase())
+            }
+            // TODO: idk if we actually want emails to be public and searchable, but they are for now so that I can test searching for real users
+            if (item.email) {
+              return item.email.toLowerCase().includes(query.toLowerCase())
+            }
+        })
       );
     }
   };
