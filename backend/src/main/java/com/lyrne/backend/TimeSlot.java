@@ -8,7 +8,7 @@ import me.mrnavastar.sqlib.api.types.JavaTypes;
 public class TimeSlot{ // A timeslot object that can be created by a tutor
 
 
-    private String tutor; // The tutor's name, will be automatically put down 
+    private String tutor; // The tutor's id, will be automatically put down 
 
     private transient Interval timeSlotInterval;
 
@@ -20,7 +20,7 @@ public class TimeSlot{ // A timeslot object that can be created by a tutor
     private String end;
     public String id; // the ID will just be a concatenation of the start time & tutor ID for now
 
-    // to do: prevent overlapping bookings
+    
 
     public TimeSlot(DateTime start, DateTime end, String tutorID){ 
         
@@ -48,24 +48,24 @@ public class TimeSlot{ // A timeslot object that can be created by a tutor
     // i think this works
     // returned as string, can be turned right back into a DateTime
     public String getStartTime(){
-        return timeSlotInterval.getStart().toString();
+        return this.timeSlotInterval.getStart().toString();
     }
     public String getEndTime(){
-        return timeSlotInterval.getEnd().toString();
+        return this.timeSlotInterval.getEnd().toString();
     }
     public String getTutorID(){
-        return tutor;
+        return this.tutor;
     }
     
     public String getBookedBy() { 
-        return bookedBy;
+        return this.bookedBy;
     }
     public String getID(){
-        return id;
+        return this.id;
     }
 
     public boolean isBooked(){
-        return booked;
+        return this.booked;
     }
     public void bookTimeSlot(String studentName){
         this.bookedBy = studentName; // later perhaps a user ID so that two people can have the same name
@@ -74,6 +74,16 @@ public class TimeSlot{ // A timeslot object that can be created by a tutor
     public void cancelTimeSlot(){
         this.bookedBy = new String(""); 
         this.booked = false;
+    }
+    public void overlapping(TimeSlot ts){
+        if (this.timeSlotInterval.overlaps(ts.timeSlotInterval)){
+            throw new OverlappingIntervalException("Time Slot Intervals cannot overlap with existing time slots.");
+        }
+    }
+    class OverlappingIntervalException extends RuntimeException {
+        public OverlappingIntervalException(String message) {
+            super(message);
+        }
     }
 
 
@@ -87,6 +97,7 @@ public class TimeSlot{ // A timeslot object that can be created by a tutor
     }
 
     public void load(DataContainer container) {
+        // i'll rewrite this in the way it was done in the User class at some point. maybe
         Optional<String> st = container.get(JavaTypes.STRING, "starttime");
         Optional<String> en = container.get(JavaTypes.STRING, "endtime");
         Optional<String> tn = container.get(JavaTypes.STRING, "tutorid");

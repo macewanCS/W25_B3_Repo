@@ -9,6 +9,7 @@ import me.mrnavastar.sqlib.api.database.Database;
 
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
+import java.util.List;
 
 import java.util.Optional;
 
@@ -56,6 +57,14 @@ public class DatabaseManager {
     }    
     
     public static void saveTimeSlot(TimeSlot timeslot){
+
+        //checking if the time slot is overlapping, maybe make into a seperate function?
+        for(DataContainer dc : timeSlotStore.getContainers("tutorid", timeslot.getTutorID())) {
+            TimeSlot ts = new TimeSlot(dc);
+            if (ts.getTutorID().equals(timeslot.getTutorID())){
+                ts.overlapping(timeslot); 
+            }
+        }
         DataContainer container = timeSlotStore.createContainer();
         timeslot.store(container);
     }
