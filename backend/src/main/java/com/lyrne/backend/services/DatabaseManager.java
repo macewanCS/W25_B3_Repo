@@ -42,7 +42,7 @@ public class DatabaseManager {
         user.store(store.getOrCreateContainer("id", user.getId()));
     }
 
-    public static TimeSlot getTimeSlot(String id){ // the timeslot ID is (currently) a concatenation of the DateTime in string format (.toString()) and the tutor user ID 
+    public static TimeSlot getTimeSlot(String id){ // the timeslot ID is (currently) a concatenation of the start DateTime in string format (.toString()) and the tutor user ID 
         
         Optional<DataContainer> dc = timeSlotStore.getContainer("id", id);
         DataContainer container;
@@ -67,5 +67,16 @@ public class DatabaseManager {
         }
         DataContainer container = timeSlotStore.createContainer();
         timeslot.store(container);
+    }
+
+    public static ArrayList<TimeSlot> searchBySubject(TimeSlot.subjectTypes subject){
+        ArrayList<TimeSlot> matches = new ArrayList<TimeSlot>();
+        // can't think of a better way than to open up the containers and search each one
+        for(DataContainer dc : timeSlotStore.getContainers()) {
+            TimeSlot ts = new TimeSlot(dc);
+            if (ts.subjects.contains(subject)) matches.add(ts);
+
+            }
+        return matches;
     }
 }

@@ -1,7 +1,11 @@
 package com.lyrne.backend;
 import java.util.Optional;
+import java.util.ArrayList;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
+
+import com.lyrne.backend.TimeSlot.subjectTypes;
+
 import me.mrnavastar.sqlib.api.DataContainer;
 import me.mrnavastar.sqlib.api.types.JavaTypes;
 
@@ -19,7 +23,34 @@ public class TimeSlot{ // A timeslot object that can be created by a tutor
     private String start;
     private String end;
     public String id; // the ID will just be a concatenation of the start time & tutor ID for now
+    public ArrayList<subjectTypes> subjects = new ArrayList<>(); 
+    
+    // subjects are an enum for storing purposes
+    // if you have a better idea PLEASE tell me but this is the easiest that came to my mind
+    
+    public enum subjectTypes {
+        MATH(0), SCIENCE(1), SOCIAL(2), ENGLISH(3), PHYSICS(4), BIOLOGY(5), CHEMISTRY(6);
 
+        private final int subjectID;
+
+        subjectTypes(int subjectID) {
+            this.subjectID = subjectID;
+        }
+
+        public int getId() {
+            return subjectID;
+        }
+
+        public static subjectTypes fromId(int id) {
+            for (subjectTypes subject : subjectTypes.values()) {
+                if (subject.getId() == id) {
+                    return subject;
+                }
+            }
+            throw new IllegalArgumentException("No subject found with ID: " + id);
+        }
+    }
+    
     
 
     public TimeSlot(DateTime start, DateTime end, String tutorID){ 
@@ -85,7 +116,30 @@ public class TimeSlot{ // A timeslot object that can be created by a tutor
             super(message);
         }
     }
+    public void addSubject(subjectTypes subject){
+        this.subjects.add(subject);
+    }
+    public void addSubject(int subject){
+        this.subjects.add(subjectTypes.fromId(subject));
+    }
 
+    public String subjectsConverter(){ // we're gonna convert the arraylist into a string of numbers to put in the database. yes im normal
+
+        StringBuilder sb = new StringBuilder();
+        for (subjectTypes subject : this.subjects){
+            sb.append(subject.getId());
+        }
+        return sb.toString();
+        //shoutout chatgpt for showing me stringbuilder
+
+    }
+
+    public void subjectsParser(String subjectsString){
+        for (int i = 0; i < subjectsString.length(); i++){
+            this.subjects.add(subjectTypes.fromId(Integer.parseInt(subjectsString.substring(i, i+1)))); // kind of a messed up line ngl
+            //it takes the integer value of the subject, finds out what subject that is, and adds it to the "subjects" arraylist property of the timeslot
+        }
+    }
 
     public void store(DataContainer container) {
     container.put(JavaTypes.STRING, "starttime", this.getStartTime());
@@ -94,6 +148,7 @@ public class TimeSlot{ // A timeslot object that can be created by a tutor
     container.put(JavaTypes.BOOL, "isbooked", this.isBooked()); 
     container.put(JavaTypes.STRING, "bookedby", this.getBookedBy());
     container.put(JavaTypes.STRING, "id", this.getID());
+    container.put(JavaTypes.STRING , "subjects", this.subjectsConverter());
     }
 
     public void load(DataContainer container) {
@@ -104,6 +159,7 @@ public class TimeSlot{ // A timeslot object that can be created by a tutor
         Optional<Boolean> ib = container.get(JavaTypes.BOOL, "isbooked");
         Optional<String> bb = container.get(JavaTypes.STRING, "bookedby");
         Optional<String> id = container.get(JavaTypes.STRING, "id");
+        Optional<String> sj = container.get(JavaTypes.STRING, "subjects");
         
         // why do i have to check for schrodinger's cat, man 
 
@@ -113,6 +169,7 @@ public class TimeSlot{ // A timeslot object that can be created by a tutor
         if (ib.isPresent()) this.booked = ib.get();
         if (bb.isPresent()) this.bookedBy = bb.get();
         if (id.isPresent()) this.id = id.get();
+        if (sj.isPresent()) this.subjectsParser(sj.get());
         this.timeSlotInterval = new Interval(DateTime.parse(this.start), DateTime.parse(this.end));
 
     }
@@ -124,11 +181,8 @@ public class TimeSlot{ // A timeslot object that can be created by a tutor
         System.out.println(this.booked);
         System.out.println(this.bookedBy);
         System.out.println(this.id);
+        System.out.println(this.subjects);
     }
 
-
-    public static void main(String[] args){
-        
-    }
    
 }

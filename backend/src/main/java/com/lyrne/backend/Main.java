@@ -62,6 +62,29 @@ public class Main {
                 })
 
                 .start(8820);
-     
+    //* --------- testing db stuff, uncomment it if you wanna look
+
+        DateTime start = new DateTime(2025, 2, 20, 1, 0);
+        DateTime end = new DateTime(2025, 2, 20, 3, 0);
+        String name = new String("abcd123");
+        
+        TimeSlot mts1 = new TimeSlot(start, end, name);
+        String ID = mts1.id;
+        mts1.addSubject(0); // math
+        mts1.addSubject(3); // english
+        System.out.println("\none:");
+        mts1.printInfo();
+        DatabaseManager.saveTimeSlot(mts1);
+        TimeSlot mts2 = DatabaseManager.getTimeSlot(ID);
+        
+        System.out.println("\ntwo:");
+        mts2.printInfo();
+
+        System.out.println("\nsearch results:");
+        for(TimeSlot ts : DatabaseManager.searchBySubject(TimeSlot.subjectTypes.MATH)){
+            ts.printInfo();
+        }
+        
+    //*/
     }
 }
