@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import { View, Text, TextInput, Image, TouchableOpacity, StyleSheet, useColorScheme, Touchable } from "react-native";
+import { View, Text, TextInput, Image, TouchableOpacity, StyleSheet, useColorScheme } from "react-native";
 import { MaterialIcons } from '@expo/vector-icons';
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
@@ -10,7 +10,7 @@ import {fetchTutors, fetchUserData, updateUserData} from "@/util/Backend";
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 
-import { useRouter } from 'expo-router';
+import { router } from 'expo-router';
 
 
 export default function TabFourScreen () {
@@ -62,54 +62,73 @@ export default function TabFourScreen () {
     }
   };
 
-  const { push } = useRouter();
-
-  const settingsList = [
-    // TODO: 
-    // - Implement all routes, 
-    // - Properly adapt light and dark mode, 
-    // - Create a back button component to be re-used (used in /account atm),
-    // - Adapt icons to native ios and android respectively
-    { name: 'Account', icon: 'account-circle', route: '/user/account' },
-    { name: 'Courses', icon: 'menu-book' },
-    { name: 'Edit Availability', icon: 'edit-calendar' },
-    { name: 'Privacy', icon: 'lock' },  // Ability to show or hide information about your profile, etc.
-    { name: 'Security', icon: 'security' }, // Might not need. An ex. might be 'Save login session'
-    { name: 'Notifications', icon: 'notifications' }, // Emails, possibly SMS
-    // { name: 'Language', icon: 'language' }, // It is possible to localize all text and add support for example French
-    { name: 'Log Out', icon: 'logout' }, // Probably modal/new page to double check signing out
-  ];
-
   return (
-      <ThemedView style={styles.container}>
-        <ThemedView style={[styles.card, { marginBottom: tabBarHeight }]}>
-          <ThemedView style={styles.header} />
-          <ThemedView style={styles.profileContainer}>
-            <ThemedView style={styles.profileWrapper} >
-              <ThemedView style={styles.profileImageContainer} >
-                <Image
-                    source={image}
-                    style={styles.profileImage}
-                />
-              </ThemedView>
+    <ThemedView style={styles.container}>
+      
+      <ThemedView style={[styles.card, { marginBottom: tabBarHeight }]}>
+      
+        <ThemedView style={styles.header} />
+        
+        <ThemedView style={styles.profileContainer}>
+          <TouchableOpacity style={styles.backButton} onPress={() => router.push('/settings')}>
+            <MaterialIcons name="arrow-back" size={24} color="white" />
+          </TouchableOpacity>
+          <ThemedView style={styles.profileWrapper} >
+            <ThemedView style={styles.profileImageContainer} >
+              <Image
+                  source={image}
+                  style={styles.profileImage}
+              />
+            </ThemedView>
+            <TouchableOpacity style={styles.cameraOverlay} onPress={pickImage}>
+              <MaterialIcons name="photo-camera" size={24} color="white" />
+            </TouchableOpacity>
+          </ThemedView>
+        </ThemedView>
+        <ThemedView style={styles.content}>
+          <ThemedText style={styles.nameInput}>
+            {user.role} {"\n"}
+          </ThemedText>
+          <ThemedView style={styles.infoContainer}>
+            <ThemedView style={styles.infoRow}>
+              <MaterialIcons name="mail" size={20} color="gray" />
+              <TextInput
+                  defaultValue={user.email}
+                  style={[styles.infoText]}
+                  editable={false}
+              />
+            </ThemedView>
+            <ThemedView style={styles.infoRowEditable}>
+              <MaterialIcons name="alternate-email" size={20} color="gray" />
+              <TextInput
+                  defaultValue={user.username ? user.username : Name}
+                  style={[styles.infoText]}
+                  onSubmitEditing={value => updateUserData({username: value.nativeEvent.text}, session)}
+              />
+              <TouchableOpacity>
+                <MaterialIcons name="edit" size={20} color="black" />
+              </TouchableOpacity>
+            </ThemedView>
+            <ThemedView style={styles.infoRowEditable}>
+              <MaterialIcons name="phone" size={20} color="gray" />
+              <TextInput
+                  defaultValue={user.phone ? user.phone : PhoneNumber}
+                  style={[styles.infoText]}
+                  // TODO: validate phone number before submitting
+                  onSubmitEditing={value => updateUserData({phone: value.nativeEvent.text}, session)}
+              />
+              <TouchableOpacity>
+                <MaterialIcons name="edit" size={20} color="black" />
+              </TouchableOpacity>
             </ThemedView>
           </ThemedView>
-          <ThemedView style={styles.content}>
-            <ThemedText style={styles.nameInput}>
-              {user.role} 
-            </ThemedText>
-            <ThemedView style={{ borderBottomColor: 'gray', borderBottomWidth: 1, marginTop: 10 }} />
-            <ThemedView style={styles.infoContainer}>
-              {settingsList.map((item, index) => (
-                <TouchableOpacity key={index} style={styles.infoRow} onPress={() => item.route && push(item.route)}>
-                  <MaterialIcons name={item.icon} size={24} color='white'/>
-                  <ThemedText style={styles.infoText}>{item.name}</ThemedText>
-                </TouchableOpacity>
-              ))}
-            </ThemedView>
+          <ThemedView style={styles.footer}>
+            <MaterialIcons name="calendar-today" size={20} color="gray" />
+            <Text style={[styles.footerText]}>Account Created {created}</Text>
           </ThemedView>
         </ThemedView>
       </ThemedView>
+    </ThemedView>
   );
 };
 
@@ -126,7 +145,7 @@ const styles = StyleSheet.create({
   },
   header: { 
     height: 120, 
-    backgroundColor: "#a4becf", 
+    backgroundColor: "#e9c030", 
     borderTopLeftRadius: 10, 
     borderTopRightRadius: 10 
   },
@@ -178,7 +197,7 @@ const styles = StyleSheet.create({
   infoRow: { 
     flexDirection: "row", 
     alignItems: "center", 
-    backgroundColor: "#232323",
+    backgroundColor: "#c7c8c9", 
     padding: 16, 
     borderRadius: 10,
     marginBottom: 10
@@ -208,5 +227,16 @@ const styles = StyleSheet.create({
     color: "gray", 
     fontSize: 14,
     marginTop: 16
+  },
+  backButton: {
+    position: "absolute",
+    top: 16,
+    left: 16,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "gray",
+    alignItems: "center",
+    justifyContent: "center",
   }
 });
