@@ -14,6 +14,16 @@ export default function TabLayout() {
     const colorScheme = useColorScheme();
     const { signIn, session } = useSession();
 
+    const userRoutes = [
+      'user/account', 
+      // 'user/courses',
+      // 'user/availability',
+      // 'user/privacy', 
+      // 'user/security',
+      // 'user/language',
+      // 'user/notifications'
+    ];
+
     if (!session) {
     // If the user is not authenticated, return to sign-in.
     return <Redirect href="/sign-in" />;
@@ -63,6 +73,15 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="gear" color={color} />,
         }}
       />
+      {userRoutes.map((route) => (
+        <Tabs.Screen
+          key={route}
+          name={route}
+          options={{
+            href: null,
+          }}
+        />
+      ))}
     </Tabs>
   );
 }
