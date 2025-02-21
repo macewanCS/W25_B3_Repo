@@ -79,4 +79,13 @@ public class DatabaseManager {
             }
         return matches;
     }
+    public static ArrayList<TimeSlot> searchByTutor(String tutorid){
+        ArrayList<TimeSlot> matches = new ArrayList<TimeSlot>();
+        for(DataContainer dc : timeSlotStore.getContainers()) {
+            TimeSlot ts = new TimeSlot(dc);
+            if (ts.getTutorID().equals(tutorid)) matches.add(ts);
+
+            }
+        return matches;
+    }
 }

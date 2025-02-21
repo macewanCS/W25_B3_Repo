@@ -66,7 +66,7 @@ public class Main {
 
         DateTime start = new DateTime(2025, 2, 20, 1, 0);
         DateTime end = new DateTime(2025, 2, 20, 3, 0);
-        String name = new String("abcd123");
+        String name = new String("l3n4jj6");
         
         TimeSlot mts1 = new TimeSlot(start, end, name);
         String ID = mts1.id;
@@ -81,7 +81,7 @@ public class Main {
         mts2.printInfo();
 
         System.out.println("\nsearch results:");
-        for(TimeSlot ts : DatabaseManager.searchBySubject(TimeSlot.subjectTypes.MATH)){
+        for(TimeSlot ts : DatabaseManager.searchByTutor("l3n4jj6")){
             ts.printInfo();
         }
         
