@@ -14,7 +14,7 @@ public class TimeSlot{ // A timeslot object that can be created by a tutor
 
     private String tutor; // The tutor's id, will be automatically put down 
 
-    private transient Interval timeSlotInterval;
+    public transient Interval timeSlotInterval;
 
     private boolean booked = false; // determining if a time slot is booked by a student might be more complicated than a boolean but you get the idea
     

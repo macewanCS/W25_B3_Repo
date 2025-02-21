@@ -10,7 +10,7 @@ import me.mrnavastar.sqlib.api.database.Database;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.List;
-
+import org.joda.time.Interval;
 import java.util.Optional;
 
 public class DatabaseManager {
@@ -84,6 +84,17 @@ public class DatabaseManager {
         for(DataContainer dc : timeSlotStore.getContainers()) {
             TimeSlot ts = new TimeSlot(dc);
             if (ts.getTutorID().equals(tutorid)) matches.add(ts);
+
+            }
+        return matches;
+    }
+
+    public static ArrayList<TimeSlot> searchByInterval(Interval interval){ // easy way to check if a time slot exists in a specified time period
+     // not sure how we'll build that interval yet but the option is there
+        ArrayList<TimeSlot> matches = new ArrayList<TimeSlot>();
+        for(DataContainer dc : timeSlotStore.getContainers()) {
+            TimeSlot ts = new TimeSlot(dc);
+            if (ts.timeSlotInterval.overlaps(interval)) matches.add(ts);
 
             }
         return matches;
