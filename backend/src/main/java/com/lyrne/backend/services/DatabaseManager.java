@@ -99,4 +99,61 @@ public class DatabaseManager {
             }
         return matches;
     }
+
+    // below are more filter-like search methods. the above ones may be redundant now but im keeping them for a sec til i know for sure
+    // these are exclusive search as well. inclusive search can be done later but i don't think most users would want it
+    // the subject is the backbone of all of them, so it's required. i figured it'd make the most sense as you would always know what subject you want to find tutoring in
+
+    public static ArrayList<TimeSlot> searchResults(TimeSlot.subjectTypes subject){
+        ArrayList<TimeSlot> matches = new ArrayList<TimeSlot>();
+        // can't think of a better way than to open up the containers and search each one
+        for(DataContainer dc : timeSlotStore.getContainers()) {
+            TimeSlot ts = new TimeSlot(dc);
+            if (ts.subjects.contains(subject)) matches.add(ts);
+
+            }
+        return matches;
+    }
+    public static ArrayList<TimeSlot> searchResults(TimeSlot.subjectTypes subject, Interval interval){
+        ArrayList<TimeSlot> matches = new ArrayList<TimeSlot>();
+        ArrayList<TimeSlot> refinedMatches = new ArrayList<TimeSlot>();
+
+        for(DataContainer dc : timeSlotStore.getContainers()) {
+            TimeSlot ts = new TimeSlot(dc);
+            if (ts.subjects.contains(subject)) matches.add(ts);
+
+            }
+        for(TimeSlot tsMatching : matches){
+            if (tsMatching.timeSlotInterval.overlaps(interval)) refinedMatches.add(tsMatching);; // if the timeslot falls within the specified range it is added to the refined matches and returned
+        }
+        return refinedMatches;
+    }
+    public static ArrayList<TimeSlot> searchResults(TimeSlot.subjectTypes subject, String tutorid){
+        ArrayList<TimeSlot> matches = new ArrayList<TimeSlot>();
+        ArrayList<TimeSlot> refinedMatches = new ArrayList<TimeSlot>();
+
+        for(DataContainer dc : timeSlotStore.getContainers()) {
+            TimeSlot ts = new TimeSlot(dc);
+            if (ts.subjects.contains(subject)) matches.add(ts);
+
+            }
+        for(TimeSlot tsMatching : matches){
+            if (tsMatching.getTutorID().equals(tutorid)) refinedMatches.add(tsMatching);
+        }
+        return refinedMatches;
+    }
+    public static ArrayList<TimeSlot> searchResults(TimeSlot.subjectTypes subject, String tutorid, Interval interval){
+        ArrayList<TimeSlot> matches = new ArrayList<TimeSlot>();
+        ArrayList<TimeSlot> refinedMatches = new ArrayList<TimeSlot>();
+        for(DataContainer dc : timeSlotStore.getContainers()) {
+            TimeSlot ts = new TimeSlot(dc);
+            if (ts.subjects.contains(subject)) matches.add(ts);
+
+            }
+        for(TimeSlot tsMatching : matches){
+            if (tsMatching.getTutorID().equals(tutorid) && tsMatching.timeSlotInterval.overlaps(interval)) refinedMatches.add(tsMatching);
+        }
+        
+        return refinedMatches;
+    }
 }
