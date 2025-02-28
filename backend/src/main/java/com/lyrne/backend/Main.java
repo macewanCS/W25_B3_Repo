@@ -16,6 +16,7 @@ import me.mrnavastar.sqlib.impl.config.NonMinecraft;
 import java.nio.file.Path;
 import java.util.Optional;
 
+import java.io.IOException;
 import org.joda.time.DateTime;
 
 public class Main {
@@ -64,40 +65,7 @@ public class Main {
                 })
 
                 .start(8820);
-    /* --------- testing db stuff, uncomment it if you wanna look
-        String name = new String("l3n4jj6");
-        DateTime s1 = new DateTime(2025, 3, 20, 5, 0);
-        DateTime s2 = new DateTime(2026, 3, 20, 5, 0);
-        DateTime s3 = new DateTime(2026, 3, 20, 5, 0);
-        DateTime e1 = new DateTime(2025, 3, 20, 6, 0);
-        DateTime e2 = new DateTime(2026, 3, 20, 6, 0);
-        DateTime e3 = new DateTime(2026, 3, 20, 6, 0);
-        TimeSlot mts1 = new TimeSlot(s1, e1, name);
-        String ID = mts1.id;
 
-        mts1.addSubject(0); // math
-        mts1.addSubject(3); // english
-        TimeSlot mts2 = new TimeSlot(s2, e2, "name");
-        mts2.addSubject(0); // math
-        mts2.addSubject(3); // biology
-        TimeSlot mts3 = new TimeSlot(s3, e3, "abcdefg");
-        mts3.addSubject(1); // Science
-        //DatabaseManager.saveTimeSlot(mts1);
-        //DatabaseManager.saveTimeSlot(mts2);
-        //DatabaseManager.saveTimeSlot(mts3);
-
-        System.out.println("\nsearch results:");
-        for(TimeSlot ts : DatabaseManager.searchResults(TimeSlot.subjectTypes.MATH)){
-            ts.printInfo();
-        }
-        System.out.println("\nsearch results 2:");
-        for(TimeSlot ts : DatabaseManager.searchResults(TimeSlot.subjectTypes.MATH, name)){
-            ts.printInfo();
-        }
-        
-    //*/
-    // now we test email stuff
-    SendEmail tester = new SendEmail();
-
+    
     }
 }

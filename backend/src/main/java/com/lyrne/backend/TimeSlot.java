@@ -1,10 +1,13 @@
 package com.lyrne.backend;
 import java.util.Optional;
+import java.sql.DatabaseMetaData;
 import java.util.ArrayList;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
-
+import com.lyrne.backend.User;
 import com.lyrne.backend.TimeSlot.subjectTypes;
+import com.lyrne.backend.services.DatabaseManager;
+import com.lyrne.backend.services.SendEmail;
 
 import me.mrnavastar.sqlib.api.DataContainer;
 import me.mrnavastar.sqlib.api.types.JavaTypes;
@@ -98,9 +101,22 @@ public class TimeSlot{ // A timeslot object that can be created by a tutor
     public boolean isBooked(){
         return this.booked;
     }
-    public void bookTimeSlot(String studentName){
-        this.bookedBy = studentName; // later perhaps a user ID so that two people can have the same name
+    public void bookTimeSlot(User user){ // "user" is the one who is making the booking (aka the student)
+        this.bookedBy = user.getId(); 
         this.booked = true;
+        SendEmail bookingEmail = new SendEmail();
+        
+        // getting the tutor's username based on ID
+        Optional<DataContainer> dc = DatabaseManager.tutorStore.getContainer("id", this.tutor);
+        DataContainer container;
+        if (dc.isPresent()) container = dc.get();
+        else container = null;
+        Optional<String> un = container.get(JavaTypes.STRING, "username");
+        String username;
+        if (un.isPresent()) username = un.get();
+        else username = null;
+
+        bookingEmail.sendBookingConfirmation(user, this.timeSlotInterval, username);
     }
     public void cancelTimeSlot(){
         this.bookedBy = new String(""); 
