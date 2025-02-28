@@ -81,7 +81,7 @@ public class DatabaseManager {
     }
     public static ArrayList<TimeSlot> searchByTutor(String tutorid){
         ArrayList<TimeSlot> matches = new ArrayList<TimeSlot>();
-        for(DataContainer dc : timeSlotStore.getContainers()) {
+        for(DataContainer dc : timeSlotStore.getContainers("tutorid", tutorid)) {
             TimeSlot ts = new TimeSlot(dc);
             if (ts.getTutorID().equals(tutorid)) matches.add(ts);
 
@@ -92,7 +92,7 @@ public class DatabaseManager {
     public static ArrayList<TimeSlot> searchByInterval(Interval interval){ // easy way to check if a time slot exists in a specified time period
      // not sure how we'll build that interval yet but the option is there
         ArrayList<TimeSlot> matches = new ArrayList<TimeSlot>();
-        for(DataContainer dc : timeSlotStore.getContainers()) {
+        for(DataContainer dc : timeSlotStore.getContainers("starttime", interval.getStart().toString())) {
             TimeSlot ts = new TimeSlot(dc);
             if (ts.timeSlotInterval.overlaps(interval)) matches.add(ts);
 
@@ -106,7 +106,7 @@ public class DatabaseManager {
 
     public static ArrayList<TimeSlot> searchResults(TimeSlot.subjectTypes subject){
         ArrayList<TimeSlot> matches = new ArrayList<TimeSlot>();
-        // can't think of a better way than to open up the containers and search each one
+        
         for(DataContainer dc : timeSlotStore.getContainers()) {
             TimeSlot ts = new TimeSlot(dc);
             if (ts.subjects.contains(subject)) matches.add(ts);
@@ -116,44 +116,33 @@ public class DatabaseManager {
     }
     public static ArrayList<TimeSlot> searchResults(TimeSlot.subjectTypes subject, Interval interval){
         ArrayList<TimeSlot> matches = new ArrayList<TimeSlot>();
-        ArrayList<TimeSlot> refinedMatches = new ArrayList<TimeSlot>();
 
-        for(DataContainer dc : timeSlotStore.getContainers()) {
+        for(DataContainer dc : timeSlotStore.getContainers("starttime", interval.getStart().toString())) {
             TimeSlot ts = new TimeSlot(dc);
             if (ts.subjects.contains(subject)) matches.add(ts);
 
             }
-        for(TimeSlot tsMatching : matches){
-            if (tsMatching.timeSlotInterval.overlaps(interval)) refinedMatches.add(tsMatching);; // if the timeslot falls within the specified range it is added to the refined matches and returned
-        }
-        return refinedMatches;
+        
+        return matches;
     }
     public static ArrayList<TimeSlot> searchResults(TimeSlot.subjectTypes subject, String tutorid){
         ArrayList<TimeSlot> matches = new ArrayList<TimeSlot>();
-        ArrayList<TimeSlot> refinedMatches = new ArrayList<TimeSlot>();
 
-        for(DataContainer dc : timeSlotStore.getContainers()) {
+        for(DataContainer dc : timeSlotStore.getContainers("tutorid", tutorid)) {
             TimeSlot ts = new TimeSlot(dc);
             if (ts.subjects.contains(subject)) matches.add(ts);
 
             }
-        for(TimeSlot tsMatching : matches){
-            if (tsMatching.getTutorID().equals(tutorid)) refinedMatches.add(tsMatching);
-        }
-        return refinedMatches;
+        return matches;
     }
     public static ArrayList<TimeSlot> searchResults(TimeSlot.subjectTypes subject, String tutorid, Interval interval){
         ArrayList<TimeSlot> matches = new ArrayList<TimeSlot>();
-        ArrayList<TimeSlot> refinedMatches = new ArrayList<TimeSlot>();
-        for(DataContainer dc : timeSlotStore.getContainers()) {
+        for(DataContainer dc : timeSlotStore.getContainers("tutorid", tutorid)) {
             TimeSlot ts = new TimeSlot(dc);
-            if (ts.subjects.contains(subject)) matches.add(ts);
+            if (ts.subjects.contains(subject) && ts.timeSlotInterval.overlaps(interval)) matches.add(ts);
 
             }
-        for(TimeSlot tsMatching : matches){
-            if (tsMatching.getTutorID().equals(tutorid) && tsMatching.timeSlotInterval.overlaps(interval)) refinedMatches.add(tsMatching);
-        }
         
-        return refinedMatches;
+        return matches;
     }
 }
