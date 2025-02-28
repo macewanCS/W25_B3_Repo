@@ -7,6 +7,8 @@ import com.lyrne.backend.User.Role;
 import com.lyrne.backend.services.AuthManager;
 import com.lyrne.backend.services.DatabaseManager;
 import com.lyrne.backend.services.FakeUsers;
+import com.lyrne.backend.services.SendEmail;
+
 import io.javalin.Javalin;
 import me.mrnavastar.sqlib.api.DataContainer;
 import me.mrnavastar.sqlib.impl.config.NonMinecraft;
@@ -62,7 +64,7 @@ public class Main {
                 })
 
                 .start(8820);
-    //* --------- testing db stuff, uncomment it if you wanna look
+    /* --------- testing db stuff, uncomment it if you wanna look
         String name = new String("l3n4jj6");
         DateTime s1 = new DateTime(2025, 3, 20, 5, 0);
         DateTime s2 = new DateTime(2026, 3, 20, 5, 0);
@@ -94,5 +96,8 @@ public class Main {
         }
         
     //*/
+    // now we test email stuff
+    SendEmail tester = new SendEmail();
+
     }
 }
