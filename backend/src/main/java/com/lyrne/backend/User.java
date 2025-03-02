@@ -48,6 +48,21 @@ public class User {
         });
     }
 
+    // Stores all the sessions each Tutor has
+    private ArrayList<TimeSlot> sessions = new ArrayList<>();
+
+    // Stores weekly earnings and hours in float variables
+    private float weeklyHours = 0;
+    private float weeklyEarnings = 0;
+
+    // This function should be called everytime there are session changes
+    public void updateHoursAndEarnings() {
+        for (TimeSlot session: sessions) {
+            weeklyHours++; // There should be a value of time in each session
+            weeklyEarnings++; // There should be a value of earnings in each session
+        }
+    }
+
     public JsonObject asJson() {
         return Main.GSON.toJsonTree(this).getAsJsonObject();
     }
