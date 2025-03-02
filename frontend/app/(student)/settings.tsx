@@ -1,12 +1,12 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, TextInput, Image, TouchableOpacity, StyleSheet, useColorScheme, Touchable } from "react-native";
 import { MaterialIcons } from '@expo/vector-icons';
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import PlaceholderPhoto from "@/assets/images/profile-picture-placeholder.png";
-import {useSession} from "@/components/Context";
-import {fetchTutors, fetchUserData, updateUserData} from "@/util/Backend";
+import { useSession } from "@/components/Context";
+import { fetchTutors, fetchUserData, updateUserData } from "@/util/Backend";
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 
@@ -71,11 +71,11 @@ export default function StudentSettingsScreen () {
     // - Create a back button component to be re-used (used in /account atm),
     // - Adapt icons to native ios and android respectively
     { name: 'Account', icon: 'account-circle', route: '/user/account' },
-    { name: 'Courses', icon: 'menu-book' },
-    { name: 'Edit Availability', icon: 'edit-calendar' },
-    { name: 'Privacy', icon: 'lock' },  // Ability to show or hide information about your profile, etc.
-    { name: 'Security', icon: 'security' }, // Might not need. An ex. might be 'Save login session'
-    { name: 'Email Notifications', icon: 'notifications' }, // Emails, possibly SMS
+    { name: 'Edit Availability', icon: 'edit-calendar', route: 'user/availability' },
+    { name: 'Courses', icon: 'menu-book', route: 'user/courses' },
+    { name: 'Privacy', icon: 'lock', route: 'user/privacy'},  // Ability to show or hide information about your profile, etc.
+    { name: 'Security', icon: 'security', route: 'user/security' }, // Might not need. An ex. might be 'Save login session'
+    { name: 'Email Notifications', icon: 'notifications', route: 'user/notifications' }, // Emails, possibly SMS
     // { name: 'Language', icon: 'language' }, // It is possible to localize all text and add support for example French
     { name: 'Log Out', icon: 'logout' }, // Probably modal/new page to double check signing out
   ];

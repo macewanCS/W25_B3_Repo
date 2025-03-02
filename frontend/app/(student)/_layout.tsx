@@ -32,12 +32,11 @@ export default function TabLayout() {
 
     const userRoutes = [
       'user/account', 
-      // 'user/courses',
-      // 'user/availability',
-      // 'user/privacy', 
-      // 'user/security',
-      // 'user/language',
-      // 'user/notifications'
+      'user/availability',
+      'user/courses',
+      'user/privacy', 
+      'user/security',
+      'user/notifications'
     ];
 
     if (!session) {

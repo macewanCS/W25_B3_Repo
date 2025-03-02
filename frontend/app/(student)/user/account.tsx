@@ -238,5 +238,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#232323",
     alignItems: "center",
     justifyContent: "center",
+    zIndex: 1, // Ensure the back button is on top
   }
 });
