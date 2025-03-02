@@ -96,7 +96,7 @@ export default function TabFourScreen () {
           </ThemedView>
           <ThemedView style={styles.content}>
             <ThemedText style={styles.nameInput}>
-              {user.role} 
+              {user.username} 
             </ThemedText>
             <ThemedView style={{ borderBottomColor: 'gray', borderBottomWidth: 1, marginTop: 10 }} />
             <ThemedView style={styles.infoContainer}>
@@ -104,6 +104,7 @@ export default function TabFourScreen () {
                 <TouchableOpacity key={index} style={styles.infoRow} onPress={() => item.route && push(item.route)}>
                   <MaterialIcons name={item.icon} size={24} color='white'/>
                   <ThemedText style={styles.infoText}>{item.name}</ThemedText>
+                  <MaterialIcons name='chevron-right' size={24} color='white' style={{ marginLeft: 'auto' }}/>
                 </TouchableOpacity>
               ))}
             </ThemedView>

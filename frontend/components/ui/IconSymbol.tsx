@@ -20,6 +20,7 @@ const MAPPING = {
   'info.circle': 'info-outline',
   'text.bubble.fill': 'chat',
   'plus': 'add',
+  'chevron.right.2': 'chevron-right',
 } as Partial<
   Record<
     import('expo-symbols').SymbolViewProps['name'],
