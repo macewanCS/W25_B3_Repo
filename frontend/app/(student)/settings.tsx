@@ -13,7 +13,7 @@ import * as FileSystem from 'expo-file-system';
 import { useRouter } from 'expo-router';
 
 
-export default function TabFourScreen () {
+export default function StudentSettingsScreen () {
   // const colorScheme = useColorScheme();
   // const textColor = colorScheme === 'dark' ? 'white' : 'black';
   // const textColorInverse = colorScheme === 'dark' ? 'black' : 'white';
@@ -75,7 +75,7 @@ export default function TabFourScreen () {
     { name: 'Edit Availability', icon: 'edit-calendar' },
     { name: 'Privacy', icon: 'lock' },  // Ability to show or hide information about your profile, etc.
     { name: 'Security', icon: 'security' }, // Might not need. An ex. might be 'Save login session'
-    { name: 'Notifications', icon: 'notifications' }, // Emails, possibly SMS
+    { name: 'Email Notifications', icon: 'notifications' }, // Emails, possibly SMS
     // { name: 'Language', icon: 'language' }, // It is possible to localize all text and add support for example French
     { name: 'Log Out', icon: 'logout' }, // Probably modal/new page to double check signing out
   ];

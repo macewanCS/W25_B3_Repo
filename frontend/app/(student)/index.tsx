@@ -9,7 +9,7 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 
 import { Agenda } from 'react-native-calendars';
 
-export default function HomeScreen() {
+export default function StudentHomeScreen() {
   const today = new Date();
   const currentDateString = today.toISOString().split('T')[0];
   const [selectedDate, setSelectedDate] = useState(currentDateString);

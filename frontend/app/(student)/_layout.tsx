@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Tabs } from 'expo-router';
 import { Platform } from 'react-native';
 import { HapticTab } from '@/components/HapticTab';
@@ -9,10 +9,26 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 import { Text } from 'react-native';
 import { Redirect, Stack } from 'expo-router';
 import {useSession} from "@/components/Context";
+import { fetchUserData } from "@/util/Backend";
 
 export default function TabLayout() {
     const colorScheme = useColorScheme();
     const { signIn, session } = useSession();
+    const [user, setUserData] = useState([]);
+
+    useEffect(() => {
+      const getData = async () => {
+        let userData = await fetchUserData(session);
+        setUserData(userData);
+        if (userData.icon) {
+          setImage({uri: userData.icon});
+        } else {
+          setImage(PlaceholderPhoto)
+        }
+        setCreated(new Date(userData.created).toDateString())
+      }
+      getData()
+    }, [])
 
     const userRoutes = [
       'user/account', 
@@ -28,6 +44,10 @@ export default function TabLayout() {
     // If the user is not authenticated, return to sign-in.
     return <Redirect href="/sign-in" />;
     }
+
+    if(user.role === 'TUTOR') {
+      return <Redirect href="/(tutor)/" />;
+    } 
 
   return (
     <Tabs
