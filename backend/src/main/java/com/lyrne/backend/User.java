@@ -12,6 +12,8 @@ import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -47,6 +49,30 @@ public class User {
             this.load(container);
         });
     }
+
+    // Stores all the sessions each Tutor has
+    private ArrayList<TimeSlot> sessions = new ArrayList<>();
+
+    // Stores weekly earnings and hours in float variables
+    private float weeklyHours = 0;
+    private float weeklyEarnings = 0;
+
+    // This function should be called everytime there are session changes
+    public void updateHoursAndEarnings() {
+        for (TimeSlot session: sessions) {
+            weeklyHours++; // There should be a value of time in each session
+            weeklyEarnings++; // There should be a value of earnings in each session
+        }
+    }
+
+    // HashMap for checking which user details are public (true) or private (false)
+    Map<String, Boolean> visibility = Map.ofEntries(
+           Map.entry("id", true),
+           Map.entry("username", true),
+           Map.entry("email", false),
+           Map.entry("phone", false),
+           Map.entry("role", true)
+    );
 
     public JsonObject asJson() {
         return Main.GSON.toJsonTree(this).getAsJsonObject();
