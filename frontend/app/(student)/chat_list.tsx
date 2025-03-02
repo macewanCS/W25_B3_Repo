@@ -5,15 +5,18 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { IconSymbol } from '@/components/ui/IconSymbol';
+import { useRouter } from 'expo-router';
 
 export default function StudentChatsScreen() {
 
   // Example Chats
   const chats = [
-    { id: "1", name: "Ms. Alice Johnson", lastMessage: "Hey, can I talk to you about your math?" },
-    { id: "2", name: "Ms. Lisa Davis", lastMessage: "You've improved so much so far!" },
-    { id: "3", name: "Mr. Chuck Brown", lastMessage: "Session at 3 PM work for you?" },
+    { id: "1", chatId: "123", name: "Ms. Alice Johnson", lastMessage: "Hey, can I talk to you about your math?" },
+    { id: "2", chatId: "634", name: "Ms. Lisa Davis", lastMessage: "You've improved so much so far!" },
+    { id: "3", chatId: "802", name: "Mr. Chuck Brown", lastMessage: "Session at 3 PM work for you?" },
   ];
+
+  const { push } = useRouter();
 
   return (
     <ThemedView style={styles.container}>
@@ -24,8 +27,7 @@ export default function StudentChatsScreen() {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <TouchableOpacity
-            style={styles.chatItem}
-            // onPress={() => navigation.navigate("ChatScreen", { userName: item.name })}
+            style={styles.chatItem} onPress={() => push(`/chats/${item.chatId}/`)}
           >
             <IconSymbol name="person.fill" size={40} color="#007AFF" />
             <ThemedView style={styles.chatInfo}>
