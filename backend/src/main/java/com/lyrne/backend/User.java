@@ -12,6 +12,8 @@ import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -62,6 +64,15 @@ public class User {
             weeklyEarnings++; // There should be a value of earnings in each session
         }
     }
+
+    // HashMap for checking which user details are public (true) or private (false)
+    Map<String, Boolean> visibility = Map.ofEntries(
+           Map.entry("id", true),
+           Map.entry("username", true),
+           Map.entry("email", false),
+           Map.entry("phone", false),
+           Map.entry("role", true)
+    );
 
     public JsonObject asJson() {
         return Main.GSON.toJsonTree(this).getAsJsonObject();
