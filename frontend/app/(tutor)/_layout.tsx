@@ -80,7 +80,7 @@ export default function TutorLayout() {
         }}
       />
       <Tabs.Screen
-        name="chats"
+        name="chat_list"
         options={{
           title: 'Messages',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="text.bubble.fill" color={color} />,

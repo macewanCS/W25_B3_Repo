@@ -79,7 +79,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="chats"
+        name="chat_list"
         options={{
           title: 'Chat',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="text.bubble.fill" color={color} />,
@@ -96,11 +96,13 @@ export default function TabLayout() {
         <Tabs.Screen
           key={route}
           name={route}
-          options={{
-            href: null,
-          }}
+          options={{ href: null }}
         />
       ))}
+      <Tabs.Screen
+        name="chats/[chatId]/index"
+        options={{ href: null }}
+      />
     </Tabs>
   );
 }
