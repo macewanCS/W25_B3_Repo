@@ -6,7 +6,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 
-export default function TabThreeScreen() {
+export default function StudentChatsScreen() {
 
   // Example Chats
   const chats = [
