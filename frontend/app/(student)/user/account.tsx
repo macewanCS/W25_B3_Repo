@@ -10,6 +10,8 @@ import {fetchTutors, fetchUserData, updateUserData} from "@/util/Backend";
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 
+import { router } from 'expo-router';
+
 
 export default function TabFourScreen () {
   // const colorScheme = useColorScheme();
@@ -61,66 +63,72 @@ export default function TabFourScreen () {
   };
 
   return (
-      <ThemedView style={styles.container}>
-        <ThemedView style={[styles.card, { marginBottom: tabBarHeight }]}>
-          <ThemedView style={styles.header} />
-          <ThemedView style={styles.profileContainer}>
-            <ThemedView style={styles.profileWrapper} >
-              <ThemedView style={styles.profileImageContainer} >
-                <Image
-                    source={image}
-                    style={styles.profileImage}
-                />
-              </ThemedView>
-              <TouchableOpacity style={styles.cameraOverlay} onPress={pickImage}>
-                <MaterialIcons name="photo-camera" size={24} color="white" />
+    <ThemedView style={styles.container}>
+      
+      <ThemedView style={[styles.card, { marginBottom: tabBarHeight }]}>
+      
+        <ThemedView style={styles.header} />
+        
+        <ThemedView style={styles.profileContainer}>
+          <TouchableOpacity style={styles.backButton} onPress={() => router.push('/settings')}>
+            <MaterialIcons name="arrow-back" size={24} color="white" />
+          </TouchableOpacity>
+          <ThemedView style={styles.profileWrapper} >
+            <ThemedView style={styles.profileImageContainer} >
+              <Image
+                  source={image}
+                  style={styles.profileImage}
+              />
+            </ThemedView>
+            <TouchableOpacity style={styles.cameraOverlay} onPress={pickImage}>
+              <MaterialIcons name="photo-camera" size={24} color="white" />
+            </TouchableOpacity>
+          </ThemedView>
+        </ThemedView>
+        <ThemedView style={styles.content}>
+          <ThemedText style={styles.nameInput}>
+            {user.role} {"\n"}
+          </ThemedText>
+          <ThemedView style={styles.infoContainer}>
+            <ThemedView style={styles.infoRow}>
+              <MaterialIcons name="mail" size={20} color="gray" />
+              <TextInput
+                  defaultValue={user.email}
+                  style={[styles.infoText]}
+                  editable={false}
+              />
+            </ThemedView>
+            <ThemedView style={styles.infoRowEditable}>
+              <MaterialIcons name="alternate-email" size={20} color="gray" />
+              <TextInput
+                  defaultValue={user.username ? user.username : Name}
+                  style={[styles.infoText]}
+                  onSubmitEditing={value => updateUserData({username: value.nativeEvent.text}, session)}
+              />
+              <TouchableOpacity>
+                <MaterialIcons name="edit" size={20} color="black" />
+              </TouchableOpacity>
+            </ThemedView>
+            <ThemedView style={styles.infoRowEditable}>
+              <MaterialIcons name="phone" size={20} color="gray" />
+              <TextInput
+                  defaultValue={user.phone ? user.phone : PhoneNumber}
+                  style={[styles.infoText]}
+                  // TODO: validate phone number before submitting
+                  onSubmitEditing={value => updateUserData({phone: value.nativeEvent.text}, session)}
+              />
+              <TouchableOpacity>
+                <MaterialIcons name="edit" size={20} color="black" />
               </TouchableOpacity>
             </ThemedView>
           </ThemedView>
-          <ThemedView style={styles.content}>
-            <ThemedText style={styles.nameInput}>
-              {user.role} {"\n"}
-            </ThemedText>
-            <ThemedView style={styles.infoContainer}>
-              <ThemedView style={styles.infoRow}>
-                <MaterialIcons name="mail" size={20} color="gray" />
-                <TextInput
-                    defaultValue={user.email}
-                    style={[styles.infoText]}
-                    editable={false}
-                />
-              </ThemedView>
-              <ThemedView style={styles.infoRowEditable}>
-                <MaterialIcons name="alternate-email" size={20} color="gray" />
-                <TextInput
-                    defaultValue={user.username ? user.username : Name}
-                    style={[styles.infoText]}
-                    onSubmitEditing={value => updateUserData({username: value.nativeEvent.text}, session)}
-                />
-                <TouchableOpacity>
-                  <MaterialIcons name="edit" size={20} color="black" />
-                </TouchableOpacity>
-              </ThemedView>
-              <ThemedView style={styles.infoRowEditable}>
-                <MaterialIcons name="phone" size={20} color="gray" />
-                <TextInput
-                    defaultValue={user.phone ? user.phone : PhoneNumber}
-                    style={[styles.infoText]}
-                    // TODO: validate phone number before submitting
-                    onSubmitEditing={value => updateUserData({phone: value.nativeEvent.text}, session)}
-                />
-                <TouchableOpacity>
-                  <MaterialIcons name="edit" size={20} color="black" />
-                </TouchableOpacity>
-              </ThemedView>
-            </ThemedView>
-            <ThemedView style={styles.footer}>
-              <MaterialIcons name="calendar-today" size={20} color="gray" />
-              <Text style={[styles.footerText]}>Account Created {created}</Text>
-            </ThemedView>
+          <ThemedView style={styles.footer}>
+            <MaterialIcons name="calendar-today" size={20} color="gray" />
+            <Text style={[styles.footerText]}>Account Created {created}</Text>
           </ThemedView>
         </ThemedView>
       </ThemedView>
+    </ThemedView>
   );
 };
 
@@ -219,5 +227,17 @@ const styles = StyleSheet.create({
     color: "gray", 
     fontSize: 14,
     marginTop: 16
+  },
+  backButton: {
+    position: "absolute",
+    top: 16,
+    left: 16,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "#232323",
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 1, // Ensure the back button is on top
   }
 });

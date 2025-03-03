@@ -7,7 +7,7 @@ import {useSession} from "@/components/Context";
 import {fetchTutors} from "@/util/Backend";
 import TutorCard from "@/components/TutorCard";
 
-export default function TabTwoScreen({navigation}) {
+export default function StudentSearchScreen({navigation}) {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredResults, setFilteredResults] = useState([]);
   const { session } = useSession();
