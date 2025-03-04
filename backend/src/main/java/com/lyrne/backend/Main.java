@@ -3,22 +3,27 @@ package com.lyrne.backend;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
-import com.lyrne.backend.User.Role;
 import com.lyrne.backend.services.AuthManager;
 import com.lyrne.backend.services.DatabaseManager;
 import com.lyrne.backend.services.FakeUsers;
 import io.javalin.Javalin;
-import me.mrnavastar.sqlib.api.DataContainer;
 import me.mrnavastar.sqlib.impl.config.NonMinecraft;
 
 import java.nio.file.Path;
 import java.util.Optional;
 
-import org.joda.time.DateTime;
-
 public class Main {
 
     public static final Gson GSON = new Gson();
+
+    public enum Subject {
+        MATH,
+        CHEMISTRY,
+        PHYSICS,
+        BIOLOGY,
+        ENGLISH,
+        SOCIAL
+    }
 
     public static void main(String[] args) {
         NonMinecraft.init(Path.of("./lyrne/config"), Path.of("./lyrne/db"));
@@ -46,12 +51,14 @@ public class Main {
 
                 // Handle fetching list of tutors
                 .get("/api/private/tutors", ctx -> {
-                    int amount = Optional.ofNullable(ctx.queryParam("amount")).map(Integer::parseInt).orElse(25);
+                    String subject = Optional.ofNullable(ctx.queryParam("subject")).orElse("");
+                    int offset = Optional.ofNullable(ctx.queryParam("offset")).map(Integer::parseInt).orElse(0);
 
-                    JsonArray tutors = new JsonArray();
-                    DatabaseManager.getTutors(amount).forEach(user -> tutors.add(user.asJson()));
-                    System.out.println(tutors);
-                    ctx.result(tutors.toString());
+                    Optional.ofNullable(ctx.sessionAttribute("user")).ifPresent(user -> {
+                        JsonArray tutors = new JsonArray();
+                        DatabaseManager.getTutors(offset, Main.Subject.valueOf(subject.toUpperCase()), ((User) user).getAvailability()).forEach(tutor -> tutors.add(tutor.asJson()));
+                        ctx.result(tutors.toString());
+                    });
                 })
 
                 // Save user data if it was changed in the current session
@@ -62,7 +69,5 @@ public class Main {
                 })
 
                 .start(8820);
-
-     
     }
 }
