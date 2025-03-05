@@ -65,6 +65,7 @@ public class SendEmail{
 
 
         // reading token. if you don't have the token, make a directory named "tokens" within this folder and place the token in a text file "email_api_key". token is in gdrive
+        
         String file = "\\tokens\\email_api_key.txt";
         try{
             List<String> lines = Files.readAllLines(Paths.get(file));
