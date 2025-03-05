@@ -24,7 +24,9 @@ public class DatabaseManager {
         User user = new User(id);
         Optional<DataContainer> container = tutorStore.getContainer("id", id);
         if (container.isEmpty()) container = userStore.getContainer("id", id);
-        container.ifPresent(user::load);
+        container.ifPresentOrElse(user::load, () -> {
+            SendEmail.sendWelcome(user);
+        });
         return user;
     }
 
