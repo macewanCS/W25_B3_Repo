@@ -12,9 +12,8 @@ import org.joda.time.Interval;
 
 public class SendEmail{
 
-    // the functions are probably going to be rewritten to just take a single user as an argument (or multiple?)
 
-    public void sendWelcome(User user){ 
+    public static void sendWelcome(User user){ 
         String id = user.getId();
         String address = user.getEmail();
         User.Role role = user.getRole();
@@ -38,7 +37,8 @@ public class SendEmail{
 
     }
 
-    public void sendBookingConfirmation(User user, Interval time, String tutorUsername){
+    public static void sendBookingConfirmation(User user, Interval time, String tutorUsername){
+    
         String id = user.getId();
         String address = user.getEmail();
 
@@ -64,8 +64,7 @@ public class SendEmail{
         // ok so i gotta make this token an environment variable. i will look into that. for now this is it reading from the file
 
 
-        // reading token. if you don't have the token, make a directory named "tokens" within this folder and place the token in a text file "email_api_key". ask me for the token if i didn't share it yet 
-        // might rename the file and store multiple tokens in there if we need them
+        // reading token. if you don't have the token, make a directory named "tokens" within this folder and place the token in a text file "email_api_key". token is in gdrive
         String file = "\\tokens\\email_api_key.txt";
         try{
             List<String> lines = Files.readAllLines(Paths.get(file));
