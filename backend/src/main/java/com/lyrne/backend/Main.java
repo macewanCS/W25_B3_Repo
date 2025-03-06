@@ -39,6 +39,8 @@ public class Main {
                 // Make sure every body is authenticated
                 .before("/api/private/*", AuthManager::authenticate)
 
+                .get("/api/subjects", ctx -> ctx.result(GSON.toJson(Subject.values())))
+
                 // Handle fetching user data
                 .get("/api/private/user", ctx -> Optional.ofNullable(ctx.sessionAttribute("user"))
                         .ifPresent(user -> ctx.result(user.toString())), User.Role.ANYONE)
