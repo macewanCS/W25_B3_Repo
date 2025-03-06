@@ -18,6 +18,7 @@ public class FakeUsers {
             user.setRole(random.nextBoolean() ? User.Role.TUTOR : User.Role.STUDENT);
             user.setIcon(image1);
             user.setPhone("780 473 7373");
+            user.setNew(false);
 
             DatabaseManager.saveUser(user);
         }
