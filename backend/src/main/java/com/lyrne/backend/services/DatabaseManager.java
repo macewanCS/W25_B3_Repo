@@ -23,10 +23,7 @@ public class DatabaseManager {
         User user = new User(id);
         Optional<DataContainer> container = tutorStore.getContainer("id", id);
         if (container.isEmpty()) container = userStore.getContainer("id", id);
-        container.ifPresentOrElse(user::load, () -> {
-            // when it creates a new user, it can't send an email as no address has been attached, so this line is useless atm
-            SendEmail.sendWelcome(user);
-        });
+        container.ifPresent(user::load);
         return user;
     }
 
@@ -42,6 +39,8 @@ public class DatabaseManager {
     public static void saveUser(User user) {
         DataStore store = User.Role.TUTOR.equals(user.getRole()) ? tutorStore : userStore;
         user.store(store.getOrCreateContainer("id", user.getId()));
+
+        if (user.isNew()) EmailManager.sendWelcome(user);
     }
 
     public static TimeSlot getTimeSlot(String id){ // the timeslot ID is (currently) a concatenation of the DateTime in string format (.toString()) and the tutor user ID 
