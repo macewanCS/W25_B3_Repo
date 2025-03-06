@@ -36,8 +36,7 @@ public class SendEmail{
         }
         else { // everyone else, default
             email.setPlain("Welcome to Lyrne tutoring! To get started with our app, use our search functions to find tutoring time slots!\n When you book a time slot, it'll get added to your in-app calendar.");
-        }
-        email.setPlain("Welcome to Lyrne tutoring."); 
+        } 
 
         sendEmail(address, email);
 

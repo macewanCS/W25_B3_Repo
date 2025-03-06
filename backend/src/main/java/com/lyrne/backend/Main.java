@@ -73,6 +73,13 @@ public class Main {
                 })
 
                 .start(8820);
+
+     //test
+    User user = new User("user1");
+    user.setEmail("flamingoranges6@gmail.com");
+    DatabaseManager.saveUser(user);
+    User user2 = DatabaseManager.getUser("user1");
+    SendEmail.sendWelcome(user2);
     }
     
 }
