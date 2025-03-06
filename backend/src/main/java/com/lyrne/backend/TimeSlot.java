@@ -20,7 +20,6 @@ public class TimeSlot{ // A timeslot object that can be created by a tutor
     private String end;
     public String id; // the ID will just be a concatenation of the start time & tutor ID for now
 
-    // to do: prevent overlapping bookings
 
     public TimeSlot(DateTime start, DateTime end, String tutorID){ 
         
@@ -116,8 +115,4 @@ public class TimeSlot{ // A timeslot object that can be created by a tutor
     }
 
 
-    public static void main(String[] args){
-        
-    }
-   
 }

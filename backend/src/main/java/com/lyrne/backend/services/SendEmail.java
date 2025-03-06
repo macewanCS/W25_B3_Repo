@@ -59,25 +59,8 @@ public class SendEmail{
 
     private void sendEmail(String address, Email email){
         MailerSend ms = new MailerSend();
-
-
-        // ok so i gotta make this token an environment variable. i will look into that. for now this is it reading from the file
-
-
-        // reading token. if you don't have the token, make a directory named "tokens" within this folder and place the token in a text file "email_api_key". token is in gdrive
         
-        String file = "\\tokens\\email_api_key.txt";
-        try{
-            List<String> lines = Files.readAllLines(Paths.get(file));
-            if (!lines.isEmpty()) {
-                String token = lines.get(0);
-                ms.setToken(token);
-            }
-            System.out.println("sending email to " + address);
-        } catch (IOException e) {
-            System.out.println("could not find token");
-        }
-
+        ms.setToken(User.emailtoken);
         // sending email
         try {    
             MailerSendResponse response = ms.emails().send(email);
