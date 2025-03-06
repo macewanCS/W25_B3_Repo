@@ -24,16 +24,15 @@ public class DatabaseManager {
         User user = new User(id);
         Optional<DataContainer> container = tutorStore.getContainer("id", id);
         if (container.isEmpty()) container = userStore.getContainer("id", id);
-        container.ifPresentOrElse(user::load, () -> {
-            // when it creates a new user, it can't send an email as no address has been attached, so this line is useless atm
-            SendEmail.sendWelcome(user);
-        });
+        container.ifPresent(user::load);
         return user;
     }
 
     public static void saveUser(User user) {
         DataStore store = User.Role.TUTOR.equals(user.getRole()) ? tutorStore : userStore;
         user.store(store.getOrCreateContainer("id", user.getId()));
+
+        if (user.isNew()) EmailManager.sendWelcome(user);
     }
 
     public static ArrayList<User> getTutors(int offset, Main.Subject subject, ArrayList<Interval> availability) {

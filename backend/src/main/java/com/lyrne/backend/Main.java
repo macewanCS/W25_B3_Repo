@@ -6,7 +6,6 @@ import com.google.gson.JsonParser;
 import com.lyrne.backend.services.AuthManager;
 import com.lyrne.backend.services.DatabaseManager;
 import com.lyrne.backend.services.FakeUsers;
-import com.lyrne.backend.services.SendEmail;
 
 import io.javalin.Javalin;
 import me.mrnavastar.sqlib.impl.config.NonMinecraft;
@@ -32,8 +31,6 @@ public class Main {
         AuthManager.registerProvider("https://appleid.apple.com/auth/keys");
 
         FakeUsers.create(250); // create 250 fake users
-
-        String emailToken = System.getenv("emailtoken"); // email token
 
         Javalin.create(config -> {
             config.bundledPlugins.enableRouteOverview("/");
@@ -73,13 +70,5 @@ public class Main {
                 })
 
                 .start(8820);
-
-     //test
-    User user = new User("user1");
-    user.setEmail("flamingoranges6@gmail.com");
-    DatabaseManager.saveUser(user);
-    User user2 = DatabaseManager.getUser("user1");
-    SendEmail.sendWelcome(user2);
     }
-    
 }

@@ -15,18 +15,21 @@ import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Arrays;
 
 @Getter
 @Setter
 public class User {
 
+    public enum Role implements RouteRole { ANYONE, STUDENT, PARENT, TUTOR, TUTOR_PENDING }
     private TypeToken<ArrayList<Interval>> intervalsType = new TypeToken<>() {};
     private SQLibType<ArrayList<Interval>> INTERVALS = new SQLibType<>(GsonTypes.ELEMENT, Main.GSON::toJsonTree, i -> Main.GSON.fromJson(i, intervalsType));
 
     public enum Role implements RouteRole { ANYONE, STUDENT, PARENT, TUTOR }
 
     private transient boolean dirty = false; // Don't save this to database - is used to mark whether this user is out of sync with db
+    private transient boolean isNew = true;
 
     // All users
     private transient String id;
@@ -122,6 +125,8 @@ public class User {
     }
 
     public void load(DataContainer container) {
+        this.isNew = false;
+
         container.get(JavaTypes.STRING, "username").ifPresent(username -> this.username = username);
         container.get(JavaTypes.STRING, "email").ifPresent(email -> this.email = email);
         container.get(JavaTypes.STRING, "phone").ifPresent(phone -> this.phone = phone);
