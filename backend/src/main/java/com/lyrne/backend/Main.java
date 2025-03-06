@@ -31,6 +31,8 @@ public class Main {
 
         FakeUsers.create(250); // create 250 fake users
 
+        String emailToken = System.getenv("emailtoken"); // email token
+
         Javalin.create(config -> {
             config.bundledPlugins.enableRouteOverview("/");
             config.staticFiles.add("web");
@@ -70,4 +72,6 @@ public class Main {
 
                 .start(8820);
     }
+    //test
+    User user = DatabaseManager.getUser("fortnite");
 }
