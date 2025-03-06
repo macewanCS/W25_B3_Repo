@@ -8,6 +8,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.io.IOException;
 import java.util.List;
+import java.util.NoSuchElementException;
+
 import org.joda.time.Interval;
 
 public class SendEmail{
@@ -17,6 +19,10 @@ public class SendEmail{
         String id = user.getId();
         String address = user.getEmail();
         User.Role role = user.getRole();
+        
+        if (address == null){
+            throw new IllegalArgumentException("Email cannot be null");
+        }
 
         Email email = new Email();
         email.setFrom("Lyrne Emailer", "lyrne@trial-0p7kx4x79pml9yjr.mlsender.net");
@@ -57,10 +63,10 @@ public class SendEmail{
 
     }
 
-    private void sendEmail(String address, Email email){
+    private static void sendEmail(String address, Email email){
         MailerSend ms = new MailerSend();
-        
-        ms.setToken(User.emailtoken);
+        String emailToken = System.getenv("emailtoken");
+        ms.setToken(emailToken);
         // sending email
         try {    
             MailerSendResponse response = ms.emails().send(email);
