@@ -25,6 +25,7 @@ public class DatabaseManager {
         Optional<DataContainer> container = tutorStore.getContainer("id", id);
         if (container.isEmpty()) container = userStore.getContainer("id", id);
         container.ifPresentOrElse(user::load, () -> {
+            // when it creates a new user, it can't send an email as no address has been attached, so this line is useless atm
             SendEmail.sendWelcome(user);
         });
         return user;
