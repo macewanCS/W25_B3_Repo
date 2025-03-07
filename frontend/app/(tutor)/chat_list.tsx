@@ -1,4 +1,4 @@
-import { StyleSheet, Image, Platform, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, Image, Platform, FlatList, TouchableOpacity, useColorScheme } from 'react-native';
 import { Collapsible } from '@/components/Collapsible';
 import { ExternalLink } from '@/components/ExternalLink';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
@@ -8,15 +8,16 @@ import { IconSymbol } from '@/components/ui/IconSymbol';
 import { useRouter } from 'expo-router';
 
 export default function TutorChatsScreen() {
+    const lightMode = useColorScheme() === 'light';
 
-  // Example Chats
-  const chats = [
+    // Example Chats
+    const chats = [
     { id: "1", chatId: "123", name: "Jake T.", lastMessage: "Hey, can I talk to you about your math?" },
     { id: "2", chatId: "634", name: "Presley L.", lastMessage: "Can we do a session next week?" },
     // { id: "3", chatId: "802", name: "Mr. Chuck Brown", lastMessage: "Session at 3 PM work for you?" },
-  ];
+    ];
 
-  const { push } = useRouter();
+    const { push } = useRouter();
 
   return (
     <ThemedView style={styles.container}>
@@ -27,10 +28,10 @@ export default function TutorChatsScreen() {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <TouchableOpacity
-            style={styles.chatItem} onPress={() => push(`/chats/${item.chatId}/`)}
+            style={[styles.chatItem, { backgroundColor: lightMode ? "#ccc" : "#1E1E1E" }]} onPress={() => push(`/chats/${item.chatId}/`)}
           >
             <IconSymbol name="person.fill" size={40} color="#007AFF" />
-            <ThemedView style={styles.chatInfo}>
+            <ThemedView style={[styles.chatInfo, { backgroundColor: lightMode ? "#ccc" : "#1E1E1E" }]}>
               <ThemedText style={styles.chatName}>{item.name}</ThemedText>
               <ThemedText style={styles.lastMessage}>{'> '}{item.lastMessage}</ThemedText>
             </ThemedView>
@@ -67,7 +68,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     padding: 12,
-    backgroundColor: "#1E1E1E",
     borderRadius: 8,
     marginBottom: 10,
     shadowOpacity: 0.1,
@@ -77,7 +77,6 @@ const styles = StyleSheet.create({
   chatInfo: {
     marginLeft: 10,
     flex: 1,
-    backgroundColor: "#1E1E1E",
   },
   chatName: {
     fontSize: 16,
