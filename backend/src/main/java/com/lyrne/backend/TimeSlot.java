@@ -8,13 +8,33 @@ import com.lyrne.backend.User;
 import com.lyrne.backend.TimeSlot.subjectTypes;
 import com.lyrne.backend.services.DatabaseManager;
 import com.lyrne.backend.services.EmailManager;
-import com.lyrne.backend.services.SendEmail;
-
 import me.mrnavastar.sqlib.api.DataContainer;
 import me.mrnavastar.sqlib.api.types.JavaTypes;
 
 public class TimeSlot{ // A timeslot object that can be created by a tutor
 
+    public enum subjectTypes {
+        MATH(0), SCIENCE(1), SOCIAL(2), ENGLISH(3), PHYSICS(4), BIOLOGY(5), CHEMISTRY(6);
+
+        private final int subjectID;
+
+        subjectTypes(int subjectID) {
+            this.subjectID = subjectID;
+        }
+
+        public static String getId(subjectTypes subject) {
+            if (subject.equals(subjectTypes.ENGLISH)) return "iseng";
+            if (subject.equals(subjectTypes.MATH)) return "ismath";
+            if (subject.equals(subjectTypes.SCIENCE)) return "issci";
+            if (subject.equals(subjectTypes.SOCIAL)) return "issoc";
+            if (subject.equals(subjectTypes.BIOLOGY)) return "isbio";
+            if (subject.equals(subjectTypes.PHYSICS)) return "isphys";
+            if (subject.equals(subjectTypes.CHEMISTRY)) return "ischem";
+            return ""; // lazy solution my b
+        }
+
+
+    }
 
     private String tutor; // The tutor's id, will be automatically put down 
 
@@ -27,6 +47,7 @@ public class TimeSlot{ // A timeslot object that can be created by a tutor
     private String start;
     private String end;
     public String id; // the ID will just be a concatenation of the start time & tutor ID for now
+    public ArrayList<subjectTypes> subjects = new ArrayList<>(); 
 
 
     public TimeSlot(DateTime start, DateTime end, String tutorID){ 
@@ -107,57 +128,42 @@ public class TimeSlot{ // A timeslot object that can be created by a tutor
     public void addSubject(subjectTypes subject){
         this.subjects.add(subject);
     }
-    public void addSubject(int subject){
-        this.subjects.add(subjectTypes.fromId(subject));
-    }
 
-    public String subjectsConverter(){ // we're gonna convert the arraylist into a string of numbers to put in the database. yes im normal
-
-        StringBuilder sb = new StringBuilder();
-        for (subjectTypes subject : this.subjects){
-            sb.append(subject.getId());
-        }
-        return sb.toString();
-        //shoutout chatgpt for showing me stringbuilder
-
-    }
-
-    public void subjectsParser(String subjectsString){
-        for (int i = 0; i < subjectsString.length(); i++){
-            this.subjects.add(subjectTypes.fromId(Integer.parseInt(subjectsString.substring(i, i+1)))); // kind of a messed up line ngl
-            //it takes the integer value of the subject, finds out what subject that is, and adds it to the "subjects" arraylist property of the timeslot
-        }
-    }
 
     public void store(DataContainer container) {
-    container.put(JavaTypes.STRING, "starttime", this.getStartTime());
-    container.put(JavaTypes.STRING, "endtime", this.getEndTime());
-    container.put(JavaTypes.STRING, "tutorid", this.getTutorID());
-    container.put(JavaTypes.BOOL, "isbooked", this.isBooked()); 
-    container.put(JavaTypes.STRING, "bookedby", this.getBookedBy());
-    container.put(JavaTypes.STRING, "id", this.getID());
-    container.put(JavaTypes.STRING , "subjects", this.subjectsConverter());
+        container.put(JavaTypes.STRING, "starttime", this.getStartTime());
+        container.put(JavaTypes.STRING, "endtime", this.getEndTime());
+        container.put(JavaTypes.STRING, "tutorid", this.getTutorID());
+        container.put(JavaTypes.BOOL, "isbooked", this.isBooked()); 
+        container.put(JavaTypes.STRING, "bookedby", this.getBookedBy());
+        container.put(JavaTypes.STRING, "id", this.getID());
+            
+        // storing subjects individually
+        container.put(JavaTypes.BOOL, "iseng", subjects.contains(subjectTypes.ENGLISH));
+        container.put(JavaTypes.BOOL, "ismath", subjects.contains(subjectTypes.MATH));
+        container.put(JavaTypes.BOOL, "issci", subjects.contains(subjectTypes.SCIENCE));
+        container.put(JavaTypes.BOOL, "issoc", subjects.contains(subjectTypes.SOCIAL));
+        container.put(JavaTypes.BOOL, "isbio", subjects.contains(subjectTypes.BIOLOGY));
+        container.put(JavaTypes.BOOL, "isphys", subjects.contains(subjectTypes.PHYSICS));
+        container.put(JavaTypes.BOOL, "ischem", subjects.contains(subjectTypes.CHEMISTRY));
     }
 
     public void load(DataContainer container) {
-        // i'll rewrite this in the way it was done in the User class at some point. maybe
-        Optional<String> st = container.get(JavaTypes.STRING, "starttime");
-        Optional<String> en = container.get(JavaTypes.STRING, "endtime");
-        Optional<String> tn = container.get(JavaTypes.STRING, "tutorid");
-        Optional<Boolean> ib = container.get(JavaTypes.BOOL, "isbooked");
-        Optional<String> bb = container.get(JavaTypes.STRING, "bookedby");
-        Optional<String> id = container.get(JavaTypes.STRING, "id");
-        Optional<String> sj = container.get(JavaTypes.STRING, "subjects");
-        
-        // why do i have to check for schrodinger's cat, man 
 
-        if (st.isPresent()) this.start = st.get(); 
-        if (en.isPresent()) this.end = en.get(); 
-        if (tn.isPresent()) this.tutor = tn.get();
-        if (ib.isPresent()) this.booked = ib.get();
-        if (bb.isPresent()) this.bookedBy = bb.get();
-        if (id.isPresent()) this.id = id.get();
-        if (sj.isPresent()) this.subjectsParser(sj.get());
+        container.get(JavaTypes.STRING, "starttime").ifPresent(start -> this.start = start);
+        container.get(JavaTypes.STRING, "endtime").ifPresent(end -> this.end = end);
+        container.get(JavaTypes.STRING, "tutorid").ifPresent(tutor -> this.tutor = tutor);
+        container.get(JavaTypes.BOOL, "isbooked").ifPresent(booked -> this.booked = booked);
+        container.get(JavaTypes.STRING, "bookedby").ifPresent(bookedby -> this.bookedBy = bookedby);
+        container.get(JavaTypes.STRING, "id").ifPresent(id -> this.id = id);
+        container.get(JavaTypes.BOOL, "iseng").ifPresent(eng -> subjects.add(subjectTypes.ENGLISH));
+        container.get(JavaTypes.BOOL, "ismath").ifPresent(math -> subjects.add(subjectTypes.MATH));
+        container.get(JavaTypes.BOOL, "issci").ifPresent(sci -> subjects.add(subjectTypes.SCIENCE));
+        container.get(JavaTypes.BOOL, "issoc").ifPresent(soc -> subjects.add(subjectTypes.SOCIAL));
+        container.get(JavaTypes.BOOL, "isbio").ifPresent(bio -> subjects.add(subjectTypes.BIOLOGY));
+        container.get(JavaTypes.BOOL, "isphys").ifPresent(phys -> subjects.add(subjectTypes.PHYSICS));
+        container.get(JavaTypes.BOOL, "ischem").ifPresent(chem -> subjects.add(subjectTypes.CHEMISTRY));
+        
         this.timeSlotInterval = new Interval(DateTime.parse(this.start), DateTime.parse(this.end));
 
     }

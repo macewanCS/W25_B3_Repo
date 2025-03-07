@@ -2,6 +2,8 @@ package com.lyrne.backend.services;
 
 import com.lyrne.backend.TimeSlot;
 import com.lyrne.backend.User;
+import com.lyrne.backend.TimeSlot.subjectTypes;
+
 import me.mrnavastar.sqlib.SQLib;
 import me.mrnavastar.sqlib.api.DataContainer;
 import me.mrnavastar.sqlib.api.DataStore;
@@ -73,14 +75,14 @@ public class DatabaseManager {
 
     public static ArrayList<TimeSlot> searchBySubject(TimeSlot.subjectTypes subject){
         ArrayList<TimeSlot> matches = new ArrayList<TimeSlot>();
-        // can't think of a better way than to open up the containers and search each one
-        for(DataContainer dc : timeSlotStore.getContainers()) {
+
+        for(DataContainer dc : timeSlotStore.getContainers(subjectTypes.getId(subject), true)) {
             TimeSlot ts = new TimeSlot(dc);
             if (ts.subjects.contains(subject)) matches.add(ts);
-
             }
         return matches;
     }
+
     public static ArrayList<TimeSlot> searchByTutor(String tutorid){
         ArrayList<TimeSlot> matches = new ArrayList<TimeSlot>();
         for(DataContainer dc : timeSlotStore.getContainers("tutorid", tutorid)) {
@@ -106,16 +108,6 @@ public class DatabaseManager {
     // these are exclusive search as well. inclusive search can be done later but i don't think most users would want it
     // the subject is the backbone of all of them, so it's required. i figured it'd make the most sense as you would always know what subject you want to find tutoring in
 
-    public static ArrayList<TimeSlot> searchResults(TimeSlot.subjectTypes subject){
-        ArrayList<TimeSlot> matches = new ArrayList<TimeSlot>();
-        
-        for(DataContainer dc : timeSlotStore.getContainers()) {
-            TimeSlot ts = new TimeSlot(dc);
-            if (ts.subjects.contains(subject)) matches.add(ts);
-
-            }
-        return matches;
-    }
     public static ArrayList<TimeSlot> searchResults(TimeSlot.subjectTypes subject, Interval interval){
         ArrayList<TimeSlot> matches = new ArrayList<TimeSlot>();
 
