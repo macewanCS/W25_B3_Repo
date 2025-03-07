@@ -40,6 +40,8 @@ public class DatabaseManager {
     public static void saveUser(User user) {
         DataStore store = User.Role.TUTOR.equals(user.getRole()) ? tutorStore : userStore;
         user.store(store.getOrCreateContainer("id", user.getId()));
+
+        if (user.isNew()) EmailManager.sendWelcome(user);
     }
 
     public static TimeSlot getTimeSlot(String id){ // the timeslot ID is (currently) a concatenation of the start DateTime in string format (.toString()) and the tutor user ID 

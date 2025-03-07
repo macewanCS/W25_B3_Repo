@@ -26,35 +26,7 @@ public class TimeSlot{ // A timeslot object that can be created by a tutor
     private String start;
     private String end;
     public String id; // the ID will just be a concatenation of the start time & tutor ID for now
-    public ArrayList<subjectTypes> subjects = new ArrayList<>(); 
-    
-    // subjects are an enum for storing purposes
-    // if you have a better idea PLEASE tell me but this is the easiest that came to my mind
-    
-    public enum subjectTypes {
-        MATH(0), SCIENCE(1), SOCIAL(2), ENGLISH(3), PHYSICS(4), BIOLOGY(5), CHEMISTRY(6);
 
-        private final int subjectID;
-
-        subjectTypes(int subjectID) {
-            this.subjectID = subjectID;
-        }
-
-        public int getId() {
-            return subjectID;
-        }
-
-        public static subjectTypes fromId(int id) {
-            for (subjectTypes subject : subjectTypes.values()) {
-                if (subject.getId() == id) {
-                    return subject;
-                }
-            }
-            throw new IllegalArgumentException("No subject found with ID: " + id);
-        }
-    }
-    
-    
 
     public TimeSlot(DateTime start, DateTime end, String tutorID){ 
         
@@ -200,5 +172,5 @@ public class TimeSlot{ // A timeslot object that can be created by a tutor
         System.out.println(this.subjects);
     }
 
-   
+
 }

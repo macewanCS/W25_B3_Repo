@@ -3,21 +3,17 @@ package com.lyrne.backend;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
-import com.lyrne.backend.User.Role;
 import com.lyrne.backend.services.AuthManager;
 import com.lyrne.backend.services.DatabaseManager;
 import com.lyrne.backend.services.FakeUsers;
+
 import com.lyrne.backend.services.SendEmail;
 
 import io.javalin.Javalin;
-import me.mrnavastar.sqlib.api.DataContainer;
 import me.mrnavastar.sqlib.impl.config.NonMinecraft;
 
 import java.nio.file.Path;
 import java.util.Optional;
-
-import java.io.IOException;
-import org.joda.time.DateTime;
 
 public class Main {
 
@@ -66,6 +62,6 @@ public class Main {
 
                 .start(8820);
 
-    
+     
     }
 }

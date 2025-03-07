@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
-import { Image, StyleSheet, Platform, ScrollView, View, SafeAreaView, TouchableOpacity, Text } from 'react-native';
+import { Image, StyleSheet, Platform, ScrollView, View, SafeAreaView, TouchableOpacity, Text, useColorScheme } from 'react-native';
 import { HelloWave } from '@/components/HelloWave';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
+// import ParallaxScrollView from '@/components/ParallaxScrollView';
 
 // Currently, the ParallaxScrollView component crashes after authentication.
 
 import { Agenda } from 'react-native-calendars';
 
 export default function StudentHomeScreen() {
+  const lightMode = useColorScheme() === 'light';
   const today = new Date();
   const currentDateString = today.toISOString().split('T')[0];
   const [selectedDate, setSelectedDate] = useState(currentDateString);
@@ -68,16 +69,15 @@ export default function StudentHomeScreen() {
             ...(Platform.OS === 'android' ? { marginTop: 50 } : {})
           }} 
 
-          // TODO: Adapt this to colorScheme (dark and light mode). Currently matches dark.
           theme={{
-            calendarBackground: '#141414', // #141414
-            monthTextColor: 'lightblue',
+            calendarBackground: lightMode ? 'white' : '#141414', // #141414
+            monthTextColor: lightMode ? '#007AFF' : 'lightblue',
             todayTextColor: '#e9c030', // #e9c030
-            dayTextColor: '#d9e1e8', // #d9e1e8
+            dayTextColor: lightMode ? 'black' : 'white', // #d9e1e8
+            reservationsBackgroundColor: lightMode ? 'white' : '#1E1E1E',
             agendaKnobColor: '#a2a6a6', // #a2a6a6
-            reservationsBackgroundColor: '#1E1E1E', // #1E1E1E
-            agendaDayTextColor: 'white',
-            agendaDayNumColor: 'white'
+            agendaDayTextColor: lightMode ? 'black' : 'white',
+            agendaDayNumColor: lightMode ? 'black' : 'white'
           }}
       />
     </SafeAreaView>
