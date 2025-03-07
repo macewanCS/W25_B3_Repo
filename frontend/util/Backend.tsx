@@ -2,12 +2,12 @@ const backendUrl = "https://lyrne.mrnavastar.me"
 
 //TODO: add some form of caching to this class to reduce lookups and improve the app responsiveness
 
-export async function makeBackendRequest(session: any, method: string, endpoint: string, body: string): Promise<any> {
+export async function makeBackendRequest(session: any, method: string, endpoint: string, body: string, params: string): Promise<any> {
     if (!session.jwt) {
         throw new Error(`Invalid token: ${session.jwt}`);
     }
 
-    const response = await fetch(backendUrl + endpoint, {
+    const response = await fetch(backendUrl + endpoint + params, {
         method: method,
         headers: {
             "Authorization": `${session.jwt}`,
@@ -23,14 +23,21 @@ export async function makeBackendRequest(session: any, method: string, endpoint:
     return await response.json();
 }
 
+export async function fetchSubjects(session: any): Promise<any[]> {
+    return makeBackendRequest(session, "GET", "/api/subjects")
+}
+
 export async function fetchUserData(session: any): Promise<any> {
-    return makeBackendRequest(session, "GET", "/api/private/user", "")
+    return makeBackendRequest(session, "GET", "/api/private/user", "", "")
 }
 
 export async function updateUserData(data: any, session: any): Promise<any> {
-    return makeBackendRequest(session, "POST", "/api/private/user", JSON.stringify(data))
+    return makeBackendRequest(session, "POST", "/api/private/user", JSON.stringify(data), "")
 }
 
-export async function fetchTutors(session: any): Promise<any> {
-    return makeBackendRequest(session, "GET", "/api/private/tutors", "")
+export async function fetchTutors(session: any, offset: int, subject: string): Promise<any> {
+    return makeBackendRequest(session, "GET", "/api/private/tutors", "", "?" + new URLSearchParams({
+        offset: offset,
+        subject: subject,
+    }));
 }
