@@ -66,18 +66,15 @@ export default function StudentSettingsScreen () {
 
   const settingsList = [
     // TODO: 
-    // - Implement all routes, 
     // - Properly adapt light and dark mode, 
-    // - Create a back button component to be re-used (used in /account atm),
     // - Adapt icons to native ios and android respectively
     { name: 'Account', icon: 'account-circle', route: '/user/account' },
     { name: 'Edit Availability', icon: 'edit-calendar', route: 'user/availability' },
-    { name: 'Courses', icon: 'menu-book', route: 'user/courses' },
+    { name: 'Courses', icon: 'menu-book', route: 'user/courses' }, // Pick and choose courses (might not need depending on search function)
     { name: 'Privacy', icon: 'lock', route: 'user/privacy'},  // Ability to show or hide information about your profile, etc.
-    { name: 'Security', icon: 'security', route: 'user/security' }, // Might not need. An ex. might be 'Save login session'
-    { name: 'Email Notifications', icon: 'notifications', route: 'user/notifications' }, // Emails, possibly SMS
-    // { name: 'Language', icon: 'language' }, // It is possible to localize all text and add support for example French
-    { name: 'Log Out', icon: 'logout' }, // Probably modal/new page to double check signing out
+    // { name: 'Security', icon: 'security', route: 'user/security' }, // Might not need. An ex. might be 'Save login session'
+    { name: 'Email Notifications', icon: 'notifications', route: 'user/notifications' }, // Emails
+    { name: 'Log Out', icon: 'logout' },
   ];
 
   return (

@@ -66,17 +66,15 @@ export default function TutorSettingsScreen () {
 
   const settingsList = [
     // TODO: 
-    // - Implement all routes, 
     // - Properly adapt light and dark mode, 
-    // - Create a back button component to be re-used (used in /account atm),
     // - Adapt icons to native ios and android respectively
     { name: 'Account', icon: 'account-circle', route: 'tutor/account' },
     { name: 'Edit Availability', icon: 'edit-calendar', route: 'tutor/availability' },
     { name: 'Certifications & Courses', icon: 'menu-book', route: 'tutor/certifications' },
     { name: 'Privacy', icon: 'lock', route: 'tutor/privacy'},  // Ability to show or hide information about your profile, etc.
-    { name: 'Security', icon: 'security', route: 'tutor/security' }, // Might not need. An ex. might be 'Save login session'
+    // { name: 'Security', icon: 'security', route: 'tutor/security' }, // Might not need. An ex. might be 'Save login session'
     { name: 'Email Notifications', icon: 'notifications', route: 'tutor/notifications' }, // Emails 
-    { name: 'Log Out', icon: 'logout', route: 'tutor/sign-out' }, // Probably modal/new page to double check signing out
+    { name: 'Log Out', icon: 'logout', route: 'tutor/sign-out' }, 
   ];
 
 return (
