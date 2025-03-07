@@ -1,13 +1,15 @@
 import React, { useState, useEffect} from 'react';
 import { router } from 'expo-router';
 import {useSession} from "@/components/Context";
-import { Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { Text, TouchableOpacity, StyleSheet, useColorScheme } from 'react-native';
 import {fetchUserData, updateUserData} from "@/util/Backend";
 import { ThemedText } from '@/components/ThemedText';
 // import { ThemedView } from '@/components/ThemedView';
 import { UserSettingsBackground } from "@/components/ui/SettingsBackground";
 
 export default function TutorSignOut() {
+    const colorScheme = useColorScheme();
+    const lightMode = colorScheme === 'light';
     const { session, signOut } = useSession();
     const [user, setUserData] = useState({});
 
@@ -33,24 +35,35 @@ export default function TutorSignOut() {
 
     return(
         <UserSettingsBackground title="Log Out" >
-            {/* <TouchableOpacity style={styles.Button} onPress={switchRole}>
-                <ThemedText>Switch Role to {user.role === "STUDENT" ? "TUTOR" : "STUDENT"}</ThemedText>
-            </TouchableOpacity> */}
             <ThemedText>Are you sure you want to sign out?</ThemedText>
-            <TouchableOpacity style={styles.Button} onPress={signOut}>
-                <Text style={{ fontWeight: 'bold' }}>Yes</Text>
+            <TouchableOpacity style={[styles.YesButton, { backgroundColor: lightMode ? "#fff" : "#232323" }]} onPress={signOut}>
+                <ThemedText style={{ fontWeight: 'bold' }}>Yes</ThemedText>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.Button} onPress={() => router.push('/settings')}>
-                <Text style={{ fontWeight: 'bold' }}>No</Text>
+            <TouchableOpacity style={styles.NoButton} onPress={() => router.push('/settings')}>
+                <ThemedText style={{ fontWeight: 'bold' }}>No</ThemedText>
             </TouchableOpacity>
         </UserSettingsBackground>
     ) 
 }
 
 const styles = StyleSheet.create({
-    Button: {
+    YesButton: {
         alignItems: "center",
-        backgroundColor: "#a4becf",
+        borderWidth: 3,
+        borderColor: "#007bff",
+        paddingVertical: 18,
+        marginTop: 25,
+        paddingHorizontal: 20,
+        borderRadius: 25,
+        shadowOpacity: 0.3,
+        shadowRadius: 5,
+        elevation: 5,
+    },
+    NoButton: {
+        alignItems: "center",
+        backgroundColor: "#007bff",
+        borderColor: "#007bff",
+        borderWidth: 3,
         paddingVertical: 18,
         marginTop: 25,
         paddingHorizontal: 20,
