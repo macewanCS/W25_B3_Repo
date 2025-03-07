@@ -72,7 +72,7 @@ export default function MyStudentsScreen() {
         <TouchableOpacity 
             style={[
                 styles.studentRow, 
-                { backgroundColor: lightMode ? '#ccc' : '#232323' }
+                { backgroundColor: lightMode ? '#ccc' : '#232323' } // #f9f9f9 (a other lighter gray)
             ]}
             // onPress={() => handleStudentPress(item)}
         >

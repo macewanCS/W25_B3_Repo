@@ -87,9 +87,9 @@ export default function TutorLayout() {
         }}
       />
       <Tabs.Screen
-        name="invoices"
+        name="finances"
         options={{
-          title: 'Invoices',
+          title: 'Finances',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="building.columns" color={color} />,
         }}
       />

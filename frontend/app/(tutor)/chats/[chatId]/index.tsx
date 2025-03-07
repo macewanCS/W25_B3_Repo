@@ -28,11 +28,11 @@ const Header = ({ name, online }) => (
     </TouchableOpacity>
     <ThemedView style={styles.headerInfo}>
       <ThemedText style={styles.headerName}>{name}</ThemedText>
-      <ThemedText style={styles.headerStatus}>{online ? "Online" : "Offline"}</ThemedText>
+      {/* <ThemedText style={styles.headerStatus}>{online ? "Online" : "Offline"}</ThemedText> */}
     </ThemedView>
-    <TouchableOpacity style={styles.headerAction}>
+    {/* <TouchableOpacity style={styles.headerAction}>
       <MaterialIcons name="call" size={22} color="#007AFF" />
-    </TouchableOpacity>
+    </TouchableOpacity> */}
   </ThemedView>
 )
 
@@ -80,7 +80,7 @@ return (
         keyboardVerticalOffset={Platform.OS === "ios" ? tabBarHeight : 0}
     >
         <StatusBar style="auto" />
-        <Header name={chatName} online={true} />
+        <Header name={chatName} />
         <ThemedView style={{ flex: 1 }}>
             <FlatList
                 data={messages}

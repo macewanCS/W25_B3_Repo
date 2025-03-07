@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Image, StyleSheet, Platform, ScrollView, View, SafeAreaView, TouchableOpacity, Text } from 'react-native';
+import { Image, StyleSheet, Platform, ScrollView, View, SafeAreaView, TouchableOpacity, Text, useColorScheme } from 'react-native';
 import { HelloWave } from '@/components/HelloWave';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
@@ -10,21 +10,22 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { Agenda } from 'react-native-calendars';
 
 export default function TutorHomeScreen() {
-const today = new Date();
-const currentDateString = today.toISOString().split('T')[0];
-const [selectedDate, setSelectedDate] = useState(currentDateString);
-const startOfWeek = new Date(today.setDate(today.getDate() - today.getDay()));
-const formatDate = (date) => date.toISOString().split('T')[0];
+    const lightMode = useColorScheme() === 'light';
+    const today = new Date();
+    const currentDateString = today.toISOString().split('T')[0];
+    const [selectedDate, setSelectedDate] = useState(currentDateString);
+    const startOfWeek = new Date(today.setDate(today.getDate() - today.getDay()));
+    const formatDate = (date) => date.toISOString().split('T')[0];
 
-const [items, setItems] = useState({
-    [formatDate(startOfWeek)]: [],
-    [formatDate(new Date(startOfWeek.setDate(startOfWeek.getDate() + 1)))]: [{name: 'Session', data:'Student 1 - 3:00 PM\nCourse: Mathematics\nLocation: Room 101', disabled: false}],
-    [formatDate(new Date(startOfWeek.setDate(startOfWeek.getDate() + 1)))]: [],
-    [formatDate(new Date(startOfWeek.setDate(startOfWeek.getDate() + 1)))]: [{name: 'Session', data:'Student 2 - 10:00 AM\nCourse: Mathematics\nLocation: Room 202'}],
-    [formatDate(new Date(startOfWeek.setDate(startOfWeek.getDate() + 1)))]: [{name: 'Session', data:'Student 3 - 1:00 PM\nCourse: Biology\nLocation: Room 303'}],
-    [formatDate(new Date(startOfWeek.setDate(startOfWeek.getDate() + 1)))]: [{name: 'Session', data:'Student 4 - 11:00 AM\nCourse: Biology\nLocation: Room 404'}],
-    [formatDate(new Date(startOfWeek.setDate(startOfWeek.getDate() + 1)))]: [{name: 'Session', data:'Student 1 - 2:00 PM\nCourse: Mathematics\nLocation: Room 505'}]
-});
+    const [items, setItems] = useState({
+        [formatDate(startOfWeek)]: [],
+        [formatDate(new Date(startOfWeek.setDate(startOfWeek.getDate() + 1)))]: [{name: 'Session', data:'Student 1 - 3:00 PM\nCourse: Mathematics\nLocation: Room 101', disabled: false}],
+        [formatDate(new Date(startOfWeek.setDate(startOfWeek.getDate() + 1)))]: [],
+        [formatDate(new Date(startOfWeek.setDate(startOfWeek.getDate() + 1)))]: [{name: 'Session', data:'Student 2 - 10:00 AM\nCourse: Mathematics\nLocation: Room 202'}],
+        [formatDate(new Date(startOfWeek.setDate(startOfWeek.getDate() + 1)))]: [{name: 'Session', data:'Student 3 - 1:00 PM\nCourse: Biology\nLocation: Room 303'}],
+        [formatDate(new Date(startOfWeek.setDate(startOfWeek.getDate() + 1)))]: [{name: 'Session', data:'Student 4 - 11:00 AM\nCourse: Biology\nLocation: Room 404'}],
+        [formatDate(new Date(startOfWeek.setDate(startOfWeek.getDate() + 1)))]: [{name: 'Session', data:'Student 1 - 2:00 PM\nCourse: Mathematics\nLocation: Room 505'}]
+    });
 
   return (
     <SafeAreaView style={styles.container}>
@@ -70,16 +71,15 @@ const [items, setItems] = useState({
             ...(Platform.OS === 'android' ? { marginTop: 50 } : {})
           }} 
 
-          // TODO: Adapt this to colorScheme (dark and light mode). Currently matches dark.
           theme={{
-            calendarBackground: '#141414', // #141414
-            monthTextColor: 'lightblue',
+            calendarBackground: lightMode ? 'white' : '#141414', // #141414
+            monthTextColor: lightMode ? '#007AFF' : 'lightblue',
             todayTextColor: '#e9c030', // #e9c030
-            dayTextColor: '#d9e1e8', // #d9e1e8
+            dayTextColor: lightMode ? 'black' : 'white', // #d9e1e8
+            reservationsBackgroundColor: lightMode ? 'white' : '#1E1E1E',
             agendaKnobColor: '#a2a6a6', // #a2a6a6
-            reservationsBackgroundColor: '#1E1E1E', // #1E1E1E
-            agendaDayTextColor: 'white',
-            agendaDayNumColor: 'white'
+            agendaDayTextColor: lightMode ? 'black' : 'white',
+            agendaDayNumColor: lightMode ? 'black' : 'white'
           }}
       />
     </SafeAreaView>
