@@ -8,7 +8,7 @@ import { UserSettingsBackground } from "@/components/ui/SettingsBackground";
 export default function MyStudentsScreen() {
     const lightMode = useColorScheme() === 'light';
 
-    // Example data for active students
+    // Example data for current students
     const [students] = useState([
         {
             id: '1',
@@ -67,18 +67,6 @@ export default function MyStudentsScreen() {
             phoneNumber: '+166-677-7888',
         },
     ]);
-    
-
-    // const renderStudentItem = ({ item }) => (
-    //     <View style={styles.studentRow}>
-    //         <ThemedView style={styles.studentInfo}>
-    //             <ThemedText style={styles.studentName}>{item.name}</ThemedText>
-    //             <Text style={styles.studentDetails}>Course: {item.course}</Text>
-    //             <Text style={styles.studentDetails}>Session Price: ${item.sessionPrice}</Text>
-    //             <Text style={styles.studentDetails}>Phone: {item.phoneNumber}</Text>
-    //         </ThemedView>
-    //     </View>
-    // );
 
     const renderStudentItem = ({ item }) => (
         <TouchableOpacity 
@@ -98,7 +86,6 @@ export default function MyStudentsScreen() {
     );
 
     return (
-        // <UserSettingsBackground title="My Students">
         <ThemedView style={styles.container}>
             <ThemedText style={styles.header}>Current Students:</ThemedText>
             <ThemedView style={styles.listContainer}>
@@ -110,7 +97,6 @@ export default function MyStudentsScreen() {
                 />
             </ThemedView>
         </ThemedView>
-        // </UserSettingsBackground>
     );
 }
 
