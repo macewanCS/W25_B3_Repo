@@ -52,8 +52,6 @@ public class FakeUsers {
             user.getSubjects().add(randomSubject());
             user.getAvailability().addAll(randomIntervals());
             user.setNew(false);
-            user.getSubjects().add(randomSubject());
-            user.getAvailability().addAll(randomIntervals());
 
             DatabaseManager.saveUser(user);
         }

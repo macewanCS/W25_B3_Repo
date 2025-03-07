@@ -19,7 +19,6 @@ public class TimeSlot{ // A timeslot object that can be created by a tutor
     @Getter
     public String id; // the ID will just be a concatenation of the start time & tutor ID for now
 
-    // to do: prevent overlapping bookings
 
     public TimeSlot(DateTime start, DateTime end, String tutorID){
         this.start = start.toString();
@@ -59,7 +58,6 @@ public class TimeSlot{ // A timeslot object that can be created by a tutor
         this.bookedBy = studentName; // later perhaps a user ID so that two people can have the same name
         this.booked = true;
     }
-
     public void cancelTimeSlot(){
         this.bookedBy = "";
         this.booked = false;
@@ -83,4 +81,6 @@ public class TimeSlot{ // A timeslot object that can be created by a tutor
         container.get(JavaTypes.STRING, "id").ifPresent(s -> this.id = s);
         this.timeSlotInterval = new Interval(DateTime.parse(this.start), DateTime.parse(this.end));
     }
+
+
 }
