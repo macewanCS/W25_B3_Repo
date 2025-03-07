@@ -12,20 +12,19 @@ export default function TutorCertScreen() {
     ]);
 
     const courses = [ // Placeholder list for courses
-        { id: '1', name: 'Mathematics' },
-        { id: '2', name: 'Science' },
-        { id: '3', name: 'English' },
-        { id: '4', name: 'History' },
-        { id: '5', name: 'Geography' },
-        { id: '6', name: 'Physical Education' },
-        { id: '7', name: 'Art' },
-        { id: '8', name: 'Music' },
-        { id: '9', name: 'Computer Science' },
+        { id: '1', name: 'Biology' },
+        { id: '2', name: 'Chemistry' },
+        { id: '3', name: 'Computer Science' },
+        { id: '4', name: 'English' },
+        { id: '5', name: 'Mathematics' },
+        { id: '6', name: 'Physics' },
+        { id: '7', name: 'Science' },
+        { id: '8', name: 'Social Studies' },
     ];
 
     const handleUpload = () => {
         // TODO: set up uploading image/file
-        alert(`Uploading for ${selectedCourse?.name}\nWill be in process of review.`);
+        alert(`Pick certificate for ${selectedCourse?.name} here.\nApproval will be required.`);
     };
 
     return (
@@ -45,7 +44,7 @@ export default function TutorCertScreen() {
             />
 
             {/* Course Selection Dropdown */}
-            <ThemedText style={styles.sectionTitle}>Select a Course</ThemedText>
+            <ThemedText style={styles.sectionTitle}>Select a Course to upload a certificate:</ThemedText>
             <View style={styles.pickerContainer}>
             <Picker
                 selectedValue={selectedCourse ? selectedCourse.id : ""} 
@@ -54,7 +53,7 @@ export default function TutorCertScreen() {
                     setSelectedCourse(courseObj); 
                 }}
                 >
-                <Picker.Item label="Select a course..." value="" />
+                <Picker.Item label="Select..." value="" />
                 {courses.map((course) => (
                     <Picker.Item key={course.id} label={course.name} value={course.id} />
                 ))}
@@ -62,7 +61,7 @@ export default function TutorCertScreen() {
             </View>
 
             {selectedCourse && (
-                <TouchableOpacity style={styles.uploadButton}>
+                <TouchableOpacity style={styles.uploadButton} onPress={handleUpload}>
                     <Text style={styles.uploadButtonText}>
                     Upload Certificate for {selectedCourse.name}
                     </Text>
