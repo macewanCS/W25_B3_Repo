@@ -7,6 +7,7 @@ import org.joda.time.Interval;
 import com.lyrne.backend.User;
 import com.lyrne.backend.TimeSlot.subjectTypes;
 import com.lyrne.backend.services.DatabaseManager;
+import com.lyrne.backend.services.EmailManager;
 import com.lyrne.backend.services.SendEmail;
 
 import me.mrnavastar.sqlib.api.DataContainer;
@@ -76,7 +77,6 @@ public class TimeSlot{ // A timeslot object that can be created by a tutor
     public void bookTimeSlot(User user){ // "user" is the one who is making the booking (aka the student)
         this.bookedBy = user.getId(); 
         this.booked = true;
-        SendEmail bookingEmail = new SendEmail();
         
         // getting the tutor's username based on ID
         Optional<DataContainer> dc = DatabaseManager.tutorStore.getContainer("id", this.tutor);
@@ -88,7 +88,7 @@ public class TimeSlot{ // A timeslot object that can be created by a tutor
         if (un.isPresent()) username = un.get();
         else username = null;
 
-        bookingEmail.sendBookingConfirmation(user, this.timeSlotInterval, username);
+        EmailManager.sendBookingConfirmation(user, this.timeSlotInterval, username);
     }
     public void cancelTimeSlot(){
         this.bookedBy = new String(""); 
