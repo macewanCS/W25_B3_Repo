@@ -13,10 +13,14 @@
       "usesAppleSignIn": true
     },
     "android": {
+      "package":  "com.lyrne.frontend",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -24,8 +28,17 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
+      [
+      "expo-build-properties",
+        {
+          "android": {
+            "kotlinVersion": "1.9.25"
+          }
+        }
+      ],
       "expo-router",
       "expo-apple-authentication",
+      "@react-native-google-signin/google-signin",
       [
         "expo-splash-screen",
         {
@@ -43,7 +56,7 @@
         {
           "photosPermission": "The app accesses your photos to let you share them with your friends."
         }
-      ]
+      ],
     ],
     "experiments": {
       "typedRoutes": true
@@ -53,7 +66,7 @@
         "origin": false
       },
       "eas": {
-        "projectId": "b5fa9171-e022-46f2-8343-c42d5dd73199"
+        "projectId": "da2188a7-4225-48ef-bae8-e37dd865dbc9"
       }
     },
     "runtimeVersion": {
