@@ -49,14 +49,11 @@ public class EmailManager {
     private static void sendEmail(String address, Email email){
         MailerSend ms = new MailerSend();
         ms.setToken(System.getenv("EMAIL_TOKEN"));
-        // sending email
         try {    
             MailerSendResponse response = ms.emails().send(email);
             System.out.println(response.messageId);
         } catch (MailerSendException e) {
             System.out.println("failed to send welcome email to" + address);
-            e.printStackTrace();
         }
-    } 
-
+    }
 }

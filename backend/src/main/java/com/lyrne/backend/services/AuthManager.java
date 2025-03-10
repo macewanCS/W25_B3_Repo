@@ -5,6 +5,7 @@ import com.auth0.jwk.JwkProviderBuilder;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.lyrne.backend.User;
 import io.javalin.http.Context;
@@ -25,14 +26,21 @@ public class AuthManager {
     private static final ConcurrentHashMap<String, JwkProvider> providers = new ConcurrentHashMap<>();
 
     @SneakyThrows
-    public static void registerProvider(String url) {
+    public static void registerProvider(String key, String url) {
         JwkProvider jwkProvider = new JwkProviderBuilder(url)
                 .cached(10, 24, TimeUnit.HOURS)
                 .rateLimited(10, 1, TimeUnit.MINUTES)
                 .build();
 
-        URL providerUrl = new URI(url).toURL();
-        providers.put(providerUrl.getProtocol() + "://" + providerUrl.getHost(), jwkProvider);
+        if (key == null) {
+            URL providerUrl = new URI(url).toURL();
+            key = providerUrl.getProtocol() + "://" + providerUrl.getHost();
+        }
+        providers.put(key, jwkProvider);
+    }
+
+    public static void registerProvider(String url) {
+        registerProvider(null, url);
     }
 
     @SneakyThrows
@@ -40,24 +48,29 @@ public class AuthManager {
         String token = ctx.header("Authorization");
         if (token == null) throw new UnauthorizedResponse();
 
-        DecodedJWT jwt = JWT.decode(token.replace("Bearer ", ""));
-        Optional<JwkProvider> provider = Optional.ofNullable(providers.get(jwt.getIssuer()));
-        if (provider.isEmpty()) throw new UnauthorizedResponse();
-
-        PublicKey key = provider.get().get(jwt.getKeyId()).getPublicKey();
-        Algorithm algorithm = Algorithm.RSA256((RSAPublicKey) key);
-        JWTVerifier verifier = JWT.require(algorithm).build();
-
         try {
-            verifier.verify(jwt);
-        } catch (Exception e) {
-            throw new UnauthorizedResponse();
-        }
+            DecodedJWT jwt = JWT.decode(token.replace("Bearer ", ""));
+            Optional<JwkProvider> provider = Optional.ofNullable(providers.get(jwt.getIssuer()));
+            if (provider.isEmpty()) throw new UnauthorizedResponse();
 
-        User user = DatabaseManager.getUser(jwt.getSubject());
-        user.setEmail(jwt.getClaim("email").asString());
-        user.setLastLogin(new DateTime().getMillis());
-        ctx.sessionAttribute("user", user);
-        ctx.sessionAttribute("jwt", jwt);
+            PublicKey key = provider.get().get(jwt.getKeyId()).getPublicKey();
+            Algorithm algorithm = Algorithm.RSA256((RSAPublicKey) key);
+            JWTVerifier verifier = JWT.require(algorithm).build();
+
+            try {
+                verifier.verify(jwt);
+            } catch (Exception e) {
+                throw new UnauthorizedResponse();
+            }
+
+            User user = DatabaseManager.getUser(jwt.getSubject());
+            user.setEmail(jwt.getClaim("email").asString());
+            user.setLastLogin(new DateTime().getMillis());
+            ctx.sessionAttribute("user", user);
+            ctx.sessionAttribute("jwt", jwt);
+        } catch (JWTDecodeException e) {
+            System.out.println("failed to decode JWT");
+            System.out.println("TOKEN: " + token);
+        }
     }
 }
