@@ -27,7 +27,7 @@ public class AuthManager {
 
     @SneakyThrows
     public static void registerProvider(String key, String url) {
-        JwkProvider jwkProvider = new GuavaCachedJwkProvider(new UrlJwkProvider(url), 10, Duration.ofSeconds(TimeUnit.HOURS.toSeconds(24)));
+        JwkProvider jwkProvider = new GuavaCachedJwkProvider(new UrlJwkProvider(new URI(url).toURL()), 10, Duration.ofSeconds(TimeUnit.HOURS.toSeconds(24)));
 
         if (key == null) {
             URL providerUrl = new URI(url).toURL();
