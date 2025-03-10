@@ -7,6 +7,7 @@
     "icon": "./assets/images/lyrne-icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
+    "owner": "lyrne",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
