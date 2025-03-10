@@ -20,7 +20,7 @@ public class Main {
     public static void main(String[] args) {
         NonMinecraft.init(Path.of("./lyrne/config"), Path.of("./lyrne/db"));
         AuthManager.registerProvider("https://appleid.apple.com/auth/keys");
-        AuthManager.registerProvider("https://www.googleapis.com/oauth2/v3/certs");
+        AuthManager.registerProvider("https://accounts.google.com", "https://www.googleapis.com/oauth2/v3/certs");
 
         FakeUsers.create(250); // create 250 fake users
 
