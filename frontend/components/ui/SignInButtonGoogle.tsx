@@ -11,7 +11,7 @@ import {fetchUserData, updateUserData} from "@/util/Backend";
 
 
 GoogleSignin.configure({
-    webClientId: "466546146514-r1g32bid26oj4fh0q9b2urj7ooe4s4td.apps.googleusercontent.com",
+    webClientId: "",
     scopes: ['profile', 'email']
   });
 
