@@ -7,13 +7,14 @@
     "icon": "./assets/images/lyrne-icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
+    "owner": "lyrne",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
       "usesAppleSignIn": true
     },
     "android": {
-      "package":  "com.lyrne.frontend",
+      "package": "com.lyrne.frontend",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -29,7 +30,7 @@
     },
     "plugins": [
       [
-      "expo-build-properties",
+        "expo-build-properties",
         {
           "android": {
             "kotlinVersion": "1.9.25"
@@ -56,7 +57,7 @@
         {
           "photosPermission": "The app accesses your photos to let you share them with your friends."
         }
-      ],
+      ]
     ],
     "experiments": {
       "typedRoutes": true
@@ -66,7 +67,7 @@
         "origin": false
       },
       "eas": {
-        "projectId": "da2188a7-4225-48ef-bae8-e37dd865dbc9"
+        "projectId": "fcb48252-9618-40d8-b652-11c446156a4f"
       }
     },
     "runtimeVersion": {

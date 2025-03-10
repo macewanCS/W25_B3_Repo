@@ -8,10 +8,14 @@ import {
     GoogleSigninButton,
 } from '@react-native-google-signin/google-signin';
 
+GoogleSignin.configure({
+    webClientId: "",
+    scopes: ['profile', 'email']
+  });
+
 export function GoogleSignIn() {
     const { signIn } = useSession();
     const colorScheme = useColorScheme();
-    const textColor = colorScheme === 'dark' ? 'white' : 'black';
     
     return (
         <GoogleSigninButton
@@ -19,21 +23,22 @@ export function GoogleSignIn() {
             color={GoogleSigninButton.Color.Dark}
             onPress={async () => {
                 try {
-                    await GoogleSignin.hasPlayServices();
-                    const response = await GoogleSignin.signIn();
-                    if (isSuccessResponse(response)) {
-                        const {idToken, user} = response.data;
-                        const {name, email, photo} = user;
+                    await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+                    const userInfo = await GoogleSignin.signIn();
+                    
+                    // Get user's ID token
+                    const { accessToken, idToken } = await GoogleSignin.getTokens();
+
+                    if (idToken) {
+                        console.log("Google ID Token:", idToken);
                         signIn(idToken);
-
+                    } else {
+                        console.error("No ID Token received!");
                     }
+                } catch (error) {
+                    console.error("Google Sign-In Error:", error);
                 }
-                catch {
-                    //lol
-                }
-
-            // initiate sign in
             }}
-      />
+        />
     );
 }
