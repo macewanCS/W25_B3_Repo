@@ -65,6 +65,11 @@ public class AuthManager {
             user.setLastLogin(new DateTime().getMillis());
             ctx.sessionAttribute("user", user);
             ctx.sessionAttribute("jwt", jwt);
+
+            if (user.getIcon() == null) {
+                user.setIcon(jwt.getClaim("picture").asString());
+            }
+
         } catch (JWTDecodeException e) {
             System.out.println("failed to decode JWT");
             System.out.println("TOKEN: " + token);
