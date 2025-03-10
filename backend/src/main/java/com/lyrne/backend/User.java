@@ -8,9 +8,11 @@ import lombok.Setter;
 import me.mrnavastar.sqlib.api.DataContainer;
 import me.mrnavastar.sqlib.api.types.JavaTypes;
 
+import org.apache.logging.log4j.core.util.ArrayUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -59,14 +61,28 @@ public class User {
 
     // This function should be called everytime there are session changes
     public void updateHoursAndEarnings() {
+        // Reset the values to zero to recalculate would be easy, but take up a lot of time
+        weeklyHours = 0;
+        weeklyEarnings = 0;
+        // We could also try remembering which session it was and remove it that way to save time
         for (TimeSlot session: sessions) {
-            weeklyHours++; // There should be a value of time in each session
-            weeklyEarnings++; // There should be a value of earnings in each session
+            weeklyHours += Float.valueOf(session.getEndTime()) - Float.valueOf(session.getStartTime());
+            weeklyEarnings+= session.getPrice(); // There should be a value of earnings in each session
         }
     }
 
+    // Cancel a session by inserting the reference to the session
+    public void cancelSession(String ID) {
+        for (TimeSlot session: sessions) {
+            if (ID == session.getID()) {
+                sessions.remove(session);
+            }
+        }
+        updateHoursAndEarnings();
+    }
+
     // HashMap for checking which user details are public (true) or private (false)
-    Map<String, Boolean> visibility = Map.ofEntries(
+    public Map<String, Boolean> visibility = Map.ofEntries(
            Map.entry("id", true),
            Map.entry("username", true),
            Map.entry("email", false),
