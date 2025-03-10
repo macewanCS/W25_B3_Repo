@@ -7,9 +7,11 @@ import {
     isErrorWithCode,
     GoogleSigninButton,
 } from '@react-native-google-signin/google-signin';
+import {fetchUserData, updateUserData} from "@/util/Backend";
+
 
 GoogleSignin.configure({
-    webClientId: "",
+    webClientId: "466546146514-r1g32bid26oj4fh0q9b2urj7ooe4s4td.apps.googleusercontent.com",
     scopes: ['profile', 'email']
   });
 
@@ -30,8 +32,13 @@ export function GoogleSignIn() {
                     const { accessToken, idToken } = await GoogleSignin.getTokens();
 
                     if (idToken) {
-                        console.log("Google ID Token:", idToken);
+                        console.log("\nGoogle ID Token:", idToken);
+                        console.log("\nGoogle access Token:", accessToken); 
                         signIn(idToken);
+                        const { session } = useSession();
+                        fetchUserData(session).then(data => {
+                            console.log(data) //or whatever the print is i cant remember
+                        })
                     } else {
                         console.error("No ID Token received!");
                     }
