@@ -202,9 +202,13 @@ export default function Onboarding() {
             {/* Step 5: Finish */}
             {step === 5 && (
                 <ThemedView>
-                    <ThemedText style={{ paddingVertical: 10 }}>We are finished! You can now open the app.</ThemedText>
+                    <ThemedText>We are finished! You can now open the app.</ThemedText>
+                    {role == "TUTOR" && (
+                        <ThemedText>Your certificate is now under review, you will have limited access until it is approved.</ThemedText>
+                    )}
+                    <ThemedText style={{ paddingBottom: 10 }}></ThemedText>
                     <TouchableOpacity onPress={handleFinalSubmit} style={styles.button}>
-                        <ThemedText style={styles.buttonText}>Start</ThemedText>
+                        <ThemedText style={styles.buttonText}>Open</ThemedText>
                     </TouchableOpacity>
                 </ThemedView>
             )}
@@ -234,6 +238,7 @@ const styles = StyleSheet.create({
         padding: 16,
         borderRadius: 8,
         alignItems: 'center',
+        marginBottom: 50
     },
     buttonPlus: {
         backgroundColor: '#007AFF',
