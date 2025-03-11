@@ -105,18 +105,9 @@ export default function TutorInvoicesScreen() {
                     <ThemedText style={styles.statsText}>{data.weeklyHours} sessions completed.</ThemedText>
                 </ThemedView>
 
-                {/* Stats Section */}
-                {/* <ThemedView style={styles.section}>
-                    <ThemedText style={styles.sectionTitle}>Session Stats</ThemedText>
-                    <View style={styles.statsRow}>
-                        <ThemedText style={styles.statsText}>Sessions Completed: {numWeeklySessions} (All Time: {allTimeSessions})</ThemedText>
-                        <ThemedText style={styles.statsText}>Average Price per Session: ${avgSessionPrice}</ThemedText>
-                    </View>
-                </ThemedView> */}
-
                 {/* Auto-Deposit Statements Section */}
                 <ThemedView style={styles.section}>
-                    <ThemedText style={styles.sectionTitle}>Auto-Deposit Statements:</ThemedText>
+                    <ThemedText style={styles.sectionTitle}>Auto-Deposit Statements</ThemedText>
                     <FlatList
                         data={autoDepositHistory}
                         renderItem={renderAutoDepositItem}
