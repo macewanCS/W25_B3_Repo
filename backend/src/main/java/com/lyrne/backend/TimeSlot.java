@@ -1,16 +1,44 @@
 package com.lyrne.backend;
 import java.util.Optional;
+import java.sql.DatabaseMetaData;
+import java.util.ArrayList;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
+import com.lyrne.backend.User;
+import com.lyrne.backend.TimeSlot.subjectTypes;
+import com.lyrne.backend.services.DatabaseManager;
+import com.lyrne.backend.services.EmailManager;
 import me.mrnavastar.sqlib.api.DataContainer;
 import me.mrnavastar.sqlib.api.types.JavaTypes;
 
 public class TimeSlot{ // A timeslot object that can be created by a tutor
 
+    public enum subjectTypes {
+        MATH(0), SCIENCE(1), SOCIAL(2), ENGLISH(3), PHYSICS(4), BIOLOGY(5), CHEMISTRY(6);
 
-    private String tutor; // The tutor's name, will be automatically put down 
+        private final int subjectID;
 
-    private transient Interval timeSlotInterval;
+        subjectTypes(int subjectID) {
+            this.subjectID = subjectID;
+        }
+
+        public static String getId(subjectTypes subject) {
+            if (subject.equals(subjectTypes.ENGLISH)) return "iseng";
+            if (subject.equals(subjectTypes.MATH)) return "ismath";
+            if (subject.equals(subjectTypes.SCIENCE)) return "issci";
+            if (subject.equals(subjectTypes.SOCIAL)) return "issoc";
+            if (subject.equals(subjectTypes.BIOLOGY)) return "isbio";
+            if (subject.equals(subjectTypes.PHYSICS)) return "isphys";
+            if (subject.equals(subjectTypes.CHEMISTRY)) return "ischem";
+            return ""; // lazy solution my b
+        }
+
+
+    }
+
+    private String tutor; // The tutor's id, will be automatically put down 
+
+    public transient Interval timeSlotInterval;
 
     private boolean booked = false; // determining if a time slot is booked by a student might be more complicated than a boolean but you get the idea
     
@@ -19,6 +47,7 @@ public class TimeSlot{ // A timeslot object that can be created by a tutor
     private String start;
     private String end;
     public String id; // the ID will just be a concatenation of the start time & tutor ID for now
+    public ArrayList<subjectTypes> subjects = new ArrayList<>(); 
 
 
     public TimeSlot(DateTime start, DateTime end, String tutorID){ 
@@ -47,60 +76,94 @@ public class TimeSlot{ // A timeslot object that can be created by a tutor
     // i think this works
     // returned as string, can be turned right back into a DateTime
     public String getStartTime(){
-        return timeSlotInterval.getStart().toString();
+        return this.timeSlotInterval.getStart().toString();
     }
     public String getEndTime(){
-        return timeSlotInterval.getEnd().toString();
+        return this.timeSlotInterval.getEnd().toString();
     }
     public String getTutorID(){
-        return tutor;
+        return this.tutor;
     }
     
     public String getBookedBy() { 
-        return bookedBy;
+        return this.bookedBy;
     }
     public String getID(){
-        return id;
+        return this.id;
     }
 
     public boolean isBooked(){
-        return booked;
+        return this.booked;
     }
-    public void bookTimeSlot(String studentName){
-        this.bookedBy = studentName; // later perhaps a user ID so that two people can have the same name
+    public void bookTimeSlot(User user){ // "user" is the one who is making the booking (aka the student)
+        this.bookedBy = user.getId(); 
         this.booked = true;
+        
+        // getting the tutor's username based on ID
+        Optional<DataContainer> dc = DatabaseManager.tutorStore.getContainer("id", this.tutor);
+        DataContainer container;
+        if (dc.isPresent()) container = dc.get();
+        else container = null;
+        Optional<String> un = container.get(JavaTypes.STRING, "username");
+        String username;
+        if (un.isPresent()) username = un.get();
+        else username = null;
+
+        EmailManager.sendBookingConfirmation(user, this.timeSlotInterval, username);
     }
     public void cancelTimeSlot(){
         this.bookedBy = new String(""); 
         this.booked = false;
     }
+    public void overlapping(TimeSlot ts){
+        if (this.timeSlotInterval.overlaps(ts.timeSlotInterval)){
+            throw new OverlappingIntervalException("Time Slot Intervals cannot overlap with existing time slots.");
+        }
+    }
+    class OverlappingIntervalException extends RuntimeException {
+        public OverlappingIntervalException(String message) {
+            super(message);
+        }
+    }
+    public void addSubject(subjectTypes subject){
+        this.subjects.add(subject);
+    }
 
 
     public void store(DataContainer container) {
-    container.put(JavaTypes.STRING, "starttime", this.getStartTime());
-    container.put(JavaTypes.STRING, "endtime", this.getEndTime());
-    container.put(JavaTypes.STRING, "tutorid", this.getTutorID());
-    container.put(JavaTypes.BOOL, "isbooked", this.isBooked()); 
-    container.put(JavaTypes.STRING, "bookedby", this.getBookedBy());
-    container.put(JavaTypes.STRING, "id", this.getID());
+        container.put(JavaTypes.STRING, "starttime", this.getStartTime());
+        container.put(JavaTypes.STRING, "endtime", this.getEndTime());
+        container.put(JavaTypes.STRING, "tutorid", this.getTutorID());
+        container.put(JavaTypes.BOOL, "isbooked", this.isBooked()); 
+        container.put(JavaTypes.STRING, "bookedby", this.getBookedBy());
+        container.put(JavaTypes.STRING, "id", this.getID());
+            
+        // storing subjects individually
+        container.put(JavaTypes.BOOL, "iseng", subjects.contains(subjectTypes.ENGLISH));
+        container.put(JavaTypes.BOOL, "ismath", subjects.contains(subjectTypes.MATH));
+        container.put(JavaTypes.BOOL, "issci", subjects.contains(subjectTypes.SCIENCE));
+        container.put(JavaTypes.BOOL, "issoc", subjects.contains(subjectTypes.SOCIAL));
+        container.put(JavaTypes.BOOL, "isbio", subjects.contains(subjectTypes.BIOLOGY));
+        container.put(JavaTypes.BOOL, "isphys", subjects.contains(subjectTypes.PHYSICS));
+        container.put(JavaTypes.BOOL, "ischem", subjects.contains(subjectTypes.CHEMISTRY));
     }
 
     public void load(DataContainer container) {
-        Optional<String> st = container.get(JavaTypes.STRING, "starttime");
-        Optional<String> en = container.get(JavaTypes.STRING, "endtime");
-        Optional<String> tn = container.get(JavaTypes.STRING, "tutorid");
-        Optional<Boolean> ib = container.get(JavaTypes.BOOL, "isbooked");
-        Optional<String> bb = container.get(JavaTypes.STRING, "bookedby");
-        Optional<String> id = container.get(JavaTypes.STRING, "id");
-        
-        // why do i have to check for schrodinger's cat, man 
 
-        if (st.isPresent()) this.start = st.get(); 
-        if (en.isPresent()) this.end = en.get(); 
-        if (tn.isPresent()) this.tutor = tn.get();
-        if (ib.isPresent()) this.booked = ib.get();
-        if (bb.isPresent()) this.bookedBy = bb.get();
-        if (id.isPresent()) this.id = id.get();
+        container.get(JavaTypes.STRING, "starttime").ifPresent(start -> this.start = start);
+        container.get(JavaTypes.STRING, "endtime").ifPresent(end -> this.end = end);
+        container.get(JavaTypes.STRING, "tutorid").ifPresent(tutor -> this.tutor = tutor);
+        container.get(JavaTypes.BOOL, "isbooked").ifPresent(booked -> this.booked = booked);
+        container.get(JavaTypes.STRING, "bookedby").ifPresent(bookedby -> this.bookedBy = bookedby);
+        container.get(JavaTypes.STRING, "id").ifPresent(id -> this.id = id);
+        container.get(JavaTypes.BOOL, "iseng").ifPresent(eng -> subjects.add(subjectTypes.ENGLISH));
+        container.get(JavaTypes.BOOL, "ismath").ifPresent(math -> subjects.add(subjectTypes.MATH));
+        container.get(JavaTypes.BOOL, "issci").ifPresent(sci -> subjects.add(subjectTypes.SCIENCE));
+        container.get(JavaTypes.BOOL, "issoc").ifPresent(soc -> subjects.add(subjectTypes.SOCIAL));
+        container.get(JavaTypes.BOOL, "isbio").ifPresent(bio -> subjects.add(subjectTypes.BIOLOGY));
+        container.get(JavaTypes.BOOL, "isphys").ifPresent(phys -> subjects.add(subjectTypes.PHYSICS));
+        container.get(JavaTypes.BOOL, "ischem").ifPresent(chem -> subjects.add(subjectTypes.CHEMISTRY));
+        
         this.timeSlotInterval = new Interval(DateTime.parse(this.start), DateTime.parse(this.end));
 
     }
@@ -112,6 +175,7 @@ public class TimeSlot{ // A timeslot object that can be created by a tutor
         System.out.println(this.booked);
         System.out.println(this.bookedBy);
         System.out.println(this.id);
+        System.out.println(this.subjects);
     }
 
 
