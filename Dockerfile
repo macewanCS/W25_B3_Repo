@@ -1,9 +1,9 @@
-FROM amazoncorretto:21-alpine AS lyrne-backend
+FROM amazoncorretto:21-alpine AS build
 COPY --chown=gradle:gradle ./backend /home/lyrne/src
 WORKDIR /home/lyrne/src
 RUN ./gradlew build --no-daemon
 
-FROM amazoncorretto:21-alpine
+FROM amazoncorretto:21-alpine as lyrne-backend
 
 RUN mkdir /app
 COPY --from=build /home/lyrne/src/build/libs/*.jar /app/lyrne.jar
