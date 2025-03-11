@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { router } from 'expo-router';
-import {Image, TextInput, StyleSheet, View, TouchableOpacity, ScrollView } from 'react-native';
+import {Image, TextInput, StyleSheet, View, TouchableOpacity, ScrollView, Linking } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import { ThemedText } from '@/components/ThemedText';
@@ -8,16 +8,25 @@ import { ThemedView } from '@/components/ThemedView';
 import { updateUserData } from "@/util/Backend";
 import { useSession } from "@/components/Context";
 import * as ImagePicker from "expo-image-picker";
+import * as DocumentPicker from 'expo-document-picker';
+
 
 const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const hours = ["8:00", "9:00", "10:00", "11:00", "12:00", "1:00", "2:00", "3:00", "4:00", "5:00", "6:00"];
 
 export default function Onboarding() {
+
+    // Add 'expo-document-picker'
+    // On Step 4: Get tutorCertificate, set up ability to upload either image or document
+    // https://docs.expo.dev/versions/latest/sdk/document-picker/
+
+
     const { session } = useSession();
     const [step, setStep] = useState(1);
     const [currentAvailability, setCurrentAvailability] = useState<string[]>([]);
     const [role, setRole] = useState("");
     const [tutorCertificate, setTutorCertificate] = useState(null);
+    const [tutorCertificateDocument, setTutorCertificateDocument] = useState(null);
 
     const handleRoleSubmit = (selectedRole = "") => {
         if(selectedRole != "") {
@@ -75,6 +84,33 @@ export default function Onboarding() {
             }
         } catch (error) {
             console.error("Error launching ImagePicker:", error);
+        }
+    };
+
+    const pickDocument = async () => {
+        try {
+            let result = await DocumentPicker.getDocumentAsync({
+                type: "*/*", // Accepts any file type
+                copyToCacheDirectory: true,
+                multiple: false, // Set to true if you want multiple file selection
+            });
+
+            // console.log("DocumentPicker result:", result);
+
+            if (result.canceled) {
+                console.log("User canceled document picker");
+                return;
+            }
+
+            setTutorCertificateDocument(result.uri); // Save the document URI just like pickImage
+        } catch (error) {
+            console.error("Error picking document:", error);
+        }
+    };
+
+    const openDocument = async (uri) => {
+        if (uri) {
+            await Linking.openURL(uri); // Opens the file using an external app
         }
     };
 
@@ -181,16 +217,31 @@ export default function Onboarding() {
             {step === 4 && (
                 <ThemedView>
                     <ThemedView style={styles.uploadContainer}>
-                        <ThemedText style={{ marginTop: 50, marginBottom: 10 }}>Please upload your teaching certificate.</ThemedText>
-                        <TouchableOpacity onPress={pickImage} style={styles.buttonPlus}>
-                            <IconSymbol name="plus" size={24} color="white" />
-                            <ThemedText style={styles.buttonText}>Pick an Image</ThemedText>
-                        </TouchableOpacity>
+                        <ThemedText style={{ marginTop: 50, marginBottom: 10 }}>Please upload your teaching certificate. Choose either Image or Document.</ThemedText>
+                        <View style={styles.roleButtonsContainer}>
+                            <TouchableOpacity onPress={pickImage} style={styles.buttonPlus}>
+                                <IconSymbol name="plus" size={24} color="white" />
+                                <ThemedText style={styles.buttonText}>Pick an Image</ThemedText>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={pickDocument} style={styles.buttonPlus}>
+                                <IconSymbol name="plus" size={24} color="white" />
+                                <ThemedText style={styles.buttonText}>Pick a Document</ThemedText>
+                            </TouchableOpacity>
+                        </View>
                         {tutorCertificate && (
                             <>
-                                <Image source={{ uri: tutorCertificate }} style={styles.image} />
+                                <Image source={{ uri: tutorCertificateDocument }} style={styles.image} />
                                 <TouchableOpacity onPress={handleCertificateSubmit} style={styles.button}>
                                 <ThemedText style={styles.buttonText}>Confirm Certificate</ThemedText>
+                                </TouchableOpacity>
+
+                                
+                            </>
+                        )}
+                        {tutorCertificateDocument && (
+                            <>
+                                <TouchableOpacity onPress={() => openDocument(tutorCertificateDocument)}>
+                                    <ThemedText>View Uploaded Document</ThemedText>
                                 </TouchableOpacity>
                             </>
                         )}
