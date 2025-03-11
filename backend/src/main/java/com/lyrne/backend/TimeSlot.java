@@ -156,25 +156,33 @@ public class TimeSlot{ // A timeslot object that can be created by a tutor
         container.get(JavaTypes.BOOL, "isbooked").ifPresent(booked -> this.booked = booked);
         container.get(JavaTypes.STRING, "bookedby").ifPresent(bookedby -> this.bookedBy = bookedby);
         container.get(JavaTypes.STRING, "id").ifPresent(id -> this.id = id);
-        container.get(JavaTypes.BOOL, "iseng").ifPresent(eng -> subjects.add(subjectTypes.ENGLISH));
-        container.get(JavaTypes.BOOL, "ismath").ifPresent(math -> subjects.add(subjectTypes.MATH));
-        container.get(JavaTypes.BOOL, "issci").ifPresent(sci -> subjects.add(subjectTypes.SCIENCE));
-        container.get(JavaTypes.BOOL, "issoc").ifPresent(soc -> subjects.add(subjectTypes.SOCIAL));
-        container.get(JavaTypes.BOOL, "isbio").ifPresent(bio -> subjects.add(subjectTypes.BIOLOGY));
-        container.get(JavaTypes.BOOL, "isphys").ifPresent(phys -> subjects.add(subjectTypes.PHYSICS));
-        container.get(JavaTypes.BOOL, "ischem").ifPresent(chem -> subjects.add(subjectTypes.CHEMISTRY));
+        container.get(JavaTypes.BOOL, "iseng").ifPresent(eng -> { if (eng) subjects.add(subjectTypes.ENGLISH); });
+        container.get(JavaTypes.BOOL, "ismath").ifPresent(math -> { if (math) subjects.add(subjectTypes.MATH); });
+        container.get(JavaTypes.BOOL, "issci").ifPresent(sci -> { if (sci) subjects.add(subjectTypes.SCIENCE); });
+        container.get(JavaTypes.BOOL, "issoc").ifPresent(soc -> { if (soc) subjects.add(subjectTypes.SOCIAL); });
+        container.get(JavaTypes.BOOL, "isbio").ifPresent(bio -> { if (bio) subjects.add(subjectTypes.BIOLOGY); });
+        container.get(JavaTypes.BOOL, "isphys").ifPresent(phys -> { if (phys) subjects.add(subjectTypes.PHYSICS); });
+        container.get(JavaTypes.BOOL, "ischem").ifPresent(chem -> { if (chem) subjects.add(subjectTypes.CHEMISTRY); });
+
         
         this.timeSlotInterval = new Interval(DateTime.parse(this.start), DateTime.parse(this.end));
 
     }
 
     public void printInfo(){
+        System.out.println("\nStart time: ");
         System.out.println(this.start);
+        System.out.println("End time: ");
         System.out.println(this.end);
+        System.out.println("Tutor ID: ");
         System.out.println(this.tutor);
+        System.out.println("Booked? ");
         System.out.println(this.booked);
+        System.out.println("Booked by: ");
         System.out.println(this.bookedBy);
+        System.out.println("Time slot ID: ");
         System.out.println(this.id);
+        System.out.println("Subjects: ");
         System.out.println(this.subjects);
     }
 

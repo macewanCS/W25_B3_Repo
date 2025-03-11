@@ -65,21 +65,6 @@ public class Main {
                 .start(8820);
 
      
-        //test
-        DateTime start = new DateTime(2001, 11, 11, 8, 30);
-        DateTime end = new DateTime(2001, 11, 11, 10, 30);
-        TimeSlot ts1 = new TimeSlot(start, end, "realtutor");
-        ts1.addSubject(subjectTypes.MATH);
-        ts1.addSubject(subjectTypes.SCIENCE);
-        DatabaseManager.saveTimeSlot(ts1);
-
-        for(TimeSlot ts : DatabaseManager.searchResults(subjectTypes.MATH, "realtutor")){
-            ts.printInfo();
-        }
-
-
-
-
-
+        
     }
 }
