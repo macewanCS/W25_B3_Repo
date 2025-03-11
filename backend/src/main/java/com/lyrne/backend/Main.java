@@ -34,6 +34,7 @@ public class Main {
 
                 // Forward all cdn requests to our cdn service
                 .before("/api/private/cdn", CdnManager::forwardRequest)
+                .before("/api/cdn", CdnManager::forwardRequest)
 
                 // Handle fetching user data
                 .get("/api/private/user", ctx -> Optional.ofNullable(ctx.sessionAttribute("user"))
