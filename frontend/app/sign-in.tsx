@@ -17,10 +17,12 @@ export default function SignIn() {
     const bgColor = colorScheme === 'light' ? '#e6e6e6' : undefined;
 
     // Create new user or redirect if already logged in
-    fetchUserData(session).then(data => {
-        if (data.role == "ANYONE") setModalVisible(true);
-        else router.replace('/');
-    })
+    React.useEffect(() => {
+        fetchUserData(session).then(data => {
+            if (data.role == "ANYONE") router.push('/onboarding');
+            else router.replace('/');
+        });
+    }, [session]);
     // // Temporary Bypass to fetchUserData (for Android & Web testing)
     // React.useEffect(() => {
     //     if(session) router.replace('/');
@@ -43,7 +45,7 @@ export default function SignIn() {
                 )}
             </ThemedView>
 
-            <Modal
+            {/* <Modal
                 animationType="slide"
                 transparent={true}
                 visible={modalVisible}
@@ -87,7 +89,7 @@ export default function SignIn() {
                         </View>
                     </View>
                 </View>
-            </Modal>
+            </Modal> */}
         </ThemedView>
     );
 }
