@@ -6,7 +6,7 @@ import { ThemedView } from "@/components/ThemedView";
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import PlaceholderPhoto from "@/assets/images/profile-picture-placeholder.png";
 import { useSession } from "@/components/Context";
-import { fetchTutors, fetchUserData, updateUserData } from "@/util/Backend";
+import { fetchTutors, fetchUserData, updateUserData, uploadImage } from "@/util/Backend";
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 
@@ -54,11 +54,9 @@ export default function StudentSettingsScreen () {
     });
 
     if (!result.canceled) {
-      const base64 = await FileSystem.readAsStringAsync(result.assets[0].uri, {
-        encoding: FileSystem.EncodingType.Base64,
-      });
-      setImage({uri: result.assets[0].uri});
-      await updateUserData({icon: "data:image/png;base64," + base64}, session);
+      const fileUrl = await uploadImage(session, result.assets[0].file);
+      console.log(fileUrl);
+      await updateUserData({icon: fileUrl}, session);
     }
   };
 
