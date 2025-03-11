@@ -105,9 +105,7 @@ export default function TabFourScreen () {
                   style={[styles.infoText]}
                   onSubmitEditing={value => updateUserData({username: value.nativeEvent.text}, session)}
               />
-              <TouchableOpacity>
-                <MaterialIcons name="edit" size={20} color="black" />
-              </TouchableOpacity>
+              <MaterialIcons name="edit" size={20} color="black" />
             </ThemedView>
             <ThemedView style={styles.infoRowEditable}>
               <MaterialIcons name="phone" size={20} color="gray" />
@@ -117,9 +115,7 @@ export default function TabFourScreen () {
                   // TODO: validate phone number before submitting
                   onSubmitEditing={value => updateUserData({phone: value.nativeEvent.text}, session)}
               />
-              <TouchableOpacity>
-                <MaterialIcons name="edit" size={20} color="black" />
-              </TouchableOpacity>
+              <MaterialIcons name="edit" size={20} color="black" />
             </ThemedView>
           </ThemedView>
           <ThemedView style={styles.footer}>

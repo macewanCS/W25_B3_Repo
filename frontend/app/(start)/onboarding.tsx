@@ -120,9 +120,7 @@ export default function Onboarding() {
                         style={[styles.infoText]}
                         onSubmitEditing={value => handleNameSubmit(value.nativeEvent.text)}
                     />
-                        <TouchableOpacity>
-                            <MaterialIcons name="edit" size={20} color="black" />
-                        </TouchableOpacity>
+                        <MaterialIcons name="edit" size={20} color="black" />  
                     </ThemedView>
                 </ThemedView>
             )}
@@ -130,7 +128,7 @@ export default function Onboarding() {
             {/* Step 3: Get Availability */}
             {step === 3 && (
                 <ThemedView>
-                    <ThemedText style={{ marginTop: 50 }}>Here you can choose your Availability. Press on each box pertaining to an hour you are available. Then press Submit when you are finished</ThemedText>
+                    <ThemedText style={{ marginTop: 50 }}>Here you can choose your Availability. Press on each box pertaining to an hour you are available. Then press Submit when you are finished.</ThemedText>
                     <ScrollView>
                         <ThemedView style={styles.infoContainer}>
                             <ThemedView style={styles.row}>
