@@ -3,12 +3,10 @@ import { router } from 'expo-router';
 import {Text, Image, Platform, StyleSheet, Modal, View, Pressable} from 'react-native';
 import { ThemedView } from '@/components/ThemedView';
 import { useColorScheme } from 'react-native';
-import { AppleSignIn } from "@/components/ui/SignInButtonApple";
-import { GoogleSignIn } from "@/components/ui/SignInButtonGoogle";
-import { WebSignIn } from "@/components/ui/SignInButtonWeb";
 import LyrneLogo from '@/assets/images/lyrne-logo-clear.png';
 import {fetchUserData, updateUserData} from "@/util/Backend";
 import {useSession} from "@/components/Context";
+import { SignInButton } from "@/components/ui/SignInButton";
 
 export default function SignIn() {
     const { session } = useSession();
@@ -34,15 +32,7 @@ export default function SignIn() {
                 <Image source={LyrneLogo} style={styles.logo} />
             </ThemedView>
             <ThemedView style={[styles.bottomHalf, {backgroundColor: bgColor}]}>
-                {Platform.OS === 'ios' ? (
-                    <AppleSignIn />
-                ) : Platform.OS === 'android' ? (
-                    // Currently using a placeholder
-                    <GoogleSignIn />
-                ) : (
-                    // Currently using a placeholder
-                    <WebSignIn />
-                )}
+                <SignInButton />
             </ThemedView>
 
             {/* <Modal
