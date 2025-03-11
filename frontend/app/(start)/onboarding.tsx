@@ -5,7 +5,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import { updateUserData } from "@/util/Backend";
+import { updateUserData, uploadImage, uploadDocument } from "@/util/Backend";
 import { useSession } from "@/components/Context";
 import * as ImagePicker from "expo-image-picker";
 import * as DocumentPicker from 'expo-document-picker';
@@ -117,6 +117,8 @@ export default function Onboarding() {
     const handleCertificateSubmit = () => {
         // TODO: updateUserData with new certificate
         // updateUserData(certificate: tutorCertificate);
+        if(tutorCertificate) updateImage(session, {image: tutorCertificate});
+        if(tutorCertificateDocument) updateDocument(session, {image: tutorCertificateDocument});
         setStep(5); // Move to Finish
     }
 
@@ -234,8 +236,6 @@ export default function Onboarding() {
                                 <TouchableOpacity onPress={handleCertificateSubmit} style={styles.button}>
                                 <ThemedText style={styles.buttonText}>Confirm Certificate</ThemedText>
                                 </TouchableOpacity>
-
-                                
                             </>
                         )}
                         {tutorCertificateDocument && (
