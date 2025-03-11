@@ -14,10 +14,7 @@ public class CdnManager {
 
     public static void forwardRequest(Context ctx) {
         try {
-            String path = ctx.path().replaceFirst("/proxy", ""); // Adjust path for forwarding
-            URI targetUri = URI.create(CDN_URL + path);
-
-            HttpRequest.Builder requestBuilder = HttpRequest.newBuilder(targetUri).method(ctx.method().toString(), getRequestBody(ctx));
+            HttpRequest.Builder requestBuilder = HttpRequest.newBuilder(URI.create(CDN_URL)).method(ctx.method().toString(), getRequestBody(ctx));
             ctx.headerMap().forEach(requestBuilder::header);
 
             HttpResponse<byte[]> response = client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofByteArray());
