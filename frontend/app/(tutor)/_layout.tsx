@@ -46,7 +46,11 @@ export default function TutorLayout() {
     }
 
     if(user.role === 'STUDENT') {
-        return <Redirect href="/(student)/" />;
+      return <Redirect href="/(student)/" />;
+    }
+
+    if(user.role === 'ANYONE') {
+      return <Redirect href="/(start)/onboarding" />;
     }
 
   return (
