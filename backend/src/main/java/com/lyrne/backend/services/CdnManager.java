@@ -2,6 +2,8 @@ package com.lyrne.backend.services;
 
 import io.javalin.http.Context;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -27,8 +29,11 @@ public class CdnManager {
         }
     }
 
-    private static HttpRequest.BodyPublisher getRequestBody(Context ctx) {
+    private static HttpRequest.BodyPublisher getRequestBody(Context ctx) throws IOException {
         if (ctx.body().isEmpty()) return HttpRequest.BodyPublishers.noBody();
-        return HttpRequest.BodyPublishers.ofString(ctx.body());
+
+        try (InputStream body = ctx.bodyInputStream()) {
+            return HttpRequest.BodyPublishers.ofInputStream(() -> body);
+        }
     }
 }
