@@ -115,7 +115,8 @@ export default function Onboarding() {
                     <ThemedView style={styles.infoRowEditable}>
                         <MaterialIcons name="alternate-email" size={20} color="gray" />
                         <TextInput
-                        defaultValue="First & Last Name"
+                        placeholder="First & Last Name"
+                        placeholderTextColor="black"
                         style={[styles.infoText]}
                         onSubmitEditing={value => handleNameSubmit(value.nativeEvent.text)}
                     />
