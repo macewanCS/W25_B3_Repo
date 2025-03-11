@@ -33,8 +33,10 @@ public class Main {
                 .before("/api/private/*", AuthManager::authenticate)
 
                 // Forward all cdn requests to our cdn service
-                .before("/api/private/cdn/*", CdnManager::forwardRequest)
-                .before("/api/cdn/*", CdnManager::forwardRequest)
+                .get("/api/private/cdn/*", CdnManager::forwardRequest)
+                .get("/api/cdn/*", CdnManager::forwardRequest)
+                .post("/api/private/cdn/*", CdnManager::forwardRequest)
+                .post("/api/cdn/*", CdnManager::forwardRequest)
 
                 // Handle fetching user data
                 .get("/api/private/user", ctx -> Optional.ofNullable(ctx.sessionAttribute("user"))
