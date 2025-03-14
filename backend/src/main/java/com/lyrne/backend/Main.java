@@ -6,6 +6,7 @@ import com.google.gson.JsonParser;
 import com.lyrne.backend.services.AuthManager;
 import com.lyrne.backend.services.DatabaseManager;
 import com.lyrne.backend.services.FakeUsers;
+import com.lyrne.backend.services.Statistics;
 
 import io.javalin.Javalin;
 import me.mrnavastar.sqlib.impl.config.NonMinecraft;
@@ -60,5 +61,8 @@ public class Main {
                 })
 
                 .start(8820);
+
+        
+        Statistics.generateStatistics();
     }
 }
