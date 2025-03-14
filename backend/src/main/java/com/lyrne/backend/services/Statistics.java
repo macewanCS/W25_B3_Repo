@@ -28,11 +28,12 @@ public class Statistics {
 
         }
         private void timeslotStatistics(){
-            for(DataContainer dc : timeSlotStore.getContainers()) {
+            for(DataContainer dc : DatabaseManager.timeSlotStore.getContainers()) {
                 TimeSlot ts = new TimeSlot(dc);
-                this.timeslots += 1
-                if ts.isBooked() this.bookedTimeslots += 1
-                
+                this.timeslots += 1;
+                if (ts.isBooked()) this.bookedTimeslots += 1;
+                if ts.TimeSlot.subjectTypes.MATH
+
                 }
         }
     
