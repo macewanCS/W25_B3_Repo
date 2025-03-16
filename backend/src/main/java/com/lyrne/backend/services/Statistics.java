@@ -8,26 +8,34 @@ import com.lyrne.backend.User;
 import lombok.Getter;
 import me.mrnavastar.sqlib.api.DataContainer;
 import me.mrnavastar.sqlib.api.types.JavaTypes;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonParser;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Paths;
 
 @Getter
 public class Statistics {
 
 
-    public static Integer timeslots = 0; // # of timeslots
-    public static Integer bookedTimeslots = 0;
-    private static Map<TimeSlot.subjectTypes, Integer> subjectCounts = new HashMap<>(); // # of timeslots published by subject
-    private static Map<User.Role, Integer> userCounts = new HashMap<>(); // # of users by role
+    public Integer timeslots = 0; // # of timeslots
+    public Integer bookedTimeslots = 0;
+    private Map<TimeSlot.subjectTypes, Integer> subjectCounts = new HashMap<>(); // # of timeslots published by subject
+    private Map<User.Role, Integer> userCounts = new HashMap<>(); // # of users by role
 
 
-        public static void generateStatistics(){
+        public Statistics(){
             timeslotStatistics();
             userStatistics();
+            
 
         }
-        private static void timeslotStatistics(){
+        private void timeslotStatistics(){
             
             for (TimeSlot.subjectTypes subject : TimeSlot.subjectTypes.values()) {
-                subjectCounts.put(subject, 0);
+                this.subjectCounts.put(subject, 0);
             }
             
             for(DataContainer dc : DatabaseManager.timeSlotStore.getContainers()) {
@@ -36,27 +44,37 @@ public class Statistics {
                 if (ts.isBooked()) bookedTimeslots += 1;
 
                 for (TimeSlot.subjectTypes subject : ts.subjects) {
-                    subjectCounts.put(subject, subjectCounts.get(subject) + 1);
+                    this.subjectCounts.put(subject, this.subjectCounts.get(subject) + 1);
                 }
 
                 }
         }
 
-        private static void userStatistics(){
+        private void userStatistics(){
             for (User.Role user : User.Role.values()) {
-                userCounts.put(user, 0);
+                this.userCounts.put(user, 0);
             }
             
-            userCounts.put(User.Role.TUTOR, DatabaseManager.tutorStore.getContainers().size());
+            this.userCounts.put(User.Role.TUTOR, DatabaseManager.tutorStore.getContainers().size());
             for(DataContainer dc : DatabaseManager.userStore.getContainers()) {
                 User user = new User(dc);
 
-                userCounts.put(user.getRole(), userCounts.get(user.getRole()) + 1);
+                this.userCounts.put(user.getRole(), this.userCounts.get(user.getRole()) + 1);
                 
 
                 }
             
         }
+
+        public String toJson(){
+
+            Gson gson = new Gson();
+            String response = gson.toJson(this);
+            System.out.println(response);
+            return (response);
+        
+        }
+        
        
     
     

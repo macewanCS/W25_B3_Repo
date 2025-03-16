@@ -28,6 +28,12 @@ public class Main {
         Javalin.create(config -> {
             config.bundledPlugins.enableRouteOverview("/");
             config.staticFiles.add("web");
+            config.bundledPlugins.enableCors(cors -> {
+                cors.addRule(it -> {
+                    it.anyHost(); // data security who
+                    // not sure what i'd actually need to do here for production, this was just getting it to work on MY pc 
+                });
+            });
         })
                 // Make sure every body is authenticated
                 .before("/api/private/*", AuthManager::authenticate)
@@ -60,9 +66,16 @@ public class Main {
                     });
                 })
 
+                // Handle fetching statistics
+                .get("/api/stats", ctx -> {
+                    // should it be public? probably not, but until (if) we get actual admin dashboard auth i had to do it this way
+                    Statistics stats = new Statistics(); // also probably doesn't need to be re-generated every time but we don't have a huge database rn so honestly idc theres like a week left i cant be bothered
+                    ctx.result(stats.toJson());
+                })
+
                 .start(8820);
 
         
-        Statistics.generateStatistics();
+       
     }
 }
