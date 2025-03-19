@@ -19,7 +19,43 @@ public class TimeSlot{ // A timeslot object that can be created by a tutor
     private String start;
     private String end;
     public String id; // the ID will just be a concatenation of the start time & tutor ID for now
+    private float price;
 
+    // These long variables are assigned when the session actually starts and stops
+    private long sessionStart;
+    private long elapsedTime;
+    private long elapsedSeconds;
+    private long secondsDisplay;
+    private long elapsedMinutes;
+    private String minutesAndSeconds; // String Representation of Time
+
+    // Getter methods for all time tracking variables
+    public long getSessionStart() { return sessionStart; }
+    public long getElapsedTime() { return elapsedTime; }
+    public long getElapsedSeconds() { return elapsedSeconds; }
+    public long getSecondsDisplay() { return secondsDisplay; }
+    public long getElapsedMinutes() { return elapsedMinutes; }
+    public String getMinutesAndSeconds() { return minutesAndSeconds; }
+
+    // Call this when the session starts (when someone first joins the call or something)
+    public void startSession() {
+        sessionStart = System.currentTimeMillis();
+        elapsedTime = 0;
+    }
+
+    // Called when the session has stopped
+    public void updateTimes() {
+        elapsedSeconds = elapsedTime / 1000;
+        secondsDisplay = elapsedSeconds % 60;
+        elapsedMinutes = elapsedSeconds / 60;
+        minutesAndSeconds = elapsedMinutes + ":" + secondsDisplay;
+    }
+
+    // Call this when the session is over (everyone leaves the call or something)
+    public void stopSession() {
+        elapsedTime = System.currentTimeMillis();
+        updateTimes();
+    }
 
     public TimeSlot(DateTime start, DateTime end, String tutorID){ 
         
@@ -62,6 +98,7 @@ public class TimeSlot{ // A timeslot object that can be created by a tutor
     public String getID(){
         return id;
     }
+    public float getPrice() { return price; }
 
     public boolean isBooked(){
         return booked;
