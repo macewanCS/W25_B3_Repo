@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="stylesheet" href="styles.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reports - Lyrne</title>
@@ -68,7 +69,15 @@
                 <h4>Statistics</h4>
                 <p>Here you can view various statistics related to tutoring sessions, user analytics, and engagement info.</p>
                 <div id="stats">
-                    <script src="stats.js"></script>
+                    <div class="chart-container">
+                        <canvas id="subjectChart" width="500" height="350"></canvas>
+                        <canvas id="userChart" width="500" height="350"></canvas>     
+                        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                        <script src="stats.js"></script>
+                    </div>
+                    <p id="TimeSlots"></p>
+                    <p id="percentageDisplay">Booking Rate: Loading...</p>
+                    
                 </div>
             </div>
         </main>
