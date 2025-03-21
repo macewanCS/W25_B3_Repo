@@ -87,6 +87,15 @@ export default function MyStudentsScreen() {
 
     return (
         <ThemedView style={styles.container}>
+            <ThemedText style={styles.header}>New Session Requests:</ThemedText>
+            <ThemedView style={styles.listContainer}>
+                {/* <FlatList
+                    data={students}
+                    renderItem={renderStudentItem}
+                    keyExtractor={(item) => item.id}
+                    showsVerticalScrollIndicator={false}
+                /> */}
+            </ThemedView>
             <ThemedText style={styles.header}>Current Students:</ThemedText>
             <ThemedView style={styles.listContainer}>
                 <FlatList

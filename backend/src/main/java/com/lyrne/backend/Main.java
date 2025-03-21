@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 import com.lyrne.backend.services.AuthManager;
+import com.lyrne.backend.services.CdnManager;
 import com.lyrne.backend.services.DatabaseManager;
 import com.lyrne.backend.services.FakeUsers;
 import com.lyrne.backend.services.Statistics;
@@ -37,6 +38,12 @@ public class Main {
         })
                 // Make sure every body is authenticated
                 .before("/api/private/*", AuthManager::authenticate)
+
+                // Forward all cdn requests to our cdn service
+                .get("/api/private/cdn/*", CdnManager::forwardRequest)
+                .get("/api/cdn/*", CdnManager::forwardRequest)
+                .post("/api/private/cdn/*", CdnManager::forwardRequest)
+                .post("/api/cdn/*", CdnManager::forwardRequest)
 
                 // Handle fetching user data
                 .get("/api/private/user", ctx -> Optional.ofNullable(ctx.sessionAttribute("user"))

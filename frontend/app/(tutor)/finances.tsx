@@ -1,41 +1,63 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, FlatList, Text, TouchableOpacity, TextInput, useColorScheme } from 'react-native';
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
+import { useSession } from "@/components/Context";
+import { fetchUserData, updateUserData } from "@/util/Backend";
 
 // Helper function to simulate weekly sessions (just for demonstration)
-const getWeeklySessions = (sessions) => {
-    // Assuming we are just using the most recent 7 days for the "week"
-    const today = new Date();
-    const oneWeekAgo = new Date(today);
-    oneWeekAgo.setDate(today.getDate() - 7);
+// const getWeeklySessions = (sessions) => {
+//     // Assuming we are just using the most recent 7 days for the "week"
+//     const today = new Date();
+//     const oneWeekAgo = new Date(today);
+//     oneWeekAgo.setDate(today.getDate() - 7);
 
-    return sessions.filter(session => {
-        // Just for simplicity, assuming session has a `date` field
-        const sessionDate = new Date(session.date);
-        return sessionDate >= oneWeekAgo;
-    });
-};
+//     return sessions.filter(session => {
+//         // Just for simplicity, assuming session has a `date` field
+//         const sessionDate = new Date(session.date);
+//         return sessionDate >= oneWeekAgo;
+//     });
+// };
 
 export default function TutorInvoicesScreen() {
     const lightMode = useColorScheme() === 'light';
+    const { session } = useSession();
+    const [data, setData] = useState<{ weeklyEarnings?: number; weeklyHours?: number }>({})
+
+    useEffect(() => {
+        const getData = async () => {
+            let user = await fetchUserData(session);
+            setData(user);
+        }
+            getData();
+        }, []);
+    
+    // Example data if empty data TODO: remove on final product
+    useEffect(() => {
+        if (data.weeklyEarnings == null || data.weeklyEarnings == 0) {
+            setData(prevData => ({ ...prevData, weeklyEarnings: 30 }));
+        }
+        if (data.weeklyHours == null || data.weeklyHours == 0) {
+            setData(prevData => ({ ...prevData, weeklyHours: 2 }));
+        }
+    }, [data]);
 
     // Example data for sessions and earnings
-    const [sessions, setSessions] = useState([
-        { id: '1', course: 'Mathematics', sessionPrice: 50, duration: 60, date: '2025-03-01' }, // Last week
-        { id: '2', course: 'Physics', sessionPrice: 60, duration: 90, date: '2025-03-02' },    // Last week
-        { id: '3', course: 'Chemistry', sessionPrice: 55, duration: 45, date: '2025-03-05' },   // This week
-        { id: '4', course: 'Biology', sessionPrice: 45, duration: 120, date: '2025-03-06' },   // This week
-    ]);
+    // const [sessions, setSessions] = useState([
+    //     { id: '1', course: 'Mathematics', sessionPrice: 50, duration: 60, date: '2025-03-01' }, // Last week
+    //     { id: '2', course: 'Physics', sessionPrice: 60, duration: 90, date: '2025-03-02' },    // Last week
+    //     { id: '3', course: 'Chemistry', sessionPrice: 55, duration: 45, date: '2025-03-05' },   // This week
+    //     { id: '4', course: 'Biology', sessionPrice: 45, duration: 120, date: '2025-03-06' },   // This week
+    // ]);
 
     // Get weekly sessions and all-time sessions
-    const weeklySessions = getWeeklySessions(sessions);
-    const allTimeSessions = sessions.length;
+    // const weeklySessions = getWeeklySessions(sessions);
+    // const allTimeSessions = sessions.length;
 
     // Calculate total earnings, number of weekly sessions, and average price per session
-    const totalEarnings = weeklySessions.reduce((sum, session) => sum + session.sessionPrice, 0);
-    const numWeeklySessions = weeklySessions.length;
-    const avgSessionPrice = numWeeklySessions > 0 ? (totalEarnings / numWeeklySessions).toFixed(2) : 0;
+    // const totalEarnings = weeklySessions.reduce((sum, session) => sum + session.sessionPrice, 0);
+    // const numWeeklySessions = weeklySessions.length;
+    // const avgSessionPrice = numWeeklySessions > 0 ? (totalEarnings / numWeeklySessions).toFixed(2) : 0;
 
     // Example auto-deposit history
     const [autoDepositHistory, setAutoDepositHistory] = useState([
@@ -78,17 +100,9 @@ export default function TutorInvoicesScreen() {
             <ThemedView style={styles.infoContainer}>
                 {/* Earnings Section */}
                 <ThemedView style={styles.section}>
-                    <ThemedText style={styles.sectionTitle}>Total Earnings for the Week</ThemedText>
-                    <ThemedText style={styles.earningsAmount}>${totalEarnings}</ThemedText>
-                </ThemedView>
-
-                {/* Stats Section */}
-                <ThemedView style={styles.section}>
-                    <ThemedText style={styles.sectionTitle}>Session Stats</ThemedText>
-                    <View style={styles.statsRow}>
-                        <ThemedText style={styles.statsText}>Sessions Completed: {numWeeklySessions} (All Time: {allTimeSessions})</ThemedText>
-                        <ThemedText style={styles.statsText}>Average Price per Session: ${avgSessionPrice}</ThemedText>
-                    </View>
+                    <ThemedText style={styles.sectionTitle}>Weekly Statistics:</ThemedText>
+                    <ThemedText style={styles.earningsAmount}>${data.weeklyEarnings}</ThemedText>
+                    <ThemedText style={styles.statsText}>{data.weeklyHours} sessions completed.</ThemedText>
                 </ThemedView>
 
                 {/* Auto-Deposit Statements Section */}
@@ -180,7 +194,7 @@ const styles = StyleSheet.create({
         marginTop: 10,
     },
     statsText: {
-        fontSize: 16,
+        fontSize: 24,
     },
     depositItem: {
         backgroundColor: '#c7c8c9', // dark mode '#c7c8c9' | light mode '#f9f9f9'

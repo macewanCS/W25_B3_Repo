@@ -48,6 +48,10 @@ export default function TabLayout() {
       return <Redirect href="/(tutor)/" />;
     } 
 
+    if(user.role === 'ANYONE') {
+      return <Redirect href="/(start)/onboarding" />;
+    }
+
   return (
     <Tabs
       screenOptions={{

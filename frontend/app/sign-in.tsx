@@ -3,12 +3,10 @@ import { router } from 'expo-router';
 import {Text, Image, Platform, StyleSheet, Modal, View, Pressable} from 'react-native';
 import { ThemedView } from '@/components/ThemedView';
 import { useColorScheme } from 'react-native';
-import { AppleSignIn } from "@/components/ui/SignInButtonApple";
-import { GoogleSignIn } from "@/components/ui/SignInButtonGoogle";
-import { WebSignIn } from "@/components/ui/SignInButtonWeb";
 import LyrneLogo from '@/assets/images/lyrne-logo-clear.png';
 import {fetchUserData, updateUserData} from "@/util/Backend";
 import {useSession} from "@/components/Context";
+import { SignInButton } from "@/components/ui/SignInButton";
 
 export default function SignIn() {
     const { session } = useSession();
@@ -17,10 +15,12 @@ export default function SignIn() {
     const bgColor = colorScheme === 'light' ? '#e6e6e6' : undefined;
 
     // Create new user or redirect if already logged in
-    fetchUserData(session).then(data => {
-        if (data.role == "ANYONE") setModalVisible(true);
-        else router.replace('/');
-    })
+    React.useEffect(() => {
+        fetchUserData(session).then(data => {
+            if (data.role == "ANYONE") router.push('/onboarding');
+            else router.replace('/');
+        });
+    }, [session]);
     // // Temporary Bypass to fetchUserData (for Android & Web testing)
     // React.useEffect(() => {
     //     if(session) router.replace('/');
@@ -32,18 +32,10 @@ export default function SignIn() {
                 <Image source={LyrneLogo} style={styles.logo} />
             </ThemedView>
             <ThemedView style={[styles.bottomHalf, {backgroundColor: bgColor}]}>
-                {Platform.OS === 'ios' ? (
-                    <AppleSignIn />
-                ) : Platform.OS === 'android' ? (
-                    // Currently using a placeholder
-                    <GoogleSignIn />
-                ) : (
-                    // Currently using a placeholder
-                    <WebSignIn />
-                )}
+                <SignInButton />
             </ThemedView>
 
-            <Modal
+            {/* <Modal
                 animationType="slide"
                 transparent={true}
                 visible={modalVisible}
@@ -87,7 +79,7 @@ export default function SignIn() {
                         </View>
                     </View>
                 </View>
-            </Modal>
+            </Modal> */}
         </ThemedView>
     );
 }
