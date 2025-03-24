@@ -5,7 +5,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import { updateUserData } from "@/util/Backend";
+import { updateUserData, uploadDocument, uploadImage } from "@/util/Backend";
 import { useSession } from "@/components/Context";
 import * as ImagePicker from "expo-image-picker";
 
@@ -17,7 +17,8 @@ export default function Onboarding() {
     const [step, setStep] = useState(1);
     const [currentAvailability, setCurrentAvailability] = useState<string[]>([]);
     const [role, setRole] = useState("");
-    const [tutorCertificate, setTutorCertificate] = useState(null);
+    const [imageCertificate, setImageCertificate] = useState(null);
+    const [documentCertificate, setDocumentCertificate] = useState(null);
 
     const handleRoleSubmit = (selectedRole = "") => {
         if(selectedRole != "") {
@@ -71,22 +72,27 @@ export default function Onboarding() {
             console.log("ImagePicker result:", result);
 
             if (!result.canceled) {
-                setTutorCertificate(result.assets[0].uri);
+                setImageCertificate(result.assets[0].uri);
             }
         } catch (error) {
             console.error("Error launching ImagePicker:", error);
         }
     };
 
+    // const pickDocument = async () => {
+    //     const { status } = await DocumentPicker.requestMediaLibraryPermissionsAsync();
+    // setDocumentCertificate(result.assets[0].uri);
+
     const handleCertificateSubmit = () => {
         // TODO: updateUserData with new certificate
-        // updateUserData(certificate: tutorCertificate);
+        if (documentCertificate) uploadDocument(session, documentCertificate);
+        if (imageCertificate) uploadImage(session, imageCertificate);
         setStep(5); // Move to Finish
     }
 
     const handleFinalSubmit = () => {
         if (role == "STUDENT") router.replace('/(student)/');
-        else router.replace('/(tutor)/');
+        else router.replace('/(tutor)/'); // Moves TUTOR_PENDING to TutorLayout
     }
 
     return (
@@ -101,7 +107,7 @@ export default function Onboarding() {
                         <TouchableOpacity onPress={() => handleRoleSubmit("STUDENT")} style={styles.button}>
                             <ThemedText style={styles.buttonText}>I am a Student.</ThemedText>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => handleRoleSubmit("TUTOR")} style={styles.button}>
+                        <TouchableOpacity onPress={() => handleRoleSubmit("TUTOR_PENDING")} style={styles.button}>
                             <ThemedText style={styles.buttonText}>I am a Tutor.</ThemedText>
                         </TouchableOpacity>
                     </View>
@@ -187,14 +193,27 @@ export default function Onboarding() {
                             <IconSymbol name="plus" size={24} color="white" />
                             <ThemedText style={styles.buttonText}>Pick an Image</ThemedText>
                         </TouchableOpacity>
-                        {tutorCertificate && (
+                        {/* TODO: Implement Document Picker
+                            <TouchableOpacity onPress={pickDocument} style={styles.buttonPlus}>
+                            <IconSymbol name="plus" size={24} color="white" />
+                            <ThemedText style={styles.buttonText}>Pick a Document</ThemedText>
+                        </TouchableOpacity> */}
+                        {imageCertificate && (
                             <>
-                                <Image source={{ uri: tutorCertificate }} style={styles.image} />
+                                <Image source={{ uri: imageCertificate }} style={styles.image} />
                                 <TouchableOpacity onPress={handleCertificateSubmit} style={styles.button}>
-                                <ThemedText style={styles.buttonText}>Confirm Certificate</ThemedText>
+                                <ThemedText style={styles.buttonText}>Confirm Image</ThemedText>
                                 </TouchableOpacity>
                             </>
                         )}
+                        {/* {documentCertificate && (
+                            <>
+                                <Image source={{ uri: documentCertificate }} style={styles.image} />
+                                <TouchableOpacity onPress={handleCertificateSubmit} style={styles.button}>
+                                <ThemedText style={styles.buttonText}>Confirm Document</ThemedText>
+                                </TouchableOpacity>
+                            </>
+                        )} */}
                     </ThemedView>
                 </ThemedView>
             )}

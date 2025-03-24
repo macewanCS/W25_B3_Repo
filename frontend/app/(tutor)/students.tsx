@@ -9,6 +9,7 @@ export default function MyStudentsScreen() {
     const lightMode = useColorScheme() === 'light';
 
     // Example data for current students
+    // TODO: Replace with actual data from the backend
     const [students] = useState([
         {
             id: '1',
@@ -68,6 +69,20 @@ export default function MyStudentsScreen() {
         },
     ]);
 
+    // TODO: Replace with actual data from the backend (new session requests from student side search)
+    const [potentialSessions] = useState([
+        {
+            id: '1',
+            name: 'Jake T.',
+            course: 'Mathematics',
+        },
+        {
+            id: '2',
+            name: 'Presley L.',
+            course: 'Physics',
+        },
+    ]);
+
     const renderStudentItem = ({ item }) => (
         <TouchableOpacity 
             style={[
@@ -85,12 +100,24 @@ export default function MyStudentsScreen() {
         </TouchableOpacity>
     );
 
+    // TODO: Set up render of potential sessions
+    const renderPotentialSessions = ({ item }) => (
+        // <TouchableOpacity
+        //     style={[
+        //         styles.studentRow,
+        //         { backgroundColor: lightMode ? '#ccc' : '#232323' } // #f9f9f9 (a other lighter gray)
+        //     ]}
+        //     // onPress={() => handleStudentPress(item)}
+        // ></TouchableOpacity>
+        <div></div>
+    );
+
     return (
         <ThemedView style={styles.container}>
             <ThemedText style={styles.header}>New Session Requests:</ThemedText>
             <ThemedView style={styles.listContainer}>
                 {/* <FlatList
-                    data={students}
+                    data={potentialSessions}
                     renderItem={renderStudentItem}
                     keyExtractor={(item) => item.id}
                     showsVerticalScrollIndicator={false}
