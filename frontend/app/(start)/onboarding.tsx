@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { router } from 'expo-router';
-import {Image, TextInput, StyleSheet, View, TouchableOpacity, ScrollView } from 'react-native';
+import { Image, TextInput, StyleSheet, View, TouchableOpacity, ScrollView } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import { ThemedText } from '@/components/ThemedText';
@@ -8,6 +8,7 @@ import { ThemedView } from '@/components/ThemedView';
 import { updateUserData, uploadDocument, uploadImage } from "@/util/Backend";
 import { useSession } from "@/components/Context";
 import * as ImagePicker from "expo-image-picker";
+import * as DocumentPicker from 'expo-document-picker';
 
 const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const hours = ["8:00", "9:00", "10:00", "11:00", "12:00", "1:00", "2:00", "3:00", "4:00", "5:00", "6:00"];
@@ -21,27 +22,27 @@ export default function Onboarding() {
     const [documentCertificate, setDocumentCertificate] = useState(null);
 
     const handleRoleSubmit = (selectedRole = "") => {
-        if(selectedRole != "") {
-            updateUserData({ role: selectedRole }, session );
+        if (selectedRole != "") {
+            updateUserData({ role: selectedRole }, session);
             setRole(selectedRole); // Used to move tutors to step 4
             setStep(2); // Move to Get Name
         }
     }
 
     const handleNameSubmit = (selectedName = "") => {
-        if(selectedName != "") {
-            updateUserData({ name: selectedName }, session );
+        if (selectedName != "") {
+            updateUserData({ name: selectedName }, session);
             setStep(3); // Move to Get Availability
         }
     }
 
     const handleAvailabilityPress = (day: string, hour: string) => {
-    const availabilityString = `${day}_${hour}`;
+        const availabilityString = `${day}_${hour}`;
         setCurrentAvailability((prev) => {
             if (prev.includes(availabilityString)) {
-            return prev.filter((item) => item !== availabilityString);
+                return prev.filter((item) => item !== availabilityString);
             } else {
-            return [...prev, availabilityString];
+                return [...prev, availabilityString];
             }
         });
     };
@@ -52,7 +53,7 @@ export default function Onboarding() {
 
     const handleAvailabilitySubmit = () => {
         updateUserData({ availability: currentAvailability }, session);
-        setStep(role === "TUTOR" ? 4 : 5); // Move Tutor to Get Certificate, Student to Finish
+        setStep(role === "TUTOR_PENDING" ? 4 : 5); // Move Tutor to Get Certificate, Student to Finish
     }
 
     const pickImage = async () => {
@@ -79,12 +80,28 @@ export default function Onboarding() {
         }
     };
 
-    // const pickDocument = async () => {
-    //     const { status } = await DocumentPicker.requestMediaLibraryPermissionsAsync();
-    // setDocumentCertificate(result.assets[0].uri);
+    const pickDocument = async () => {
+        try {
+            let result = await DocumentPicker.getDocumentAsync({
+                type: "*/*", // Accepts any file type
+                copyToCacheDirectory: true,
+                multiple: false, // Set to true if you want multiple file selection
+            });
+
+            console.log("DocumentPicker result:", result);
+
+            if (result.type === "cancel") {
+                console.log("User canceled document picker");
+                return;
+            }
+
+            setDocumentCertificate(result.assets[0].uri); // Save the document URI just like pickImage
+        } catch (error) {
+            console.error("Error picking document:", error);
+        }
+    };
 
     const handleCertificateSubmit = () => {
-        // TODO: updateUserData with new certificate
         if (documentCertificate) uploadDocument(session, documentCertificate);
         if (imageCertificate) uploadImage(session, imageCertificate);
         setStep(5); // Move to Finish
@@ -121,17 +138,18 @@ export default function Onboarding() {
                     <ThemedView style={styles.infoRowEditable}>
                         <MaterialIcons name="alternate-email" size={20} color="gray" />
                         <TextInput
-                        defaultValue="First & Last Name"
-                        style={[styles.infoText]}
-                        onSubmitEditing={value => handleNameSubmit(value.nativeEvent.text)}
-                    />
+                            placeholder="First & Last Name"
+                            placeholderTextColor="#000"
+                            style={[styles.infoText]}
+                            onSubmitEditing={value => handleNameSubmit(value.nativeEvent.text)}
+                        />
                         <TouchableOpacity>
                             <MaterialIcons name="edit" size={20} color="black" />
                         </TouchableOpacity>
                     </ThemedView>
                 </ThemedView>
             )}
-            
+
             {/* Step 3: Get Availability */}
             {step === 3 && (
                 <ThemedView>
@@ -139,40 +157,39 @@ export default function Onboarding() {
                     <ScrollView>
                         <ThemedView style={styles.infoContainer}>
                             <ThemedView style={styles.row}>
-                            <ThemedText style={styles.timeLabel}></ThemedText>
-                            {daysOfWeek.map((day) => (
-                                <ThemedText key={day} style={styles.dayLabel}>{day}</ThemedText>
-                            ))}
-                            <ThemedText style={styles.timeLabel}></ThemedText>
+                                <ThemedText style={styles.timeLabel}></ThemedText>
+                                {daysOfWeek.map((day) => (
+                                    <ThemedText key={day} style={styles.dayLabel}>{day}</ThemedText>
+                                ))}
+                                <ThemedText style={styles.timeLabel}></ThemedText>
                             </ThemedView>
                             {hours.map((hour, index) => (
-                            <React.Fragment key={hour}>
-                                <View style={styles.row}>
-                                    <ThemedText style={styles.timeLabel}>{hour}</ThemedText>
-                                    {daysOfWeek.map((day) => (
-                                        <TouchableOpacity
-                                        key={`${day}_${hour}`}
-                                        style={[
-                                            styles.buttonInactive,
-                                            isAvailable(day, hour) && styles.buttonActive,
-                                        ]}
-                                        onPress={() => handleAvailabilityPress(day, hour)}
-                                        >
-                                        <ThemedText style={styles.buttonText}></ThemedText>
-                                        </TouchableOpacity>
-                                    ))}
-                                    <ThemedText style={styles.timeLabel}>{hour}</ThemedText>
-                                </View>
-                                {index < hours.length - 1 && (
-                                <ThemedView style={styles.footer}></ThemedView>
-                                )}
-                            </React.Fragment>
+                                <React.Fragment key={hour}>
+                                    <View style={styles.row}>
+                                        <ThemedText style={styles.timeLabel}>{hour}</ThemedText>
+                                        {daysOfWeek.map((day) => (
+                                            <TouchableOpacity
+                                                key={`${day}_${hour}`}
+                                                style={[
+                                                    styles.buttonInactive,
+                                                    isAvailable(day, hour) && styles.buttonActive,
+                                                ]}
+                                                onPress={() => handleAvailabilityPress(day, hour)}
+                                            >
+                                                <ThemedText style={styles.buttonText}></ThemedText>
+                                            </TouchableOpacity>
+                                        ))}
+                                        <ThemedText style={styles.timeLabel}>{hour}</ThemedText>
+                                    </View>
+                                    {index < hours.length - 1 && (
+                                        <ThemedView style={styles.footer}></ThemedView>
+                                    )}
+                                </React.Fragment>
                             ))}
-                
                             <ThemedView style={styles.row}>
                                 <ThemedText style={styles.timeLabel}></ThemedText>
-                                    {daysOfWeek.map((day) => (
-                                        <ThemedText key={day} style={styles.dayLabel}>{day}</ThemedText>
+                                {daysOfWeek.map((day) => (
+                                    <ThemedText key={day} style={styles.dayLabel}>{day}</ThemedText>
                                 ))}
                                 <ThemedText style={styles.timeLabel}></ThemedText>
                             </ThemedView>
@@ -189,36 +206,34 @@ export default function Onboarding() {
                 <ThemedView>
                     <ThemedView style={styles.uploadContainer}>
                         <ThemedText style={{ marginTop: 50, marginBottom: 10 }}>Please upload your teaching certificate.</ThemedText>
-                        <TouchableOpacity onPress={pickImage} style={styles.buttonPlus}>
-                            <IconSymbol name="plus" size={24} color="white" />
-                            <ThemedText style={styles.buttonText}>Pick an Image</ThemedText>
-                        </TouchableOpacity>
-                        {/* TODO: Implement Document Picker
+                        <View style={styles.roleButtonsContainer}>
+                            <TouchableOpacity onPress={pickImage} style={styles.buttonPlus}>
+                                <IconSymbol name="plus" size={24} color="white" />
+                                <ThemedText style={styles.buttonText}>Pick an Image</ThemedText>
+                            </TouchableOpacity>
                             <TouchableOpacity onPress={pickDocument} style={styles.buttonPlus}>
-                            <IconSymbol name="plus" size={24} color="white" />
-                            <ThemedText style={styles.buttonText}>Pick a Document</ThemedText>
-                        </TouchableOpacity> */}
-                        {imageCertificate && (
-                            <>
-                                <Image source={{ uri: imageCertificate }} style={styles.image} />
-                                <TouchableOpacity onPress={handleCertificateSubmit} style={styles.button}>
-                                <ThemedText style={styles.buttonText}>Confirm Image</ThemedText>
-                                </TouchableOpacity>
-                            </>
+                                <IconSymbol name="plus" size={24} color="white" />
+                                <ThemedText style={styles.buttonText}>Pick a Document</ThemedText>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={styles.roleButtonsContainer}>
+                            {imageCertificate && (
+                                <Image source={{ uri: imageCertificate }} style={[styles.image, {margin: 10 }]} />
+                            )}
+                            {documentCertificate && (
+                                <Image source={{ uri: documentCertificate }} style={[styles.image, {margin: 10 }]} />
+                            )}
+                        </View>
+                        {(imageCertificate || documentCertificate) && (
+                            <TouchableOpacity onPress={handleCertificateSubmit} style={styles.button}>
+                                <ThemedText style={styles.buttonText}>Submit</ThemedText>
+                            </TouchableOpacity>
                         )}
-                        {/* {documentCertificate && (
-                            <>
-                                <Image source={{ uri: documentCertificate }} style={styles.image} />
-                                <TouchableOpacity onPress={handleCertificateSubmit} style={styles.button}>
-                                <ThemedText style={styles.buttonText}>Confirm Document</ThemedText>
-                                </TouchableOpacity>
-                            </>
-                        )} */}
                     </ThemedView>
                 </ThemedView>
             )}
 
-            {/* Step 5: Finish */}
+                        {/* Step 5: Finish */}
             {step === 5 && (
                 <ThemedView>
                     <ThemedText>We are finished! You can now open the app.</ThemedText>
@@ -231,25 +246,25 @@ export default function Onboarding() {
                     </TouchableOpacity>
                 </ThemedView>
             )}
-            
+
         </ThemedView>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      padding: 16,
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 16,
     },
     roleSelectionContainer: {
-      justifyContent: 'center',
-      alignItems: 'center',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     roleButtonsContainer: {
-      flexDirection: 'row',
-      marginTop: 16,
+        flexDirection: 'row',
+        marginTop: 16,
     },
     button: {
         backgroundColor: '#007AFF',
@@ -265,24 +280,24 @@ const styles = StyleSheet.create({
         padding: 16,
         borderRadius: 8,
         alignItems: 'center',
-        flexDirection: "row", 
+        flexDirection: "row",
     },
     buttonText: {
         color: '#fff',
         fontSize: 18,
     },
-    infoRowEditable: { 
-        flexDirection: "row", 
-        alignItems: "center", 
-        backgroundColor: "#c7c8c9", 
-        padding: 16, 
-        borderRadius: 10, 
+    infoRowEditable: {
+        flexDirection: "row",
+        alignItems: "center",
+        backgroundColor: "#c7c8c9",
+        padding: 16,
+        borderRadius: 10,
         justifyContent: "space-between",
         marginVertical: 10,
     },
-    infoText: { 
-        flex: 1, 
-        marginLeft: 10, 
+    infoText: {
+        flex: 1,
+        marginLeft: 10,
         fontSize: 16,
     },
     infoContainer: {
@@ -315,9 +330,6 @@ const styles = StyleSheet.create({
     },
     buttonActive: {
         backgroundColor: "green",
-    },
-    buttonText: {
-        color: "white",
     },
     footer: {
         alignItems: "center",
