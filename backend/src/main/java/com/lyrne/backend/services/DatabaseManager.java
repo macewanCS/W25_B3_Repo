@@ -1,7 +1,10 @@
 package com.lyrne.backend.services;
 
 import com.lyrne.backend.Main;
+import com.lyrne.backend.TimeSlot;
 import com.lyrne.backend.User;
+import com.lyrne.backend.TimeSlot.subjectTypes;
+
 import me.mrnavastar.sqlib.SQLib;
 import me.mrnavastar.sqlib.api.DataContainer;
 import me.mrnavastar.sqlib.api.DataStore;
@@ -16,7 +19,7 @@ import java.util.Optional;
 public class DatabaseManager {
 
     private static final Database DB = SQLib.getDatabase();
-    //public static DataStore timeSlotStore = DB.dataStore("lyrne", "TimeSlotStore");
+    public static DataStore timeSlotStore = DB.dataStore("lyrne", "TimeSlotStore");
     public static DataStore tutorStore = DB.dataStore("lyrne", "TutorStore");
     public static DataStore userStore = DB.dataStore("lyrne", "UserStore");
 
@@ -48,22 +51,70 @@ public class DatabaseManager {
         return query;
     }
 
-    /*public static TimeSlot getTimeSlot(String id){ // the timeslot ID is (currently) a concatenation of the DateTime in string format (.toString()) and the tutor user ID
+    public static ArrayList<TimeSlot> searchBySubject(TimeSlot.subjectTypes subject){
+        ArrayList<TimeSlot> matches = new ArrayList<TimeSlot>();
+
+        for(DataContainer dc : timeSlotStore.getContainers(subjectTypes.getId(subject), true)) {
+            TimeSlot ts = new TimeSlot(dc);
+            if (ts.subjects.contains(subject)) matches.add(ts);
+            }
+        return matches;
+    }
+
+    public static ArrayList<TimeSlot> searchByTutor(String tutorid){
+        ArrayList<TimeSlot> matches = new ArrayList<TimeSlot>();
+        for(DataContainer dc : timeSlotStore.getContainers("tutorid", tutorid)) {
+            TimeSlot ts = new TimeSlot(dc);
+            if (ts.getTutorID().equals(tutorid)) matches.add(ts);
+
+            }
+        return matches;
+    }
+
+    public static ArrayList<TimeSlot> searchByInterval(Interval interval){ // easy way to check if a time slot exists in a specified time period
+     // not sure how we'll build that interval yet but the option is there
+        ArrayList<TimeSlot> matches = new ArrayList<TimeSlot>();
+        for(DataContainer dc : timeSlotStore.getContainers("starttime", interval.getStart().toString())) {
+            TimeSlot ts = new TimeSlot(dc);
+            if (ts.timeSlotInterval.overlaps(interval)) matches.add(ts);
+
+            }
+        return matches;
+    }
+
+    // below are more filter-like search methods. the above ones may be redundant now but im keeping them for a sec til i know for sure
+    // these are exclusive search as well. inclusive search can be done later but i don't think most users would want it
+    // the subject is the backbone of all of them, so it's required. i figured it'd make the most sense as you would always know what subject you want to find tutoring in
+
+    public static ArrayList<TimeSlot> searchResults(TimeSlot.subjectTypes subject, Interval interval){
+        ArrayList<TimeSlot> matches = new ArrayList<TimeSlot>();
+
+        for(DataContainer dc : timeSlotStore.getContainers("starttime", interval.getStart().toString())) {
+            TimeSlot ts = new TimeSlot(dc);
+            if (ts.subjects.contains(subject)) matches.add(ts);
+
+            }
         
-        Optional<DataContainer> dc = timeSlotStore.getContainer("id", id);
-        DataContainer container;
-        if (dc.isPresent()) container = dc.get();
-        else container = null; 
-        if (container != null){
-            TimeSlot ts = new TimeSlot(container);
-            return ts; 
-        }
-        else throw new NoSuchElementException("No time slot found for id: " + id);
+        return matches;
+    }
+    public static ArrayList<TimeSlot> searchResults(TimeSlot.subjectTypes subject, String tutorid){
+        ArrayList<TimeSlot> matches = new ArrayList<TimeSlot>();
+
+        for(DataContainer dc : timeSlotStore.getContainers("tutorid", tutorid)) {
+            TimeSlot ts = new TimeSlot(dc);
+            if (ts.subjects.contains(subject)) matches.add(ts);
+
+            }
+        return matches;
+    }
+    public static ArrayList<TimeSlot> searchResults(TimeSlot.subjectTypes subject, String tutorid, Interval interval){
+        ArrayList<TimeSlot> matches = new ArrayList<TimeSlot>();
+        for(DataContainer dc : timeSlotStore.getContainers("tutorid", tutorid)) {
+            TimeSlot ts = new TimeSlot(dc);
+            if (ts.subjects.contains(subject) && ts.timeSlotInterval.overlaps(interval)) matches.add(ts);
+
+            }
         
-    }    
-    
-    public static void saveTimeSlot(TimeSlot timeslot){
-        DataContainer container = timeSlotStore.createContainer();
-        timeslot.store(container);
-    }*/
+        return matches;
+    }
 }
