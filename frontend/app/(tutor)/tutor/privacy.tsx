@@ -10,9 +10,9 @@ export default function TutorPrivacyScreen() {
     // Sample Options
     const [options, setOptions] = useState([
         { id: 1, name: "Full Name", enabled: true },
-        { id: 2, name: "Privacy Option 2", enabled: false },
-        { id: 3, name: "Privacy Option 3", enabled: false },
-        { id: 4, name: "Privacy Option 4", enabled: false },
+        // { id: 2, name: "Privacy Option 2", enabled: false },
+        // { id: 3, name: "Privacy Option 3", enabled: false },
+        // { id: 4, name: "Privacy Option 4", enabled: false },
     ]);
 
     // Toggle function to update option state
