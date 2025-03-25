@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             
         });
-        fetch('http://localhost:8820/api/stats')
+        fetch('/api/stats')
             .then(response => response.json())
             .then(data => {
                 const subjects = Object.keys(data.subjectCounts);
