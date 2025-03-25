@@ -3,9 +3,12 @@ package com.lyrne.backend;
 import lombok.Getter;
 import java.util.Optional;
 import java.util.ArrayList;
+import java.sql.DatabaseMetaData;
+import java.util.ArrayList;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import com.lyrne.backend.services.DatabaseManager;
+import com.lyrne.backend.services.Statistics;
 import com.lyrne.backend.services.EmailManager;
 import me.mrnavastar.sqlib.api.DataContainer;
 import me.mrnavastar.sqlib.api.types.JavaTypes;
@@ -40,7 +43,6 @@ public class TimeSlot{ // A timeslot object that can be created by a tutor
 
     }
 
-    @Getter
     private boolean booked = false; // determining if a time slot is booked by a student might be more complicated than a boolean but you get the idea
     @Getter
     private String bookedBy; // the student whom booked the timeslot

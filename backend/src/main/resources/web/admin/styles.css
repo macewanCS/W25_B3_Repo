@@ -1,0 +1,24 @@
+.chart-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+canvas {
+    width: 400px;
+    height: 400px;
+}
+
+
+#percentageDisplay {
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+#TimeSlots {
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 10px;
+}
