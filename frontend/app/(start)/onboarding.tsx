@@ -13,6 +13,15 @@ import * as DocumentPicker from 'expo-document-picker';
 const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const hours = ["8:00", "9:00", "10:00", "11:00", "12:00", "1:00", "2:00", "3:00", "4:00", "5:00", "6:00"];
 
+function dayHourToUnixMillis(day, hour) {
+    if (day < 1 || day > 7 || hour < 0 || hour > 23) {
+        throw new Error('Invalid day or hour. Day should be 1-7 and hour should be 0-23.');
+    }
+
+    const date = new Date(2024, 0, day, hour, 0, 0, 0); // Months are zero-indexed
+    return date.getTime();
+}
+
 export default function Onboarding() {
     const { session } = useSession();
     const [step, setStep] = useState(1);
@@ -46,15 +55,25 @@ export default function Onboarding() {
             }
         });
     };
-
+    
     const isAvailable = (day: string, hour: string) => {
         return currentAvailability.includes(`${day}_${hour}`);
     };
-
+    
     const handleAvailabilitySubmit = () => {
-        updateUserData({ availability: currentAvailability }, session);
+        const availability = currentAvailability.map((availabilityString) => {
+            const [day, hour] = availabilityString.split('_');
+            const dayInt = daysOfWeek.indexOf(day) + 1; // Convert day to integer (1-7)
+            const hourInt = parseInt(hour.split(':')[0], 10);
+            return {
+                iStartMillis: dayHourToUnixMillis(dayInt, hourInt),
+                iEndMillis: dayHourToUnixMillis(dayInt, hourInt + 1),
+            };
+        });
+        console.log(dayHourToUnixMillis(1, 12));
+        updateUserData({ availability }, session);
         setStep(role === "TUTOR_PENDING" ? 4 : 5); // Move Tutor to Get Certificate, Student to Finish
-    }
+    };
 
     const pickImage = async () => {
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();

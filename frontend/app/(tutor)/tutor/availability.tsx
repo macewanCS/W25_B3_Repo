@@ -14,6 +14,15 @@ const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 // TODO: Decide on hours to have
 const hours = ["8:00", "9:00", "10:00", "11:00", "12:00", "1:00", "2:00", "3:00", "4:00", "5:00", "6:00"];
 
+function dayHourToUnixMillis(day, hour) {
+  if (day < 1 || day > 7 || hour < 0 || hour > 23) {
+      throw new Error('Invalid day or hour. Day should be 1-7 and hour should be 0-23.');
+  }
+
+  const date = new Date(2024, 0, day, hour, 0, 0, 0); // Months are zero-indexed
+  return date.getTime();
+}
+
 export default function TutorAvailabilityScreen() {
   const tabBarHeight = useBottomTabBarHeight();
   const { session } = useSession();
@@ -39,6 +48,19 @@ export default function TutorAvailabilityScreen() {
         return [...prev, availabilityString];
       }
     });
+  };
+  
+  const handleAvailabilitySubmit = () => {
+    const availability = currentAvailability.map((availabilityString) => {
+      const [day, hour] = availabilityString.split('_');
+      const dayInt = daysOfWeek.indexOf(day) + 1; // Convert day to integer (1-7)
+      const hourInt = parseInt(hour.split(':')[0], 10);
+      return {
+        iStartMillis: dayHourToUnixMillis(dayInt, hourInt),
+        iEndMillis: dayHourToUnixMillis(dayInt, hourInt + 1),
+      };
+    });
+    updateUserData({ availability }, session);
   };
 
   const isAvailable = (day: string, hour: string) => {
@@ -90,6 +112,9 @@ export default function TutorAvailabilityScreen() {
             </ThemedView>
         </ThemedView>
         </ScrollView>
+        <TouchableOpacity onPress={handleAvailabilitySubmit} style={styles.saveButton}>
+          <ThemedText style={styles.buttonText}>Save</ThemedText>
+        </TouchableOpacity>
         
     </UserSettingsBackground>
   );
@@ -184,5 +209,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     zIndex: 1, // Ensure the back button is on top
+  },
+  saveButton: {
+    backgroundColor: '#007AFF',
+    padding: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 16,
   },
 });
