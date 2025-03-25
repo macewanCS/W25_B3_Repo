@@ -34,7 +34,7 @@ public class User {
     private String phone;
     // Icon can be any uri react native supports. link to image, base64 encoded, etc.
     private String icon;
-    private String[] subjects; // i figure subjects fits better in the user than in the timeslot. also maybe an ArrayList over an Array? not sure what difference it makes in java
+    private ArrayList<String> subjects; 
 
     // TODO: idk if this is the best way to store availability, but it seems simple enough??
     private final ArrayList<Interval> availability = new ArrayList<>();
