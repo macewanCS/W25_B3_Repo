@@ -90,7 +90,7 @@ export default function Onboarding() {
 
             console.log("DocumentPicker result:", result);
 
-            if (result.type === "cancel") {
+            if (result.canceled) {
                 console.log("User canceled document picker");
                 return;
             }
