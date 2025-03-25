@@ -39,11 +39,11 @@ const Header = ({ name, online }) => (
 export default function MessagingScreen() {
   const [message, setMessage] = useState("")
   const [messages, setMessages] = useState([
-    { id: "1", text: "Hey there!", isUser: false, timestamp: "10:30 AM" },
-    { id: "2", text: "Hi! How are you doing?", isUser: true, timestamp: "10:31 AM" },
-    { id: "3", text: "I'm good, thanks for asking. What about you?", isUser: false, timestamp: "10:32 AM" },
-    { id: "4", text: "I'm doing great! Just studying for my math test.", isUser: true, timestamp: "10:33 AM" },
-    { id: "5", text: "Good idea!", isUser: false, timestamp: "10:35 AM" },
+    { id: "1", text: "Hey there!", isUser: true, timestamp: "10:30 AM" },
+    { id: "2", text: "Hi! How are you doing?", isUser: false, timestamp: "10:31 AM" },
+    { id: "3", text: "I'm good, thanks for asking. What about you?", isUser: true, timestamp: "10:32 AM" },
+    { id: "4", text: "I'm doing great! Just studying for my math test.", isUser: false, timestamp: "10:33 AM" },
+    { id: "5", text: "Good idea!", isUser: true, timestamp: "10:35 AM" },
   ])
 
   const sendMessage = () => {
@@ -65,9 +65,9 @@ export default function MessagingScreen() {
   const chatId = searchParams.chatId; // Extract chatId from the search parameters
 
   const placeholderList = [
-    {chatId: "123", name: "Alice Johnson"},
-    {chatId: "634", name: "Lisa Davis"},
-    {chatId: "802", name: "Chuck Brown"}
+    {chatId: "123", name: "Jake T."},
+    {chatId: "634", name: "Presley L."},
+    // {chatId: "802", name: "Chuck Brown"}
   ]
 
 const chat = placeholderList.find((chat) => chat.chatId === chatId);

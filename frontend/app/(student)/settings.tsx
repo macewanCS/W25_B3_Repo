@@ -6,7 +6,7 @@ import { ThemedView } from "@/components/ThemedView";
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import PlaceholderPhoto from "@/assets/images/profile-picture-placeholder.png";
 import { useSession } from "@/components/Context";
-import { fetchTutors, fetchUserData, updateUserData } from "@/util/Backend";
+import { fetchTutors, fetchUserData, updateUserData, uploadImage } from "@/util/Backend";
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 
@@ -14,7 +14,7 @@ import { useRouter } from 'expo-router';
 
 
 export default function StudentSettingsScreen () {
-  // const colorScheme = useColorScheme();
+  const colorScheme = useColorScheme();
   // const textColor = colorScheme === 'dark' ? 'white' : 'black';
   // const textColorInverse = colorScheme === 'dark' ? 'black' : 'white';
   const tabBarHeight = useBottomTabBarHeight();
@@ -54,11 +54,9 @@ export default function StudentSettingsScreen () {
     });
 
     if (!result.canceled) {
-      const base64 = await FileSystem.readAsStringAsync(result.assets[0].uri, {
-        encoding: FileSystem.EncodingType.Base64,
-      });
-      setImage({uri: result.assets[0].uri});
-      await updateUserData({icon: "data:image/png;base64," + base64}, session);
+      const fileUrl = await uploadImage(session, result.assets[0].file);
+      console.log(fileUrl);
+      await updateUserData({icon: fileUrl}, session);
     }
   };
 
@@ -66,18 +64,15 @@ export default function StudentSettingsScreen () {
 
   const settingsList = [
     // TODO: 
-    // - Implement all routes, 
     // - Properly adapt light and dark mode, 
-    // - Create a back button component to be re-used (used in /account atm),
     // - Adapt icons to native ios and android respectively
     { name: 'Account', icon: 'account-circle', route: '/user/account' },
     { name: 'Edit Availability', icon: 'edit-calendar', route: 'user/availability' },
-    { name: 'Courses', icon: 'menu-book', route: 'user/courses' },
+    { name: 'Courses', icon: 'menu-book', route: 'user/courses' }, // Pick and choose courses (might not need depending on search function)
     { name: 'Privacy', icon: 'lock', route: 'user/privacy'},  // Ability to show or hide information about your profile, etc.
-    { name: 'Security', icon: 'security', route: 'user/security' }, // Might not need. An ex. might be 'Save login session'
-    { name: 'Email Notifications', icon: 'notifications', route: 'user/notifications' }, // Emails, possibly SMS
-    // { name: 'Language', icon: 'language' }, // It is possible to localize all text and add support for example French
-    { name: 'Log Out', icon: 'logout' }, // Probably modal/new page to double check signing out
+    // { name: 'Security', icon: 'security', route: 'user/security' }, // Might not need. An ex. might be 'Save login session'
+    { name: 'Email Notifications', icon: 'notifications', route: 'user/notifications' }, // Emails
+    { name: 'Log Out', icon: 'logout' },
   ];
 
   return (
@@ -101,10 +96,14 @@ export default function StudentSettingsScreen () {
             <ThemedView style={{ borderBottomColor: 'gray', borderBottomWidth: 1, marginTop: 10 }} />
             <ThemedView style={styles.infoContainer}>
               {settingsList.map((item, index) => (
-                <TouchableOpacity key={index} style={styles.infoRow} onPress={() => item.route && push(item.route)}>
-                  <MaterialIcons name={item.icon} size={24} color='white'/>
-                  <ThemedText style={styles.infoText}>{item.name}</ThemedText>
-                  <MaterialIcons name='chevron-right' size={24} color='white' style={{ marginLeft: 'auto' }}/>
+                <TouchableOpacity 
+                    key={index} 
+                    style={[styles.infoRow, { backgroundColor: colorScheme === 'dark' ? '#232323' : 'lightgray' }]} 
+                    onPress={() => item.route && push(item.route)}
+                    >
+                    <MaterialIcons name={item.icon} size={24} color={colorScheme === 'dark' ? 'white' : 'black'}/>
+                    <ThemedText style={styles.infoText}>{item.name}</ThemedText>
+                    <MaterialIcons name='chevron-right' size={24} color={colorScheme === 'dark' ? 'white' : 'black'} style={{ marginLeft: 'auto' }}/>
                 </TouchableOpacity>
               ))}
             </ThemedView>

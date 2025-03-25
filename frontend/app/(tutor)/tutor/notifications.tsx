@@ -4,41 +4,41 @@ import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { UserSettingsBackground } from "@/components/ui/SettingsBackground";
 
-export default function StudentPrivacyScreen() {
+export default function TutorNotificationScreen() {
     const lightMode = useColorScheme() === 'light';
 
-    // Sample Options
-    const [options, setOptions] = useState([
-        { id: 1, name: "Full Name", enabled: true },
-        { id: 2, name: "Privacy Option 2", enabled: false },
-        { id: 3, name: "Privacy Option 3", enabled: false },
-        { id: 4, name: "Privacy Option 4", enabled: false },
+    // Sample Notifications
+    const [notifications, setNotifications] = useState([
+        { id: 1, name: "New Sessions", enabled: true },
+        { id: 2, name: "Booking a Session", enabled: false },
+        { id: 3, name: "Upcoming Session Reminders", enabled: true },
+        { id: 4, name: "Chat Message Alerts", enabled: true },
     ]);
 
-    // Toggle function to update option state
-    const toggleOption = (id) => {
-        setOptions((prev) =>
-            prev.map((option) =>
-                option.id === id ? { ...option, enabled: !option.enabled } : option
+    // Toggle function to update notification state
+    const toggleNotification = (id) => {
+        setNotifications((prev) =>
+            prev.map((notif) =>
+                notif.id === id ? { ...notif, enabled: !notif.enabled } : notif
             )
         );
     };
 
     return (
-        <UserSettingsBackground title="Privacy">
+        <UserSettingsBackground title="Notification Preferences">
             <ThemedView style={[styles.descriptionContainer, { backgroundColor: lightMode ? "#f8f9fa" : "#232323" }]}>
                 <ThemedText style={styles.descriptionText}>
-                    Manage your what information on your profile is publicly visible below.
+                    Manage your email notification preferences below.
                 </ThemedText>
             </ThemedView>
 
             <ThemedView style={styles.container}>
-                {options.map((option) => (
-                    <ThemedView key={option.id} style={styles.notificationRow}>
-                        <ThemedText style={styles.notificationText}>{option.name}</ThemedText>
+                {notifications.map((notif) => (
+                    <ThemedView key={notif.id} style={styles.notificationRow}>
+                        <ThemedText style={styles.notificationText}>{notif.name}</ThemedText>
                         <Switch
-                            value={option.enabled}
-                            onValueChange={() => toggleOption(option.id)}
+                            value={notif.enabled}
+                            onValueChange={() => toggleNotification(notif.id)}
                         />
                     </ThemedView>
                 ))}

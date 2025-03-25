@@ -1,4 +1,4 @@
-import { StyleSheet, Image, Platform, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, Image, Platform, FlatList, TouchableOpacity, useColorScheme } from 'react-native';
 import { Collapsible } from '@/components/Collapsible';
 import { ExternalLink } from '@/components/ExternalLink';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
@@ -8,6 +8,7 @@ import { IconSymbol } from '@/components/ui/IconSymbol';
 import { useRouter } from 'expo-router';
 
 export default function StudentChatsScreen() {
+  const lightMode = useColorScheme() === 'light';
 
   // Example Chats
   const chats = [
@@ -27,10 +28,10 @@ export default function StudentChatsScreen() {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <TouchableOpacity
-            style={styles.chatItem} onPress={() => push(`/chats/${item.chatId}/`)}
+            style={[styles.chatItem, { backgroundColor: lightMode ? "#ccc" : "#1E1E1E" }]} onPress={() => push(`/chats/${item.chatId}/`)}
           >
             <IconSymbol name="person.fill" size={40} color="#007AFF" />
-            <ThemedView style={styles.chatInfo}>
+            <ThemedView style={[styles.chatInfo, { backgroundColor: lightMode ? "#ccc" : "#1E1E1E" }]}>
               <ThemedText style={styles.chatName}>{item.name}</ThemedText>
               <ThemedText style={styles.lastMessage}>{'> '}{item.lastMessage}</ThemedText>
             </ThemedView>

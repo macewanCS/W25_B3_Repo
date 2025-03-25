@@ -30,15 +30,15 @@ export default function TutorLayout() {
         getData()
       }, [])
 
-    // const userRoutes = [
-    //   'user/account', 
-    //   // 'user/courses',
-    //   // 'user/availability',
-    //   // 'user/privacy', 
-    //   // 'user/security',
-    //   // 'user/language',
-    //   // 'user/notifications'
-    // ];
+    const tutorRoutes = [
+      'tutor/account', 
+      'tutor/certifications',
+      'tutor/availability',
+      'tutor/privacy', 
+      'tutor/security',
+      'tutor/notifications',
+      'tutor/sign-out'
+    ];
 
     if (!session) {
     // If the user is not authenticated, return to sign-in.
@@ -46,7 +46,11 @@ export default function TutorLayout() {
     }
 
     if(user.role === 'STUDENT') {
-        return <Redirect href="/(student)/" />;
+      return <Redirect href="/(student)/" />;
+    }
+
+    if(user.role === 'ANYONE') {
+      return <Redirect href="/(start)/onboarding" />;
     }
 
   return (
@@ -87,9 +91,9 @@ export default function TutorLayout() {
         }}
       />
       <Tabs.Screen
-        name="invoices"
+        name="finances"
         options={{
-          title: 'Invoices',
+          title: 'Finances',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="building.columns" color={color} />,
         }}
       />
@@ -100,7 +104,7 @@ export default function TutorLayout() {
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="gear" color={color} />,
         }}
       />
-      {/* {userRoutes.map((route) => (
+      {tutorRoutes.map((route) => (
         <Tabs.Screen
           key={route}
           name={route}
@@ -108,7 +112,11 @@ export default function TutorLayout() {
             href: null,
           }}
         />
-      ))} */}
+      ))}
+      <Tabs.Screen
+        name="chats/[chatId]/index"
+        options={{ href: null }}
+      />
     </Tabs>
   );
 }

@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 import com.lyrne.backend.services.AuthManager;
+import com.lyrne.backend.services.CdnManager;
 import com.lyrne.backend.services.DatabaseManager;
 import com.lyrne.backend.services.FakeUsers;
 
@@ -29,6 +30,7 @@ public class Main {
     public static void main(String[] args) {
         NonMinecraft.init(Path.of("./lyrne/config"), Path.of("./lyrne/db"));
         AuthManager.registerProvider("https://appleid.apple.com/auth/keys");
+        AuthManager.registerProvider("https://accounts.google.com", "https://www.googleapis.com/oauth2/v3/certs");
 
         FakeUsers.create(250); // create 250 fake users
 
@@ -40,6 +42,11 @@ public class Main {
                 .before("/api/private/*", AuthManager::authenticate)
 
                 .get("/api/subjects", ctx -> ctx.result(GSON.toJson(Subject.values())))
+                // Forward all cdn requests to our cdn service
+                .get("/api/private/cdn/*", CdnManager::forwardRequest)
+                .get("/api/cdn/*", CdnManager::forwardRequest)
+                .post("/api/private/cdn/*", CdnManager::forwardRequest)
+                .post("/api/cdn/*", CdnManager::forwardRequest)
 
                 // Handle fetching user data
                 .get("/api/private/user", ctx -> Optional.ofNullable(ctx.sessionAttribute("user"))

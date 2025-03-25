@@ -42,18 +42,19 @@ public class FakeUsers {
     }
 
     public static void create(int amount) {
-        for (int i = 0; i < amount; i++) {
-            User user = new User("FakeUser_" + i);
-            user.setUsername("fakeuser" + i);
-            user.setEmail("fakeuser" + i + "@email.com");
-            user.setRole(random.nextBoolean() ? User.Role.TUTOR : User.Role.STUDENT);
-            user.setIcon(image1);
-            user.setPhone("780 473 7373");
-            user.getSubjects().add(randomSubject());
-            user.getAvailability().addAll(randomIntervals());
-            user.setNew(false);
-
-            DatabaseManager.saveUser(user);
-        }
+	new Thread(() -> {
+	for (int i = 0; i < amount; i++) {
+	User user = new User("FakeUser_" + i);
+	user.setUsername("fakeuser" + i);
+	user.setEmail("fakeuser" + i + "@email.com");
+	user.setRole(random.nextBoolean() ? User.Role.TUTOR : User.Role.STUDENT);
+	user.setIcon(image1);
+	user.setPhone("780 473 7373");
+	user.getSubjects().add(randomSubject());
+	user.getAvailability().addAll(randomIntervals());
+	user.setNew(false);
+	DatabaseManager.saveUser(user);
+	}
+        }).start();
     }
 }

@@ -4,7 +4,7 @@ import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { UserSettingsBackground } from "@/components/ui/SettingsBackground";
 
-export default function StudentPrivacyScreen() {
+export default function TutorPrivacyScreen() {
     const lightMode = useColorScheme() === 'light';
 
     // Sample Options
