@@ -30,7 +30,7 @@ public class FakeUsers {
 
             usedDays.add(dayOfWeek);
             LocalDate date = new LocalDate(2024, 1, 1).withDayOfWeek(dayOfWeek); // Arbitrary reference week
-            LocalTime startTime = new LocalTime(random.nextInt(24), random.nextInt(60));
+            LocalTime startTime = new LocalTime(random.nextInt(20), random.nextInt(60));
             LocalTime endTime = startTime.plusHours(random.nextInt(1, 4)); // Random duration of 1-3 hours
 
             DateTime startDateTime = date.toDateTime(startTime);
@@ -41,20 +41,24 @@ public class FakeUsers {
         return intervals;
     }
 
+    private static void newUser(int i, User.Role role) {
+        User user = new User("FakeUser_" + i);
+        user.setUsername("fakeuser" + i);
+        user.setEmail("fakeuser" + i + "@email.com");
+        user.setRole(role);
+        user.setIcon(image1);
+        user.setPhone("780 473 7373");
+        user.getSubjects().add(randomSubject());
+        user.availability = randomIntervals().toArray(new Interval[0]);
+        user.setNew(false);
+        DatabaseManager.saveUser(user);
+    }
+
     public static void create(int amount) {
-	new Thread(() -> {
-	for (int i = 0; i < amount; i++) {
-	User user = new User("FakeUser_" + i);
-	user.setUsername("fakeuser" + i);
-	user.setEmail("fakeuser" + i + "@email.com");
-	user.setRole(random.nextBoolean() ? User.Role.TUTOR : User.Role.STUDENT);
-	user.setIcon(image1);
-	user.setPhone("780 473 7373");
-	user.getSubjects().add(randomSubject());
-	user.getAvailability().addAll(randomIntervals());
-	user.setNew(false);
-	DatabaseManager.saveUser(user);
-	}
+        new Thread(() -> {
+            for (int i = 0; i < amount - 5; i++) newUser(i, random.nextBoolean() ? User.Role.TUTOR : User.Role.STUDENT);
+
+            for (int i = amount - 5; i < amount + 5; i++) newUser(i, User.Role.TUTOR_PENDING);
         }).start();
     }
 }

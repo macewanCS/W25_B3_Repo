@@ -21,8 +21,8 @@ public class Statistics {
 
     public Integer timeslots = 0; // # of timeslots
     public Integer bookedTimeslots = 0;
-    private Map<TimeSlot.subjectTypes, Integer> subjectCounts = new HashMap<>(); // # of timeslots published by subject
-    private Map<User.Role, Integer> userCounts = new HashMap<>(); // # of users by role
+    private final Map<TimeSlot.subjectTypes, Integer> subjectCounts = new HashMap<>(); // # of timeslots published by subject
+    private final Map<User.Role, Integer> userCounts = new HashMap<>(); // # of users by role
 
     public Statistics(){
         timeslotStatistics();
@@ -50,17 +50,13 @@ public class Statistics {
             this.userCounts.put(user, 0);
         }
 
-        this.userCounts.put(User.Role.TUTOR, DatabaseManager.tutorStore.getContainers().size());
-        for(DataContainer dc : DatabaseManager.userStore.getContainers()) {
-            User user = new User(dc);
-            this.userCounts.put(user.getRole(), this.userCounts.get(user.getRole()) + 1);
-        }
+        this.userCounts.put(User.Role.TUTOR, DatabaseManager.tutorStore.getContainers("role", User.Role.TUTOR.ordinal()).size());
+        this.userCounts.put(User.Role.TUTOR_PENDING, DatabaseManager.tutorStore.getContainers("role", User.Role.TUTOR_PENDING.ordinal()).size());
+        this.userCounts.put(User.Role.STUDENT, DatabaseManager.userStore.getContainers().size());
     }
 
     public String toJson(){
         Gson gson = new Gson();
-        String response = gson.toJson(this);
-        System.out.println(response);
-        return (response);
+        return (gson.toJson(this));
     }
 }

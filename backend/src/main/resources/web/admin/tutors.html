@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reports - Lyrne</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .sidebar {
+      height: 100vh;
+      background-color: #343a40;
+      color: white;
+      padding-top: 20px;
+    }
+    .sidebar a {
+      color: white;
+      text-decoration: none;
+      padding: 10px 15px;
+      display: block;
+    }
+    .sidebar a:hover {
+      background-color: #495057;
+    }
+
+    .tutor-card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin-bottom: 16px;
+      padding: 20px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .tutor-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .tutor-header {
+      display: flex;
+      align-items: center;
+    }
+
+    .tutor-header img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      margin-right: 16px;
+    }
+
+    .tutor-details {
+      display: none;
+      margin-top: 16px;
+    }
+
+    button {
+      margin-top: 10px;
+      margin-right: 10px;
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button.reject {
+      background-color: #f44336;
+    }
+
+    button:hover {
+      opacity
+  </style>
+</head>
+<body>
+<div class="container-fluid">
+  <div class="row">
+    <!-- Sidebar -->
+    <nav class="col-md-3 col-lg-2 sidebar">
+      <h4 class="text-center">Lyrne</h4>
+      <ul class="nav flex-column">
+        <li class="nav-item">
+          <a href="index.html" class="nav-link">Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a href="tutors.html" class="nav-link">Manage Tutors</a>
+        </li>
+        <li class="nav-item">
+          <a href="reports.html">Reports</a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="col-md-9 col-lg-10 px-4">
+      <div id="reports" class="my-4">
+        <h2>Tutors</h2>
+        <p>Approve potential tutors.</p>
+      </div>
+
+      <div id="tutor-list"></div>
+
+      <script>
+        async function fetchTutors() {
+          try {
+            const response = await fetch('/api/tutors/pending');
+            const tutors = await response.json();
+            const tutorList = document.getElementById('tutor-list');
+
+            tutors.forEach((tutor, index) => {
+              const card = document.createElement('div');
+              card.className = 'tutor-card';
+              card.innerHTML = `
+            <div class="tutor-header">
+              <img src="${tutor.icon}" alt="Tutor Icon" />
+              <div>
+                <h2>${tutor.username}</h2>
+                <p>${tutor.email}</p>
+                <p>Phone: ${tutor.phone}</p>
+              </div>
+            </div>
+            <div class="tutor-details" id="details-${index}">
+              <h3>Subjects: ${tutor.subjects.join(', ')}</h3>
+              <p>Created: ${new Date(tutor.created).toLocaleString()}</p>
+              <p>Last Login: ${new Date(tutor.lastLogin).toLocaleString()}</p>
+              <h4>Documents:</h4>
+              <div id="documents-${index}"></div>
+              <button onclick="approveTutor('${tutor.username}')">Approve</button>
+              <button class="reject" onclick="rejectTutor('${tutor.username}')">Reject</button>
+            </div>
+          `;
+              card.addEventListener('click', () => toggleDetails(index));
+              tutorList.appendChild(card);
+            });
+          } catch (error) {
+            console.error('Error fetching tutors:', error);
+          }
+        }
+
+        function toggleDetails(index) {
+          const details = document.getElementById(`details-${index}`);
+          details.style.display = details.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function approveTutor(username) {
+          console.log(`Approving tutor: ${username}`);
+          // Custom approve logic here
+        }
+
+        function rejectTutor(username) {
+          console.log(`Rejecting tutor: ${username}`);
+          // Custom reject logic here
+        }
+
+        fetchTutors();
+      </script>
+
+    </main>
+  </div>
+</div>
+
+
+</body>
+</html>

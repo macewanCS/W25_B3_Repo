@@ -2,7 +2,7 @@ package com.lyrne.backend;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
+import com.lyrne.backend.util.IntervalAdapter;
 import io.javalin.security.RouteRole;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,8 +23,7 @@ public class User {
 
     public enum Role implements RouteRole { ANYONE, STUDENT, PARENT, TUTOR, TUTOR_PENDING }
 
-    private TypeToken<ArrayList<Interval>> intervalsType = new TypeToken<>() {};
-    private SQLibType<ArrayList<Interval>> INTERVALS = new SQLibType<>(GsonTypes.ELEMENT, Main.GSON::toJsonTree, i -> Main.GSON.fromJson(i, intervalsType));
+    private static SQLibType<Interval[]> INTERVALS = new SQLibType<>(GsonTypes.ELEMENT, Main.GSON::toJsonTree, i -> Main.GSON.fromJson(i, Interval[].class));
 
     private transient boolean dirty = false; // Don't save this to database - is used to mark whether this user is out of sync with db
     private transient boolean isNew = true;
@@ -42,7 +41,7 @@ public class User {
     private String icon;
 
     private ArrayList<Main.Subject> subjects = new ArrayList<>();
-    private final ArrayList<Interval> availability = new ArrayList<>();
+    public Interval[] availability = new Interval[]{};
 
     public User(String id) {
         this.id = id;
@@ -133,7 +132,9 @@ public class User {
         container.get(JavaTypes.LONG, "lastlogin").ifPresent(lastLogin -> this.lastLogin = lastLogin);
         container.get(JavaTypes.LONG, "created").ifPresentOrElse(created -> this.created = created, () -> this.created = new DateTime().getMillis());
 
-        container.get(INTERVALS, "availability").ifPresent(this.availability::addAll);
+        container.get(INTERVALS, "availability").ifPresent(intervals -> {
+            availability = intervals;
+        });
         Arrays.stream(Main.Subject.values())
                 .forEach(subject -> container.get(JavaTypes.BOOL, "subject_" + subject.toString().toLowerCase())
                         .ifPresent(has -> {

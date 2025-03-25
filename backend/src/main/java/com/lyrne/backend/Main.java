@@ -1,26 +1,29 @@
 package com.lyrne.backend;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonParser;
-import com.lyrne.backend.TimeSlot.subjectTypes;
+import com.google.gson.*;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
+import com.google.gson.stream.JsonWriter;
 import com.lyrne.backend.services.AuthManager;
 import com.lyrne.backend.services.CdnManager;
 import com.lyrne.backend.services.DatabaseManager;
 import com.lyrne.backend.services.FakeUsers;
 import com.lyrne.backend.services.Statistics;
 
+import com.lyrne.backend.util.IntervalAdapter;
 import io.javalin.Javalin;
+import io.javalin.plugin.bundled.CorsPluginConfig;
 import me.mrnavastar.sqlib.impl.config.NonMinecraft;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Optional;
 
-import org.joda.time.DateTime;
+import org.joda.time.Interval;
 
 public class Main {
 
-    public static final Gson GSON = new Gson();
+    public static final Gson GSON = new GsonBuilder().registerTypeAdapter(Interval.class, new IntervalAdapter()).create();
 
     public enum Subject {
         MATH,
@@ -42,16 +45,14 @@ public class Main {
             config.bundledPlugins.enableRouteOverview("/");
             config.staticFiles.add("web");
             config.bundledPlugins.enableCors(cors -> {
-                cors.addRule(it -> {
-                    it.anyHost(); // data security who
-                    // not sure what i'd actually need to do here for production, this was just getting it to work on MY pc 
-                });
+                // data security who
+                // not sure what i'd actually need to do here for production, this was just getting it to work on MY pc
+                cors.addRule(CorsPluginConfig.CorsRule::anyHost);
             });
         })
                 // Make sure every body is authenticated
                 .before("/api/private/*", AuthManager::authenticate)
 
-                .get("/api/subjects", ctx -> ctx.result(GSON.toJson(Subject.values())))
                 // Forward all cdn requests to our cdn service
                 .get("/api/private/cdn/*", CdnManager::forwardRequest)
                 .get("/api/cdn/*", CdnManager::forwardRequest)
@@ -93,6 +94,14 @@ public class Main {
                     // should it be public? probably not, but until (if) we get actual admin dashboard auth i had to do it this way
                     Statistics stats = new Statistics(); // also probably doesn't need to be re-generated every time but we don't have a huge database rn so honestly idc theres like a week left i cant be bothered
                     ctx.result(stats.toJson());
+                })
+
+                .get("/api/subjects", ctx -> ctx.result(GSON.toJson(Subject.values())))
+
+                .get("/api/tutors/pending", ctx -> {
+                    JsonArray tutors = new JsonArray();
+                    DatabaseManager.getPendingTutors().forEach(tutor -> tutors.add(tutor.asJson()));
+                    ctx.result(tutors.toString());
                 })
 
                 .start(8820);

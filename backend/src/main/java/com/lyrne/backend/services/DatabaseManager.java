@@ -12,6 +12,7 @@ import me.mrnavastar.sqlib.api.database.Database;
 import org.joda.time.Interval;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import java.util.Optional;
@@ -38,14 +39,21 @@ public class DatabaseManager {
         if (user.isNew()) EmailManager.sendWelcome(user);
     }
 
-    public static ArrayList<User> getTutors(int offset, Main.Subject subject, ArrayList<Interval> availability) {
+    public static ArrayList<User> getPendingTutors() {
+        ArrayList<User> query = new ArrayList<>();
+        tutorStore.getContainers("role", User.Role.TUTOR_PENDING.ordinal())
+                .forEach(user -> query.add(new User(user)));
+        return query;
+    }
+
+    public static ArrayList<User> getTutors(int offset, Main.Subject subject, Interval[] availability) {
         ArrayList<User> query = new ArrayList<>();
         List<DataContainer> containers = tutorStore.getContainers("subject_" + subject.toString().toLowerCase(), true);
 
         for (int i = offset; query.size() < 10 && i < containers.size(); i++) {
             User tutor = new User(containers.get(i));
-            if (tutor.getAvailability().stream()
-                    .anyMatch(tutorAvail -> availability.stream()
+            if (Arrays.stream(tutor.getAvailability())
+                    .anyMatch(tutorAvail -> Arrays.stream(availability)
                             .anyMatch(tutorAvail::overlaps))) query.add(tutor);
         }
         return query;

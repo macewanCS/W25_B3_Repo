@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 subjectChart.data.labels = subjects;
                 subjectChart.data.datasets[0].data = counts;
 
-                const selectedUsers = ["TUTOR", "PARENT", "STUDENT"];
+                const selectedUsers = ["TUTOR", "TUTOR_PENDING", "STUDENT"];
                 const users = Object.keys(data.userCounts).filter(user => selectedUsers.includes(user));
                 const userCounts = users.map(user => data.userCounts[user]);
 
