@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
-import { MaterialIcons } from '@expo/vector-icons';
+// import { MaterialIcons } from '@expo/vector-icons';
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { UserSettingsBackground } from "@/components/ui/SettingsBackground";
 import { useSession } from "@/components/Context";
 import { fetchUserData, updateUserData } from "@/util/Backend";
-import { router } from 'expo-router';
+// import { router } from 'expo-router';
 
 const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-// const hours = ["9am", "10am", "11am", "12pm", "1pm", "2pm", "3pm", "4pm", "5pm"];
-// TODO: Decide on hours to have
 const hours = ["8:00", "9:00", "10:00", "11:00", "12:00", "1:00", "2:00", "3:00", "4:00", "5:00", "6:00"];
 
 function dayHourToUnixMillis(day, hour) {
@@ -21,6 +19,13 @@ function dayHourToUnixMillis(day, hour) {
 
   const date = new Date(2024, 0, day, hour, 0, 0, 0); // Months are zero-indexed
   return date.getTime();
+}
+
+function millisToDayHour(millis) {
+  const date = new Date(millis);
+  const day = daysOfWeek[date.getDay()];
+  const hour = `${date.getHours()}:00`;
+  return `${day}_${hour}`;
 }
 
 export default function StudentAvailabilityScreen() {
@@ -35,9 +40,14 @@ export default function StudentAvailabilityScreen() {
       let userData = await fetchUserData(session);
       setUserData(userData);
       setCreated(new Date(userData.created).toDateString());
+
+      if (userData.availability) {
+        const availability = userData.availability.map(slot => millisToDayHour(slot.iStartMillis));
+        setCurrentAvailability(availability);
+      }
     };
     getData();
-  }, []);
+  }, [session]);
 
   const handlePress = (day: string, hour: string) => {
     const availabilityString = `${day}_${hour}`;
