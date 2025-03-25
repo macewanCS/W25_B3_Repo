@@ -16,8 +16,8 @@ public class TimeSlot{ // A timeslot object that can be created by a tutor
 
     private String tutor; // The tutor's name, will be automatically put down
     public transient Interval timeSlotInterval;
-    @Getter
 
+    @Getter
     public enum subjectTypes {
         MATH(0), SCIENCE(1), SOCIAL(2), ENGLISH(3), PHYSICS(4), BIOLOGY(5), CHEMISTRY(6);
 
@@ -90,10 +90,6 @@ public class TimeSlot{ // A timeslot object that can be created by a tutor
         this.bookedBy = studentName; // later perhaps a user ID so that two people can have the same name
     }
 
-    public String getID(){
-        return this.id;
-    }
-
     public void bookTimeSlot(User user){ // "user" is the one who is making the booking (aka the student)
         this.bookedBy = user.getId(); 
 
@@ -131,9 +127,9 @@ public class TimeSlot{ // A timeslot object that can be created by a tutor
         container.put(JavaTypes.STRING, "endtime", this.getEndTime());
         container.put(JavaTypes.STRING, "tutorid", this.getTutorID());
 
-        container.put(JavaTypes.BOOL, "isbooked", this.isBooked());
-        container.put(JavaTypes.STRING, "bookedby", this.getBookedBy());
-        container.put(JavaTypes.STRING, "id", this.getId());
+        container.put(JavaTypes.BOOL, "isbooked", this.booked);
+        container.put(JavaTypes.STRING, "bookedby", this.bookedBy);
+        container.put(JavaTypes.STRING, "id", this.id);
     }
 
     public void load(DataContainer container) {
