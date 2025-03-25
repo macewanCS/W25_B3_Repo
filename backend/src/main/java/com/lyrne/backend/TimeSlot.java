@@ -3,12 +3,10 @@ package com.lyrne.backend;
 import lombok.Getter;
 import java.util.Optional;
 import java.util.ArrayList;
-import java.sql.DatabaseMetaData;
-import java.util.ArrayList;
+
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import com.lyrne.backend.services.DatabaseManager;
-import com.lyrne.backend.services.Statistics;
 import com.lyrne.backend.services.EmailManager;
 import me.mrnavastar.sqlib.api.DataContainer;
 import me.mrnavastar.sqlib.api.types.JavaTypes;
