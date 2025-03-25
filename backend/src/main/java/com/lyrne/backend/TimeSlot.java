@@ -2,6 +2,8 @@ package com.lyrne.backend;
 import java.util.Optional;
 import java.sql.DatabaseMetaData;
 import java.util.ArrayList;
+import java.sql.DatabaseMetaData;
+import java.util.ArrayList;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import com.lyrne.backend.User;
@@ -38,6 +40,7 @@ public class TimeSlot{ // A timeslot object that can be created by a tutor
     }
 
     private String tutor; // The tutor's id, will be automatically put down 
+   
 
     public transient Interval timeSlotInterval;
 

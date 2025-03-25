@@ -3,6 +3,7 @@ package com.lyrne.backend;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
+import com.lyrne.backend.TimeSlot.subjectTypes;
 import com.lyrne.backend.services.AuthManager;
 import com.lyrne.backend.services.CdnManager;
 import com.lyrne.backend.services.DatabaseManager;
@@ -14,6 +15,8 @@ import me.mrnavastar.sqlib.impl.config.NonMinecraft;
 
 import java.nio.file.Path;
 import java.util.Optional;
+
+import org.joda.time.DateTime;
 
 public class Main {
 
@@ -81,8 +84,5 @@ public class Main {
                 })
 
                 .start(8820);
-
-        
-       
     }
 }
