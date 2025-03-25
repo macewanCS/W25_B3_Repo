@@ -2,11 +2,14 @@ package com.lyrne.backend;
 import java.util.Optional;
 import java.sql.DatabaseMetaData;
 import java.util.ArrayList;
+import java.sql.DatabaseMetaData;
+import java.util.ArrayList;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import com.lyrne.backend.User;
 import com.lyrne.backend.TimeSlot.subjectTypes;
 import com.lyrne.backend.services.DatabaseManager;
+import com.lyrne.backend.services.Statistics;
 import com.lyrne.backend.services.EmailManager;
 import me.mrnavastar.sqlib.api.DataContainer;
 import me.mrnavastar.sqlib.api.types.JavaTypes;
@@ -37,6 +40,7 @@ public class TimeSlot{ // A timeslot object that can be created by a tutor
     }
 
     private String tutor; // The tutor's id, will be automatically put down 
+   
 
     public transient Interval timeSlotInterval;
 
@@ -185,6 +189,5 @@ public class TimeSlot{ // A timeslot object that can be created by a tutor
         System.out.println("Subjects: ");
         System.out.println(this.subjects);
     }
-
 
 }
