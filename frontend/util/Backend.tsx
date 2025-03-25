@@ -23,6 +23,28 @@ export async function makeBackendRequest(session: any, method: string, endpoint:
     return await response.json();
 }
 
+export async function makeCDNRequest(session: any, method: string, endpoint: string, body: any, len): Promise<any> {
+    if (!session.jwt) {
+        throw new Error(`Invalid token: ${session.jwt}`);
+    }
+
+    const response = await fetch(backendUrl + endpoint, {
+        method: method,
+        headers: {
+            "Authorization": `${session.jwt}`,
+            "Content-Type": "multipart/form-data",
+            "Content-Length": len,
+        },
+        body: body
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    return await response.json();
+}
+
 export async function fetchSubjects(session: any): Promise<any[]> {
     return makeBackendRequest(session, "GET", "/api/subjects", "")
 }
@@ -46,7 +68,7 @@ function parseCdnResponse(data: any) {
 export async function uploadImage(session: any, image: any): Promise<any> {
     const form = new FormData();
     form.append('image', image);
-    return parseCdnResponse(makeBackendRequest(session, "POST", "/api/private/cdn/api/cdn/upload/image", form))
+    return parseCdnResponse(makeCDNRequest(session, "POST", "/api/private/cdn/api/cdn/upload/image", form, new Blob([form]).size))
 }
 
 export async function getImage(session: any, imageName: string): Promise<any> {
@@ -56,7 +78,7 @@ export async function getImage(session: any, imageName: string): Promise<any> {
 export async function uploadDocument(session: any, image: any): Promise<any> {
     const form = new FormData();
     form.append('doc', image);
-    return parseCdnResponse(makeBackendRequest(session, "POST", "/api/private/cdn/api/cdn/upload/doc", form))
+    return parseCdnResponse(makeCDNRequest(session, "POST", "/api/private/cdn/api/cdn/upload/doc", form, new Blob([form]).size))
 }
 
 export async function getDocument(session: any, imageName: string): Promise<any> {

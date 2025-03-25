@@ -22,7 +22,9 @@ public class CdnManager {
             HttpResponse<byte[]> response = client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofByteArray());
 
             ctx.status(response.statusCode());
-            response.headers().map().forEach((key, values) -> values.forEach(value -> ctx.header(key, value)));
+            response.headers().map().forEach((key, values) -> values.forEach(value -> {
+                if (!key.equals("Authorization")) ctx.header(key, value);
+            }));
             ctx.result(response.body());
         } catch (Exception e) {
             ctx.status(500).result("CDN error: " + e.getMessage());
