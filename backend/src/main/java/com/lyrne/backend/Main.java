@@ -22,6 +22,15 @@ public class Main {
 
     public static final Gson GSON = new Gson();
 
+    public enum Subject {
+        MATH,
+        CHEMISTRY,
+        PHYSICS,
+        BIOLOGY,
+        ENGLISH,
+        SOCIAL
+    }
+
     public static void main(String[] args) {
         NonMinecraft.init(Path.of("./lyrne/config"), Path.of("./lyrne/db"));
         AuthManager.registerProvider("https://appleid.apple.com/auth/keys");
@@ -42,6 +51,7 @@ public class Main {
                 // Make sure every body is authenticated
                 .before("/api/private/*", AuthManager::authenticate)
 
+                .get("/api/subjects", ctx -> ctx.result(GSON.toJson(Subject.values())))
                 // Forward all cdn requests to our cdn service
                 .get("/api/private/cdn/*", CdnManager::forwardRequest)
                 .get("/api/cdn/*", CdnManager::forwardRequest)
@@ -61,12 +71,14 @@ public class Main {
 
                 // Handle fetching list of tutors
                 .get("/api/private/tutors", ctx -> {
-                    int amount = Optional.ofNullable(ctx.queryParam("amount")).map(Integer::parseInt).orElse(25);
+                    String subject = Optional.ofNullable(ctx.queryParam("subject")).orElse("");
+                    int offset = Optional.ofNullable(ctx.queryParam("offset")).map(Integer::parseInt).orElse(0);
 
-                    JsonArray tutors = new JsonArray();
-                    DatabaseManager.getTutors(amount).forEach(user -> tutors.add(user.asJson()));
-                    System.out.println(tutors);
-                    ctx.result(tutors.toString());
+                    Optional.ofNullable(ctx.sessionAttribute("user")).ifPresent(user -> {
+                        JsonArray tutors = new JsonArray();
+                        DatabaseManager.getTutors(offset, Main.Subject.valueOf(subject.toUpperCase()), ((User) user).getAvailability()).forEach(tutor -> tutors.add(tutor.asJson()));
+                        ctx.result(tutors.toString());
+                    });
                 })
 
                 // Save user data if it was changed in the current session

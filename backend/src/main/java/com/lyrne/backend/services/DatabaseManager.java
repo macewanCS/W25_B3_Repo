@@ -1,5 +1,6 @@
 package com.lyrne.backend.services;
 
+import com.lyrne.backend.Main;
 import com.lyrne.backend.TimeSlot;
 import com.lyrne.backend.User;
 import com.lyrne.backend.TimeSlot.subjectTypes;
@@ -8,11 +9,11 @@ import me.mrnavastar.sqlib.SQLib;
 import me.mrnavastar.sqlib.api.DataContainer;
 import me.mrnavastar.sqlib.api.DataStore;
 import me.mrnavastar.sqlib.api.database.Database;
+import org.joda.time.Interval;
 
 import java.util.ArrayList;
-import java.util.NoSuchElementException;
 import java.util.List;
-import org.joda.time.Interval;
+
 import java.util.Optional;
 
 public class DatabaseManager {
@@ -30,15 +31,6 @@ public class DatabaseManager {
         return user;
     }
 
-    public static ArrayList<User> getTutors(int amount) {
-        ArrayList<User> query = new ArrayList<>();
-        for (DataContainer container : tutorStore.getContainers()) {
-            User tutor = new User(container);
-            query.add(tutor);
-        }
-        return query;
-    }
-
     public static void saveUser(User user) {
         DataStore store = User.Role.TUTOR.equals(user.getRole()) ? tutorStore : userStore;
         user.store(store.getOrCreateContainer("id", user.getId()));
@@ -46,31 +38,17 @@ public class DatabaseManager {
         if (user.isNew()) EmailManager.sendWelcome(user);
     }
 
-    public static TimeSlot getTimeSlot(String id){ // the timeslot ID is (currently) a concatenation of the start DateTime in string format (.toString()) and the tutor user ID 
-        
-        Optional<DataContainer> dc = timeSlotStore.getContainer("id", id);
-        DataContainer container;
-        if (dc.isPresent()) container = dc.get();
-        else container = null; 
-        if (container != null){
-            TimeSlot ts = new TimeSlot(container);
-            return ts; 
-        }
-        else throw new NoSuchElementException("No time slot found for id: " + id);
-        
-    }    
-    
-    public static void saveTimeSlot(TimeSlot timeslot){
+    public static ArrayList<User> getTutors(int offset, Main.Subject subject, ArrayList<Interval> availability) {
+        ArrayList<User> query = new ArrayList<>();
+        List<DataContainer> containers = tutorStore.getContainers("subject_" + subject.toString().toLowerCase(), true);
 
-        //checking if the time slot is overlapping, maybe make into a seperate function?
-        for(DataContainer dc : timeSlotStore.getContainers("tutorid", timeslot.getTutorID())) {
-            TimeSlot ts = new TimeSlot(dc);
-            if (ts.getTutorID().equals(timeslot.getTutorID())){
-                ts.overlapping(timeslot); 
-            }
+        for (int i = offset; query.size() < 10 && i < containers.size(); i++) {
+            User tutor = new User(containers.get(i));
+            if (tutor.getAvailability().stream()
+                    .anyMatch(tutorAvail -> availability.stream()
+                            .anyMatch(tutorAvail::overlaps))) query.add(tutor);
         }
-        DataContainer container = timeSlotStore.createContainer();
-        timeslot.store(container);
+        return query;
     }
 
     public static ArrayList<TimeSlot> searchBySubject(TimeSlot.subjectTypes subject){
